@@ -14,7 +14,7 @@ I don't plan to port everything from GSL - perhaps if I get time in the future, 
 
 MSL provides the building blocks for scientific computing in Mojo:
 
-- **Vectors & Matrices** - Dense linear algebra with memory management
+- **Vectors & Matrices** - Core objects for linear algebra and more. 
 - **Random Numbers** - RNGs and probability distributions (Gaussian, uniform, exponential, etc.)
 - **Special Functions** - Airy, Bessel, and more
 - **Permutations** - Combinatorial algorithms
@@ -97,8 +97,6 @@ from msl.permutation import Permutation
 | distributions | ✅ |
 | permutation | ✅ |
 
-**78 tests passing**
-
 ## Roadmap
 
 - [ ] Gamma and error functions
@@ -107,8 +105,8 @@ from msl.permutation import Permutation
 - [ ] Hypergeometric functions
 - [ ] Numerical integration
 - [ ] ODE solvers
-- [ ] Optimize with Mojo-specific tricks
-
+- [ ] Optimize with Mojo-specific tricks! The fun part!
+ 
 ## Contributors
 
 All contributions are welcome. Let's make science easy together for everyone :)
