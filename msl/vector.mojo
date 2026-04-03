@@ -34,7 +34,7 @@ linear algebra operations.
 
 from std.memory import UnsafePointer, memset_zero
 
-from msl.block import Block
+from msl.block import Block, block_free
 from msl.const import MSL_DBL_EPSILON
 from msl.types import STATUS_SUCCESS, STATUS_FAILURE
 
@@ -57,28 +57,25 @@ struct Vector(Copyable, Movable):
     def __init__(out self, size: Int, *, initialize: Bool = False):
         self.size = size
         self.stride = 1
-        self.data = alloc[Float64](size)
-        self.block = UnsafePointer[Block, MutExt]()
+        var blk = Block(size, initialize=initialize)
+        self.data = blk.data
+        self.block = alloc[Block](1)
+        self.block.init_pointee_move(blk)
         self.owner = 1
-        if initialize:
-            memset_zero(self.data, size)
 
     def __init__(out self, size: Int, stride: Int, *, initialize: Bool = False):
         self.size = size
         self.stride = stride
-        self.data = alloc[Float64](size * stride)
-        self.block = UnsafePointer[Block, MutExt]()
+        var blk = Block(size, initialize=initialize)
+        self.data = blk.data
+        self.block = alloc[Block](1)
+        self.block.init_pointee_move(blk)
         self.owner = 1
-        if initialize:
-            memset_zero(self.data, size * stride)
 
     def __del__(self):
-        if (
-            self.owner == 1
-            and self.data != UnsafePointer[Float64, MutExt]()
-            and self.size > 0
-        ):
-            self.data.free()
+        if self.owner == 1 and self.block != UnsafePointer[Block, MutExt]():
+            block_free(self.block[0])
+            self.block.free()
 
     def size(self) -> Int:
         """Return the size of the vector."""
@@ -144,12 +141,9 @@ def vector_free(deinit vec: Vector):
     Args:
         vec: Vector to free.
     """
-    if (
-        vec.owner == 1
-        and vec.data != UnsafePointer[Float64, MutExt]()
-        and vec.size > 0
-    ):
-        vec.data.free()
+    if vec.owner == 1 and vec.block != UnsafePointer[Block, MutExt]():
+        block_free(vec.block[0])
+        vec.block.free()
 
 
 def vector_size(vec: Vector) -> Int:
