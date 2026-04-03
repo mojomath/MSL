@@ -33,6 +33,8 @@ linear algebra operations.
 """
 
 from std.memory import UnsafePointer, memset_zero
+from std.algorithm.functional import vectorize
+from std.sys.info import simd_width_of
 
 from msl.core import Block
 from msl.core.const import MSL_DBL_EPSILON
@@ -65,7 +67,7 @@ struct Vector(Copyable, Movable):
     def __init__(out self, size: Int, stride: Int, *, initialize: Bool = False):
         self.size = size
         self.stride = stride
-        var blk = Block(size, initialize=initialize)
+        var blk = Block(size * stride, initialize=initialize)
         self.data = blk.data
         self.block = alloc[Block](1)
         self.block.init_pointee_move(blk^)
@@ -175,12 +177,17 @@ def vector_set_zero(vec: Vector):
     memset_zero(vec.data, vec.size * vec.stride)
 
 
-def vector_set_all(vec: Vector, x: Float64):
+def vector_set_all(mut vec: Vector, x: Float64):
     """Set all elements to x.
 
     Args:
         vec: Vector to set.
         x: Value to set.
     """
-    for i in range(vec.size):
+    comptime simd_width: Int = simd_width_of[f64]()
+
+    @parameter
+    def closure[width: Int](i: Int) unified {mut vec, read x}:
         vec.data[i * vec.stride] = x
+
+    vectorize[simd_width](vec.size, closure)
