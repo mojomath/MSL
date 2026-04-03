@@ -90,7 +90,11 @@ struct Vector(Copyable, Movable):
 
     def ptr_read(ref self) -> UnsafePointer[Float64, origin_of(self)]:
         """Return pointer to the vector data."""
-        return rebind[UnsafePointer[Float64, origin_of(self)]](self.data.unsafe_mut_cast[False]().unsafe_origin_cast[origin_of(self)]())
+        return rebind[UnsafePointer[Float64, origin_of(self)]](
+            self.data.unsafe_mut_cast[False]().unsafe_origin_cast[
+                origin_of(self)
+            ]()
+        )
 
     def get(self, i: Int) -> Float64:
         """Get element at index i."""

@@ -44,6 +44,7 @@ from msl.types import STATUS_SUCCESS, STATUS_FAILURE
 # Matrix struct
 # ===----------------------------------------------------------------------=== #
 
+
 struct Matrix(Copyable, Movable):
     """GSL matrix structure for 2D arrays."""
 
@@ -81,7 +82,11 @@ struct Matrix(Copyable, Movable):
 
     def ptr_read(ref self) -> UnsafePointer[Float64, origin_of(self)]:
         """Return pointer to the matrix data."""
-        return rebind[UnsafePointer[Float64, origin_of(self)]](self.data.unsafe_mut_cast[False]().unsafe_origin_cast[origin_of(self)]())
+        return rebind[UnsafePointer[Float64, origin_of(self)]](
+            self.data.unsafe_mut_cast[False]().unsafe_origin_cast[
+                origin_of(self)
+            ]()
+        )
 
     def ptr_mut(mut self) -> UnsafePointer[Float64, origin_of(self)]:
         """Return mutable pointer to the matrix data."""
@@ -126,9 +131,11 @@ struct Matrix(Copyable, Movable):
         """Return a matrix of size n1 x n2 with all elements set to x."""
         var mat = Matrix(n1, n2, initialize=True)
         comptime simd_width: Int = simd_width_of[f64]()
+
         @parameter
         def closure[width: Int](i: Int) unified {mut mat, read x}:
             mat.data[i] = x
+
         vectorize[simd_width](mat.nelems(), closure)
         return mat^
 
@@ -136,6 +143,7 @@ struct Matrix(Copyable, Movable):
 # ===----------------------------------------------------------------------=== #
 # Matrix operations
 # ===----------------------------------------------------------------------=== #
+
 
 def matrix_alloc(n1: Int, n2: Int) -> Matrix:
     """Allocate a matrix of n1 x n2 doubles.
@@ -204,9 +212,11 @@ def matrix_set_all(mut mat: Matrix, x: Float64):
         x: Value to set.
     """
     comptime simd_width: Int = simd_width_of[f64]()
+
     @parameter
     def closure[width: Int](i: Int) unified {mut mat, read x}:
         mat.data[i] = x
+
     vectorize[simd_width](mat.nelems(), closure)
 
 
