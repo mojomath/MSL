@@ -1,0 +1,133 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+# ===----------------------------------------------------------------------=== #
+# MSL (Mojo Scientific Library)
+#
+# Derived from GNU Scientific Library (GSL)
+# Original file: gsl_block_double.h
+#
+# Original authors:
+# Copyright (C) 1996–2007 Gerard Jungman, Brian Gough
+#
+# Modifications:
+# Copyright (C) 2026 Shivasankar K.A.
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <https://www.gnu.org/licenses/>.
+# ===----------------------------------------------------------------------=== #
+"""
+Block for contiguous array storage.
+
+A block is a simple array wrapper that manages memory allocation
+for contiguous data storage. Vectors can be created from blocks.
+"""
+
+from std.memory import UnsafePointer, memset_zero
+
+from msl.const import MSL_DBL_EPSILON
+from msl.types import STATUS_SUCCESS, STATUS_FAILURE
+
+
+# ===----------------------------------------------------------------------=== #
+# Block struct
+# ===----------------------------------------------------------------------=== #
+
+@explicit_destroy
+struct Block(Copyable, Movable):
+    """GSL block structure for contiguous double arrays."""
+
+    var size: Int
+    var data: UnsafePointer[Float64, MutExt]
+
+    fn __init__(out self, size: Int, *, initialize: Bool = False):
+        self.size = size
+        self.data = alloc[Float64](size)
+        if initialize:
+            memset_zero(self.data, size)
+
+    fn __del__(self):
+        if self.data != UnsafePointer[Float64, MutExt]() and self.size > 0:
+            self.data.free()
+
+    fn size(self) -> Int:
+        """Return the size of the block."""
+        return self.size
+
+    def data(ref self) -> UnsafePointer[Float64, origin_of(self)]:
+        """Return pointer to the block data."""
+        return self.ptr.unsafe_origin_cast[origin_of(self)]()
+
+# ===----------------------------------------------------------------------=== #
+# Block operations
+# ===----------------------------------------------------------------------=== #
+# TODO: These are provided as standalone functions to mirror the C API, even though they could be
+# methods on the Block struct in a more idiomatic Mojo design. I might consider removing them
+# and use method directly on block, this is more safe because of the mojo's origin system.
+# For now, I'll test them and see.
+
+fn block_alloc(n: Int) -> Block:
+    """Allocate a block of n doubles.
+
+    Args:
+        n: Number of elements to allocate.
+
+    Returns:
+        Block with allocated data.
+    """
+    return Block(n)
+
+
+fn block_calloc(n: Int) -> Block:
+    """Allocate and zero-initialize a block of n doubles.
+
+    Args:
+        n: Number of elements to allocate.
+
+    Returns:
+        Block with allocated and zeroed data.
+    """
+    return Block(n, initialize=True)
+
+
+fn block_free(deinit block: Block):
+    """Free the block memory.
+
+    Args:
+        block: Block to free.
+    """
+    if block.data != UnsafePointer[Float64, MutExt]() and block.size > 0:
+        block.data.free()
+
+
+fn block_size(block: Block) -> Int:
+    """Return the size of the block.
+
+    Args:
+        block: Block to query.
+
+    Returns:
+        Number of elements in the block.
+    """
+    return block.size
+
+
+fn block_data(ref block: Block) -> UnsafePointer[Float64, origin_of(dat)]:
+    """Return pointer to the block data.
+
+    Args:
+        block: Block to query.
+
+    Returns:
+        Pointer to data array.
+    """
+    return block.data.unsafe_origin_cast[origin_of(dat)]()
