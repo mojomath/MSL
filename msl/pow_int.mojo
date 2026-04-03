@@ -86,17 +86,19 @@ def msl_pow_int(x: Float64, n: Int) -> Float64:
 
     Uses binary exponentiation for efficiency.
     """
-    if n == 0:
+    var xn = x
+    var nn = n
+    if nn == 0:
         return 1.0
-    if n < 0:
-        x = 1.0 / x
-        n = -n
+    if nn < 0:
+        xn = 1.0 / xn
+        nn = -nn
 
     var result: Float64 = 1.0
-    var base = x
-    while n > 0:
-        if n % 2 == 1:
+    var base = xn
+    while nn > 0:
+        if nn % 2 == 1:
             result *= base
         base *= base
-        n //= 2
+        nn //= 2
     return result
