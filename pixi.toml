@@ -1,0 +1,12 @@
+[workspace]
+authors = ["shivasankar <shivasankar.ka@gmail.com>"]
+channels = ["conda-forge", "https://conda.modular.com/max/"]
+name = "gsl-bindings"
+platforms = ["osx-arm64"]
+version = "0.1.0"
+
+[tasks]
+
+[dependencies]
+mojo = ">=0.26.2.0,<0.27"
+gsl = ">=2.8,<3"
