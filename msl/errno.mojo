@@ -166,4 +166,6 @@ def msl_error(reason: String, file: String, line: Int, errno: Int):
 
 def msl_assert(reason: String, file: String, line: Int):
     """Assert an error."""
-    print("Assertion failure: " + reason + " in " + file + " line " + String(line))
+    print(
+        "Assertion failure: " + reason + " in " + file + " line " + String(line)
+    )
