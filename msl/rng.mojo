@@ -52,7 +52,6 @@ comptime MT_LOWER_MASK: UInt64 = 0x7fffffff
 # MT19937 state
 # ===----------------------------------------------------------------------=== #
 
-@explicit_destroy
 struct MTState(Copyable, Movable):
     """Mersenne Twister state."""
 
@@ -63,9 +62,23 @@ struct MTState(Copyable, Movable):
         self.state = alloc[UInt64](MT_N)
         self.idx = MT_N
 
-    fn free(deinit self):
+    fn __del__(deinit self):
         self.state.free()
 
+    fn __getitem__(self, i: Int) -> UInt64:
+        return self.state[i]
+
+    fn __setitem__(mut self, i: Int, value: UInt64):
+        self.state.store(i, value)
+
+    fn get(self, i: Int) -> UInt64:
+        return self.state[i]
+
+    fn set(mut self, i: Int, value: UInt64):
+        self.state.store(i, value)
+
+    fn __len__(self) -> Int:
+        return MT_N
 
 # ===----------------------------------------------------------------------=== #
 # MT19937 functions
@@ -73,7 +86,7 @@ struct MTState(Copyable, Movable):
 
 fn mt19937_init(mut state: MTState, seed: UInt64):
     """Initialize MT19937 with seed."""
-    state.state.store(0, seed)
+    state.set(0, seed)
     for i in range(1, MT_N):
         var prev = state.state[i - 1]
         state.state.store(i, (1812433253 * (prev ^ (prev >> 30)) + UInt64(i)) % UInt64(0x100000000))
@@ -122,7 +135,6 @@ fn mt19937_get_double(mut state: MTState) -> Float64:
 # RNG wrapper
 # ===----------------------------------------------------------------------=== #
 
-@explicit_destroy("Must call .free()")
 struct RNG(Copyable, Movable):
     """Random number generator using MT19937."""
 
@@ -136,8 +148,8 @@ struct RNG(Copyable, Movable):
         self.name = "mt19937"
         mt19937_init(self.state, seed)
 
-    fn free(deinit self):
-        self.state^.free()
+    fn __del__(deinit self):
+        _ = self.state
 
     fn set_seed(mut self, seed: UInt64):
         """Set the seed."""
