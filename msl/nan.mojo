@@ -59,6 +59,7 @@ comptime MSL_NEGZERO: Float64 = -0.0
 # Predicates
 # ===----------------------------------------------------------------------=== #
 
+
 def msl_isnan(x: Float64) -> Bool:
     """Return True if x is NaN."""
     return isnan[f64, 1](x)
