@@ -44,7 +44,6 @@ from msl.types import STATUS_SUCCESS, STATUS_FAILURE
 # ===----------------------------------------------------------------------=== #
 
 
-@explicit_destroy("Must call .free()")
 struct Vector(Copyable, Movable):
     """GSL vector structure for 1D arrays with stride."""
 
@@ -72,10 +71,9 @@ struct Vector(Copyable, Movable):
         self.block.init_pointee_move(blk^)
         self.owner = 1
 
-    def free(deinit self):
+    def __del__(deinit self):
         if self.owner == 1 and self.block != UnsafePointer[Block, MutExt]():
-            var blk = self.block.take_pointee()
-            blk^.free()
+            self.block.destroy_pointee()
             self.block.free()
 
     def get_size(self) -> Int:

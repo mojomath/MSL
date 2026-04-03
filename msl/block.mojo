@@ -44,7 +44,6 @@ from msl.types import STATUS_SUCCESS, STATUS_FAILURE
 # IDEA: Perhaps it's better to use NuMojo DataContainer directly here since we want to have zero-copy interop.
 
 
-@explicit_destroy("Must call .free()")
 struct Block(Copyable, Movable):
     """GSL block structure for contiguous double arrays."""
 
@@ -57,7 +56,7 @@ struct Block(Copyable, Movable):
         if initialize:
             memset_zero(self.data, size)
 
-    def free(deinit self):
+    def __del__(deinit self):
         if self.data != UnsafePointer[Float64, MutExt]() and self.size > 0:
             self.data.free()
 

@@ -44,7 +44,6 @@ from msl.types import STATUS_SUCCESS, STATUS_FAILURE
 # Matrix struct
 # ===----------------------------------------------------------------------=== #
 
-@explicit_destroy("Must call .free()")
 struct Matrix(Copyable, Movable):
     """GSL matrix structure for 2D arrays."""
 
@@ -67,10 +66,9 @@ struct Matrix(Copyable, Movable):
         self.block.init_pointee_move(blk^)
         self.owner = 1
 
-    def free(deinit self):
+    def __del__(deinit self):
         if self.owner == 1 and self.block != UnsafePointer[Block, MutExt]():
-            var blk = self.block.take_pointee()
-            blk^.free()
+            self.block.destroy_pointee()
             self.block.free()
 
     def size1(self) -> Int:
