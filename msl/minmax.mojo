@@ -36,6 +36,7 @@ Utilities for finding minimum and maximum values.
 # Basic max/min
 # ===----------------------------------------------------------------------=== #
 
+
 def msl_max(a: Float64, b: Float64) -> Float64:
     """Return the larger of a and b."""
     return a if a > b else b

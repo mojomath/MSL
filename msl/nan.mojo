@@ -59,12 +59,12 @@ comptime MSL_NEGZERO: Float64 = -0.0
 # Predicates
 # ===----------------------------------------------------------------------=== #
 
-fn msl_isnan(x: Float64) -> Bool:
+def msl_isnan(x: Float64) -> Bool:
     """Return True if x is NaN."""
     return isnan[f64, 1](x)
 
 
-fn msl_isinf(x: Float64) -> Int:
+def msl_isinf(x: Float64) -> Int:
     """Return +1 if x is +infinity, -1 if x is -infinity, 0 otherwise."""
     if isinf[f64, 1](x):
         return 1 if x > 0.0 else -1
@@ -72,21 +72,21 @@ fn msl_isinf(x: Float64) -> Int:
         return 0
 
 
-fn msl_isfinite(x: Float64) -> Bool:
+def msl_isfinite(x: Float64) -> Bool:
     """Return True if x is a finite number."""
     return isfinite[f64, 1](x)
 
 
-fn msl_posinf() -> Float64:
+def msl_posinf() -> Float64:
     """Return positive infinity."""
     return MSL_POSINF
 
 
-fn msl_neginf() -> Float64:
+def msl_neginf() -> Float64:
     """Return negative infinity."""
     return MSL_NEGINF
 
 
-fn msl_nan() -> Float64:
+def msl_nan() -> Float64:
     """Return NaN."""
     return MSL_NAN

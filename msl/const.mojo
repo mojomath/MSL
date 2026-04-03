@@ -101,7 +101,7 @@ comptime MSL_SQRT_DBL_EPSILON: f64 = 1.4901161193847656e-08
 comptime MSL_DBL_MIN: f64 = 2.2250738585072014e-308
 """Smallest normalized double."""
 
-comptime MSL_DBL_MAX: f64 = 1.7976931348623157e+308
+comptime MSL_DBL_MAX: f64 = 1.7976931348623157e308
 """Largest representable double."""
 
 comptime MSL_FLT_EPSILON: f64 = 1.1920928955078125e-07
@@ -113,7 +113,7 @@ comptime MSL_SQRT_FLT_EPSILON: f64 = 3.4526698300124393e-04
 comptime MSL_FLT_MIN: f64 = 1.1754943508222875e-38
 """Smallest normalized float."""
 
-comptime MSL_FLT_MAX: f64 = 3.4028234663852886e+38
+comptime MSL_FLT_MAX: f64 = 3.4028234663852886e38
 """Largest representable float."""
 
 

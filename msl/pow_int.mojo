@@ -36,6 +36,7 @@ Efficient computation of integer powers.
 # Integer powers
 # ===----------------------------------------------------------------------=== #
 
+
 def msl_pow_2(x: Float64) -> Float64:
     """Return x^2."""
     return x * x

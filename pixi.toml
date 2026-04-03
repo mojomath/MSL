@@ -6,6 +6,9 @@ platforms = ["osx-arm64"]
 version = "0.1.0"
 
 [tasks]
+format = "mojo format ./msl"
+package = "mojo package msl"
+test = "bash tests/tests.sh"
 
 [dependencies]
 mojo = ">=0.26.2.0,<0.27"
