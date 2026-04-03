@@ -1,0 +1,48 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+# ===----------------------------------------------------------------------=== #
+# MSL (Mojo Scientific Library)
+#
+# Derived from GNU Scientific Library (GSL)
+# Original file: block/block_source.c
+#
+# Original authors:
+# Copyright (C) 1996–2007 Gerard Jungman, Brian Gough
+#
+# Modifications:
+# Copyright (C) 2026 Shivasankar K.A.
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <https://www.gnu.org/licenses/>.
+# ===----------------------------------------------------------------------=== #
+"""
+Type definitions for MSL.
+
+Base types and function callback types used throughout MSL.
+"""
+
+# ===----------------------------------------------------------------------=== #
+# Status codes (same as error codes but for return values)
+# ===----------------------------------------------------------------------=== #
+
+comptime STATUS_SUCCESS: Int = 0
+comptime STATUS_FAILURE: Int = -1
+comptime STATUS_CONTINUE: Int = -2
+
+
+# ===----------------------------------------------------------------------=== #
+# Boolean type
+# ===----------------------------------------------------------------------=== #
+
+comptime MSL_TRUE: Int = 1
+comptime MSL_FALSE: Int = 0
