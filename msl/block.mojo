@@ -65,9 +65,9 @@ struct Block(Copyable, Movable):
         """Return the size of the block."""
         return self.size
 
-    def data(ref self) -> UnsafePointer[Float64, origin_of(self)]:
+    def ptr(ref self) -> UnsafePointer[Float64, origin_of(self)]:
         """Return pointer to the block data."""
-        return self.ptr.unsafe_origin_cast[origin_of(self)]()
+        return self.data.unsafe_origin_cast[origin_of(self)]()
 
 
 # ===----------------------------------------------------------------------=== #
@@ -125,7 +125,7 @@ def block_size(block: Block) -> Int:
     return block.size
 
 
-def block_data(ref block: Block) -> UnsafePointer[Float64, origin_of(dat)]:
+def block_data(ref block: Block) -> UnsafePointer[Float64, origin_of(block)]:
     """Return pointer to the block data.
 
     Args:
@@ -134,4 +134,4 @@ def block_data(ref block: Block) -> UnsafePointer[Float64, origin_of(dat)]:
     Returns:
         Pointer to data array.
     """
-    return block.data.unsafe_origin_cast[origin_of(dat)]()
+    return block.data.unsafe_origin_cast[origin_of(block)]()
