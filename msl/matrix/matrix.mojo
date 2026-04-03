@@ -35,9 +35,9 @@ from std.memory import UnsafePointer, memset_zero
 from std.algorithm.functional import vectorize
 from std.sys.info import simd_width_of
 
-from msl.block import Block
-from msl.const import MSL_DBL_EPSILON
-from msl.types import STATUS_SUCCESS, STATUS_FAILURE
+from msl.core import Block
+from msl.core.const import MSL_DBL_EPSILON
+from msl.core.types import STATUS_SUCCESS, STATUS_FAILURE
 
 
 # ===----------------------------------------------------------------------=== #

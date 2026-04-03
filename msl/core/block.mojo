@@ -34,8 +34,8 @@ for contiguous data storage. Vectors can be created from blocks.
 
 from std.memory import UnsafePointer, memset_zero
 
-from msl.const import MSL_DBL_EPSILON
-from msl.types import STATUS_SUCCESS, STATUS_FAILURE
+from msl.core.const import MSL_DBL_EPSILON
+from msl.core.types import STATUS_SUCCESS, STATUS_FAILURE
 
 
 # ===----------------------------------------------------------------------=== #

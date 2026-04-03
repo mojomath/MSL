@@ -32,7 +32,7 @@ Pure Mojo implementation of common probability distributions.
 
 from std.math import exp, log, sqrt, cos, sin
 
-from msl.const import MSL_PI, MSL_FLT_EPSILON
+from msl.core.const import MSL_PI, MSL_FLT_EPSILON
 from msl.rng import RNG
 
 # ===----------------------------------------------------------------------=== #
