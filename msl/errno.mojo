@@ -157,7 +157,7 @@ comptime GSL_EOF: Int = 32
 # Error reporting
 # ===----------------------------------------------------------------------=== #
 
-fn msl_error(
+def msl_error(
     reason: String,
     file: String,
     line: Int,
@@ -168,7 +168,7 @@ fn msl_error(
     print("Error code: " + str(errno))
 
 
-fn msl_assert(
+def msl_assert(
     reason: String,
     file: String,
     line: Int
