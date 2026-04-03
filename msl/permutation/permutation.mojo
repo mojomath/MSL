@@ -40,36 +40,38 @@ from msl import MutExt
 # Permutation struct
 # ===----------------------------------------------------------------------=== #
 
+
 struct Permutation(Copyable, Movable):
     """Permutation array for reordering elements."""
+
     # TODO: change to Int once mojo align them both.
     var data: UnsafePointer[Scalar[DType.int], MutExt]
     var size: Int
 
-    fn __init__(out self, n: Int):
+    def __init__(out self, n: Int):
         self.size = n
         self.data = alloc[Scalar[DType.int]](n)
         for i in range(n):
             self.data.store(i, Scalar[DType.int](i))
 
-    fn __del__(deinit self):
+    def __del__(deinit self):
         self.data.free()
 
-    fn get(self, i: Int) -> Int:
+    def get(self, i: Int) -> Int:
         """Get element at index i."""
         return Int(self.data[i])
 
-    fn set(self, i: Int, value: Int):
+    def set(self, i: Int, value: Int):
         """Set element at index i."""
         self.data.store(i, Scalar[DType.int](value))
 
-    fn swap(self, i: Int, j: Int):
+    def swap(self, i: Int, j: Int):
         """Swap elements at indices i and j."""
         var temp = self.data[i]
         self.data.store(i, self.data[j])
         self.data.store(j, temp)
 
-    fn inversions(self) -> Int:
+    def inversions(self) -> Int:
         """Count the number of inversions."""
         var inv: Int = 0
         for i in range(self.size):
@@ -83,14 +85,17 @@ struct Permutation(Copyable, Movable):
 # Permutation functions
 # ===----------------------------------------------------------------------=== #
 
-fn permutation_alloc(n: Int) -> Permutation:
+
+def permutation_alloc(n: Int) -> Permutation:
     return Permutation(n)
 
-fn permutation_init(p: Permutation):
+
+def permutation_init(p: Permutation):
     for i in range(p.size):
         p.data.store(i, Scalar[DType.int](i))
 
-fn permutation_next(p: Permutation) -> Bool:
+
+def permutation_next(p: Permutation) -> Bool:
     if p.size <= 1:
         return False
 

@@ -39,7 +39,8 @@ from msl.rng import RNG
 # Gaussian
 # ===----------------------------------------------------------------------=== #
 
-fn gaussian(mut rng: RNG, sigma: Float64) -> Float64:
+
+def gaussian(mut rng: RNG, sigma: Float64) -> Float64:
     var x1 = rng.uniform()
     var x2 = rng.uniform()
 
@@ -50,38 +51,47 @@ fn gaussian(mut rng: RNG, sigma: Float64) -> Float64:
     var r = sqrt(-2.0 * log(x1)) * sigma
     return r * cos(2.0 * MSL_PI * x2)
 
-fn gaussian_pdf(x: Float64, sigma: Float64) -> Float64:
+
+def gaussian_pdf(x: Float64, sigma: Float64) -> Float64:
     return exp(-0.5 * (x / sigma) * (x / sigma)) / (sigma * sqrt(2.0 * MSL_PI))
+
 
 # ===----------------------------------------------------------------------=== #
 # Uniform
 # ===----------------------------------------------------------------------=== #
 
-fn uniform(mut rng: RNG, a: Float64, b: Float64) -> Float64:
+
+def uniform(mut rng: RNG, a: Float64, b: Float64) -> Float64:
     return a + (b - a) * rng.uniform()
 
-fn uniform_pdf(x: Float64, a: Float64, b: Float64) -> Float64:
+
+def uniform_pdf(x: Float64, a: Float64, b: Float64) -> Float64:
     if x < a or x > b:
         return 0.0
     return 1.0 / (b - a)
+
 
 # ===----------------------------------------------------------------------=== #
 # Exponential
 # ===----------------------------------------------------------------------=== #
 
-fn exponential(mut rng: RNG, mu: Float64) -> Float64:
+
+def exponential(mut rng: RNG, mu: Float64) -> Float64:
     return -mu * log(rng.uniform())
 
-fn exponential_pdf(x: Float64, mu: Float64) -> Float64:
+
+def exponential_pdf(x: Float64, mu: Float64) -> Float64:
     if x < 0.0:
         return 0.0
     return exp(-x / mu) / mu
+
 
 # ===----------------------------------------------------------------------=== #
 # Gamma
 # ===----------------------------------------------------------------------=== #
 
-fn gamma(mut rng: RNG, a: Float64, b: Float64) -> Float64:
+
+def gamma(mut rng: RNG, a: Float64, b: Float64) -> Float64:
     if a < 1.0:
         return gamma(rng, a + 1.0, b) * rng.uniform() ** (1.0 / a)
 
@@ -104,13 +114,15 @@ fn gamma(mut rng: RNG, a: Float64, b: Float64) -> Float64:
         if log(u) < 0.5 * x * x + d * (1.0 - v + log(v)):
             return d * v * b
 
-fn gamma_pdf(x: Float64, a: Float64, b: Float64) -> Float64:
+
+def gamma_pdf(x: Float64, a: Float64, b: Float64) -> Float64:
     if x <= 0.0:
         return 0.0
     var z = x / b
     return z ** (a - 1.0) * exp(-z) / (b * _gamma_func(a))
 
-fn _gamma_func(x: Float64) -> Float64:
+
+def _gamma_func(x: Float64) -> Float64:
     var xn = x
     var g = 7.0
     var c = [
@@ -126,36 +138,44 @@ fn _gamma_func(x: Float64) -> Float64:
     ]
 
     if xn < 0.5:
-        return MSL_PI / (sin(xn + 0.5) * _gamma_func(1.0 - xn)) - log(x) - MSL_PI
+        return (
+            MSL_PI / (sin(xn + 0.5) * _gamma_func(1.0 - xn)) - log(x) - MSL_PI
+        )
 
     xn -= 1.0
     var a = c[0]
     var t = xn + g + 0.5
     for i in range(1, 10):
         a += c[i] / (xn + Float64(i))
-    return (log(t) + 0.5 * exp(-t) - 0.918938533204673 + log(a / t))
+    return log(t) + 0.5 * exp(-t) - 0.918938533204673 + log(a / t)
+
 
 # ===----------------------------------------------------------------------=== #
 # Beta
 # ===----------------------------------------------------------------------=== #
 
-fn beta(mut rng: RNG, a: Float64, b: Float64) -> Float64:
+
+def beta(mut rng: RNG, a: Float64, b: Float64) -> Float64:
     var x = gamma(rng, a, 1.0)
     var y = gamma(rng, b, 1.0)
     return x / (x + y)
+
 
 # ===----------------------------------------------------------------------=== #
 # Chi-squared
 # ===----------------------------------------------------------------------=== #
 
-fn chisq(mut rng: RNG, nu: Float64) -> Float64:
+
+def chisq(mut rng: RNG, nu: Float64) -> Float64:
     return 2.0 * gamma(rng, nu / 2.0, 1.0)
+
 
 # ===----------------------------------------------------------------------=== #
 # Poisson
 # ===----------------------------------------------------------------------=== #
 
-fn poisson(mut rng: RNG, mu: Float64) -> Int:
+
+def poisson(mut rng: RNG, mu: Float64) -> Int:
     if mu < 30.0:
         var em: Float64 = -1.0
         var sum: Float64 = 0.0
@@ -179,7 +199,8 @@ fn poisson(mut rng: RNG, mu: Float64) -> Int:
                 break
         return k
 
-fn poisson_pdf(k: Int, mu: Float64) -> Float64:
+
+def poisson_pdf(k: Int, mu: Float64) -> Float64:
     if k < 0:
         return 0.0
     # Use log for numerical stability: P = exp(k*log(mu) - mu - log(k!))
