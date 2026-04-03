@@ -41,6 +41,8 @@ from msl.types import STATUS_SUCCESS, STATUS_FAILURE
 # ===----------------------------------------------------------------------=== #
 # Block struct
 # ===----------------------------------------------------------------------=== #
+# IDEA: Perhaps it's better to use NuMojo DataContainer directly here since we want to have zero-copy interop.
+
 
 @explicit_destroy
 struct Block(Copyable, Movable):
@@ -49,23 +51,24 @@ struct Block(Copyable, Movable):
     var size: Int
     var data: UnsafePointer[Float64, MutExt]
 
-    fn __init__(out self, size: Int, *, initialize: Bool = False):
+    def __init__(out self, size: Int, *, initialize: Bool = False):
         self.size = size
         self.data = alloc[Float64](size)
         if initialize:
             memset_zero(self.data, size)
 
-    fn __del__(self):
+    def __del__(self):
         if self.data != UnsafePointer[Float64, MutExt]() and self.size > 0:
             self.data.free()
 
-    fn size(self) -> Int:
+    def size(self) -> Int:
         """Return the size of the block."""
         return self.size
 
     def data(ref self) -> UnsafePointer[Float64, origin_of(self)]:
         """Return pointer to the block data."""
         return self.ptr.unsafe_origin_cast[origin_of(self)]()
+
 
 # ===----------------------------------------------------------------------=== #
 # Block operations
@@ -75,7 +78,8 @@ struct Block(Copyable, Movable):
 # and use method directly on block, this is more safe because of the mojo's origin system.
 # For now, I'll test them and see.
 
-fn block_alloc(n: Int) -> Block:
+
+def block_alloc(n: Int) -> Block:
     """Allocate a block of n doubles.
 
     Args:
@@ -87,7 +91,7 @@ fn block_alloc(n: Int) -> Block:
     return Block(n)
 
 
-fn block_calloc(n: Int) -> Block:
+def block_calloc(n: Int) -> Block:
     """Allocate and zero-initialize a block of n doubles.
 
     Args:
@@ -99,7 +103,7 @@ fn block_calloc(n: Int) -> Block:
     return Block(n, initialize=True)
 
 
-fn block_free(deinit block: Block):
+def block_free(deinit block: Block):
     """Free the block memory.
 
     Args:
@@ -109,7 +113,7 @@ fn block_free(deinit block: Block):
         block.data.free()
 
 
-fn block_size(block: Block) -> Int:
+def block_size(block: Block) -> Int:
     """Return the size of the block.
 
     Args:
@@ -121,7 +125,7 @@ fn block_size(block: Block) -> Int:
     return block.size
 
 
-fn block_data(ref block: Block) -> UnsafePointer[Float64, origin_of(dat)]:
+def block_data(ref block: Block) -> UnsafePointer[Float64, origin_of(dat)]:
     """Return pointer to the block data.
 
     Args:
