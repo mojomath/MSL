@@ -44,7 +44,7 @@ from msl.types import STATUS_SUCCESS, STATUS_FAILURE
 # IDEA: Perhaps it's better to use NuMojo DataContainer directly here since we want to have zero-copy interop.
 
 
-@explicit_destroy
+@explicit_destroy("Must call .free()")
 struct Block(Copyable, Movable):
     """GSL block structure for contiguous double arrays."""
 
@@ -57,17 +57,21 @@ struct Block(Copyable, Movable):
         if initialize:
             memset_zero(self.data, size)
 
-    def __del__(self):
+    def free(deinit self):
         if self.data != UnsafePointer[Float64, MutExt]() and self.size > 0:
             self.data.free()
 
-    def size(self) -> Int:
+    def nelems(self) -> Int:
         """Return the size of the block."""
         return self.size
 
-    def ptr(ref self) -> UnsafePointer[Float64, origin_of(self)]:
+    def ptr_mut(mut self) -> UnsafePointer[Float64, origin_of(self)]:
         """Return pointer to the block data."""
         return self.data.unsafe_origin_cast[origin_of(self)]()
+
+    def ptr_read(self) -> UnsafePointer[Float64, origin_of(self)]:
+        """Return pointer to the block data."""
+        return self.data.as_immutable().unsafe_origin_cast[origin_of(self)]()
 
 
 # ===----------------------------------------------------------------------=== #
@@ -103,16 +107,6 @@ def block_calloc(n: Int) -> Block:
     return Block(n, initialize=True)
 
 
-def block_free(deinit block: Block):
-    """Free the block memory.
-
-    Args:
-        block: Block to free.
-    """
-    if block.data != UnsafePointer[Float64, MutExt]() and block.size > 0:
-        block.data.free()
-
-
 def block_size(block: Block) -> Int:
     """Return the size of the block.
 
@@ -125,7 +119,7 @@ def block_size(block: Block) -> Int:
     return block.size
 
 
-def block_data(ref block: Block) -> UnsafePointer[Float64, origin_of(block)]:
+def block_data(mut block: Block) -> UnsafePointer[Float64, origin_of(block)]:
     """Return pointer to the block data.
 
     Args:

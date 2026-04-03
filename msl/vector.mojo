@@ -34,7 +34,7 @@ linear algebra operations.
 
 from std.memory import UnsafePointer, memset_zero
 
-from msl.block import Block, block_free
+from msl.block import Block
 from msl.const import MSL_DBL_EPSILON
 from msl.types import STATUS_SUCCESS, STATUS_FAILURE
 
@@ -44,7 +44,7 @@ from msl.types import STATUS_SUCCESS, STATUS_FAILURE
 # ===----------------------------------------------------------------------=== #
 
 
-@explicit_destroy
+@explicit_destroy("Must call .free()")
 struct Vector(Copyable, Movable):
     """GSL vector structure for 1D arrays with stride."""
 
@@ -60,7 +60,7 @@ struct Vector(Copyable, Movable):
         var blk = Block(size, initialize=initialize)
         self.data = blk.data
         self.block = alloc[Block](1)
-        self.block.init_pointee_move(blk)
+        self.block.init_pointee_move(blk^)
         self.owner = 1
 
     def __init__(out self, size: Int, stride: Int, *, initialize: Bool = False):
@@ -69,25 +69,30 @@ struct Vector(Copyable, Movable):
         var blk = Block(size, initialize=initialize)
         self.data = blk.data
         self.block = alloc[Block](1)
-        self.block.init_pointee_move(blk)
+        self.block.init_pointee_move(blk^)
         self.owner = 1
 
-    def __del__(self):
+    def free(deinit self):
         if self.owner == 1 and self.block != UnsafePointer[Block, MutExt]():
-            block_free(self.block[0])
+            var blk = self.block.take_pointee()
+            blk^.free()
             self.block.free()
 
-    def size(self) -> Int:
+    def get_size(self) -> Int:
         """Return the size of the vector."""
         return self.size
 
-    def stride(self) -> Int:
+    def get_stride(self) -> Int:
         """Return the stride of the vector."""
         return self.stride
 
-    def data(ref self) -> UnsafePointer[Float64, origin_of(self)]:
+    def ptr_mut(mut self) -> UnsafePointer[Float64, origin_of(self)]:
         """Return pointer to the vector data."""
         return self.data.unsafe_origin_cast[origin_of(self)]()
+
+    def ptr_read(ref self) -> UnsafePointer[Float64, origin_of(self)]:
+        """Return pointer to the vector data."""
+        return rebind[UnsafePointer[Float64, origin_of(self)]](self.data.unsafe_mut_cast[False]().unsafe_origin_cast[origin_of(self)]())
 
     def get(self, i: Int) -> Float64:
         """Get element at index i."""
@@ -133,17 +138,6 @@ def vector_calloc(n: Int) -> Vector:
         Vector with allocated and zeroed data.
     """
     return Vector(n, initialize=True)
-
-
-def vector_free(deinit vec: Vector):
-    """Free the vector memory.
-
-    Args:
-        vec: Vector to free.
-    """
-    if vec.owner == 1 and vec.block != UnsafePointer[Block, MutExt]():
-        block_free(vec.block[0])
-        vec.block.free()
 
 
 def vector_size(vec: Vector) -> Int:

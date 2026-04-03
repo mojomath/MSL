@@ -70,7 +70,7 @@ comptime GSL_ESANITY: Int = 7
 """Sanity check failed."""
 
 comptime GSL_ENOMEM: Int = 8
-"""malloc failed."""
+"""Malloc failed."""
 
 comptime GSL_EBADFUNC: Int = 9
 """Problem with user-supplied function."""
@@ -160,10 +160,10 @@ comptime GSL_EOF: Int = 32
 
 def msl_error(reason: String, file: String, line: Int, errno: Int):
     """Report an error."""
-    print(reason + " in " + file + " line " + str(line))
-    print("Error code: " + str(errno))
+    print(reason + " in " + file + " line " + String(line))
+    print("Error code: " + String(errno))
 
 
 def msl_assert(reason: String, file: String, line: Int):
     """Assert an error."""
-    print("Assertion failure: " + reason + " in " + file + " line " + str(line))
+    print("Assertion failure: " + reason + " in " + file + " line " + String(line))
