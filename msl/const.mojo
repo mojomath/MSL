@@ -1,12 +1,34 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # ===----------------------------------------------------------------------=== #
-# gsl-bindings: GSL ported to Mojo
-# Distributed under the GNU General Public License v3.
-# See LICENSE for more information.
+# MSL (Mojo Scientific Library)
+#
+# Derived from GNU Scientific Library (MSL)
+# Original file: block/block_source.c
+#
+# Original authors:
+# Copyright (C) 1996–2007 Gerard Jungman, Brian Gough
+#
+# Modifications:
+# Copyright (C) 2026 Shivasankar K.A.
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <https://www.gnu.org/licenses/>.
 # ===----------------------------------------------------------------------=== #
 """
 Mathematical constants.
 
-These are standard constants used throughout GSL.
+These are standard constants used throughout MSL.
 """
 
 
@@ -70,28 +92,28 @@ comptime M_EULER: f64 = 0.57721566490153286060651209008
 # Machine constants (from gsl_machine.h)
 # ===----------------------------------------------------------------------=== #
 
-comptime GSL_DBL_EPSILON: f64 = 2.2204460492503131e-16
+comptime MSL_DBL_EPSILON: f64 = 2.2204460492503131e-16
 """Double precision machine epsilon."""
 
-comptime GSL_SQRT_DBL_EPSILON: f64 = 1.4901161193847656e-08
+comptime MSL_SQRT_DBL_EPSILON: f64 = 1.4901161193847656e-08
 """Square root of double precision machine epsilon."""
 
-comptime GSL_DBL_MIN: f64 = 2.2250738585072014e-308
+comptime MSL_DBL_MIN: f64 = 2.2250738585072014e-308
 """Smallest normalized double."""
 
-comptime GSL_DBL_MAX: f64 = 1.7976931348623157e+308
+comptime MSL_DBL_MAX: f64 = 1.7976931348623157e+308
 """Largest representable double."""
 
-comptime GSL_FLT_EPSILON: f64 = 1.1920928955078125e-07
+comptime MSL_FLT_EPSILON: f64 = 1.1920928955078125e-07
 """Single precision machine epsilon."""
 
-comptime GSL_SQRT_FLT_EPSILON: c_float = 3.4526698300124393e-04
+comptime MSL_SQRT_FLT_EPSILON: f64 = 3.4526698300124393e-04
 """Square root of single precision machine epsilon."""
 
-comptime GSL_FLT_MIN: c_float = 1.1754943508222875e-38
+comptime MSL_FLT_MIN: f64 = 1.1754943508222875e-38
 """Smallest normalized float."""
 
-comptime GSL_FLT_MAX: c_float = 3.4028234663852886e+38
+comptime MSL_FLT_MAX: f64 = 3.4028234663852886e+38
 """Largest representable float."""
 
 
@@ -99,22 +121,22 @@ comptime GSL_FLT_MAX: c_float = 3.4028234663852886e+38
 # IEEE floating point (from gsl_ieee_utils.h)
 # ===----------------------------------------------------------------------=== #
 
-comptime GSL_IEEE_SINGLE: Int = 1
-comptime GSL_IEEE_DOUBLE: Int = 2
-comptime GSL_IEEE_EXTENDED: Int = 3
+comptime MSL_IEEE_SINGLE: Int = 1
+comptime MSL_IEEE_DOUBLE: Int = 2
+comptime MSL_IEEE_EXTENDED: Int = 3
 
 
 # ===----------------------------------------------------------------------=== #
 # Precision modes (from gsl_mode.h)
 # ===----------------------------------------------------------------------=== #
 
-comptime GSL_PRECISION_DOUBLE: Int = 0
-comptime GSL_PRECISION_SINGLE: Int = 1
-comptime GSL_PRECISION_APPROX: Int = 2
+comptime MSL_PRECISION_DOUBLE: Int = 0
+comptime MSL_PRECISION_SINGLE: Int = 1
+comptime MSL_PRECISION_APPROX: Int = 2
 
 
 # ===----------------------------------------------------------------------=== #
 # Range checking (from gsl_check_range.h)
 # ===----------------------------------------------------------------------=== #
 
-comptime GSL_RANGE_CHECK: Int = 1
+comptime MSL_RANGE_CHECK: Int = 1
