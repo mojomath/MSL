@@ -46,6 +46,7 @@ from msl.core.types import STATUS_SUCCESS, STATUS_FAILURE
 # ===----------------------------------------------------------------------=== #
 
 
+# NOTE: I have kept the fields to be same as GSL for compatibility, but we will move to using matmojo so this is only temporary.
 struct Vector(Copyable, Movable):
     """GSL vector structure for 1D arrays with stride."""
 
