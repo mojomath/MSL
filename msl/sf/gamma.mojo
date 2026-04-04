@@ -31,10 +31,11 @@ Gamma functions.
 This is a direct port of the GSL special functions implementation.
 """
 
-from msl.core.const import MSL_DBL_EPSILON, MSL_SQRT_DBL_EPSILON, MSL_PI
-from msl.sf.result import SFSResult
 from std.math import sqrt, exp, log, cos, sin, abs, floor
 from std.collections import InlineArray
+
+from msl.core.const import MSL_DBL_EPSILON, MSL_SQRT_DBL_EPSILON, MSL_PI
+from msl.sf.result import SFSResult
 
 
 comptime LogRootTwoPi: Float64 = 0.9189385332046727418
@@ -754,6 +755,7 @@ def lndoublefact(n: UInt64) -> SFSResult:
 # ===----------------------------------------------------------------------=== #
 # Public API
 # ===----------------------------------------------------------------------=== #
+
 
 def gamma(x: Float64) -> SFSResult:
     return _gamma(x)
