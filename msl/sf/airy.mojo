@@ -372,3 +372,503 @@ def sf_sin_err(x: Float64, dx: Float64) -> SFSResult:
     return result^
 
 
+# ===----------------------------------------------------------------------=== #
+# Public API
+# ===----------------------------------------------------------------------=== #
+
+
+def airy_ai(x: Float64, mode: Int = SFPrecisionDouble) -> SFSResult:
+    if x < -1.0:
+        _ = SFSResult()
+        _ = SFSResult()
+        var (mod, theta) = airy_mod_phase(x, mode)
+        var cos_result = sf_cos_err(theta.val, theta.err)
+
+        var result = SFSResult()
+        result.val = mod.val * cos_result.val
+        result.err = abs(mod.val * cos_result.err) + abs(
+            cos_result.val * mod.err
+        )
+        result.err += MSL_DBL_EPSILON * abs(result.val)
+        return result
+    elif x <= 1.0:
+        var z = x * x * x
+
+        var aif_c: InlineArray[Float64, 9] = [
+            -0.03797135849666999750,
+            0.05919188853726363857,
+            0.00098629280577279975,
+            0.00000684884381907656,
+            0.00000002594202596219,
+            0.00000000006176612774,
+            0.00000000000010092454,
+            0.00000000000000012014,
+            0.00000000000000000010,
+        ]
+        var result_c0 = cheb_eval_mode(aif_c, 8, -1.0, 1.0, 8, z, mode)
+
+        var aig_c: InlineArray[Float64, 8] = [
+            0.01815236558116127,
+            0.02157256316601076,
+            0.00025678356987483,
+            0.00000142652141197,
+            0.00000000457211492,
+            0.00000000000952517,
+            0.00000000000001392,
+            0.00000000000000001,
+        ]
+        var result_c1 = cheb_eval_mode(aig_c, 7, -1.0, 1.0, 7, z, mode)
+
+        var result = SFSResult()
+        result.val = 0.375 + (result_c0.val - x * (0.25 + result_c1.val))
+        result.err = result_c0.err + abs(x * result_c1.err)
+        result.err += MSL_DBL_EPSILON * abs(result.val)
+        return result
+    else:
+        var x32 = x * sqrt(x)
+        var s = exp(-2.0 * x32 / 3.0)
+        var result_aie = airy_aie(x, mode)
+
+        var result = SFSResult()
+        result.val = result_aie.val * s
+        result.err = (
+            result_aie.err * s + abs(result.val) * x32 * MSL_DBL_EPSILON
+        )
+        result.err += MSL_DBL_EPSILON * abs(result.val)
+        return result
+
+
+def airy_bi(x: Float64, mode: Int = SFPrecisionDouble) -> SFSResult:
+    if x < -1.0:
+        _ = SFSResult()
+        _ = SFSResult()
+        var (mod, theta) = airy_mod_phase(x, mode)
+        var sin_result = sf_sin_err(theta.val, theta.err)
+
+        var result = SFSResult()
+        result.val = mod.val * sin_result.val
+        result.err = abs(mod.val * sin_result.err) + abs(
+            sin_result.val * mod.err
+        )
+        result.err += MSL_DBL_EPSILON * abs(result.val)
+        return result
+    elif x <= 1.0:
+        var z = x * x * x
+
+        var bif_c: InlineArray[Float64, 9] = [
+            -0.01673021647198664948,
+            0.10252335834249445610,
+            0.00170830925073815165,
+            0.00001186254546774468,
+            0.00000004493290701779,
+            0.00000000010698207143,
+            0.00000000000017480643,
+            0.00000000000000020810,
+            0.00000000000000000018,
+        ]
+        var result_c0 = cheb_eval_mode(bif_c, 8, -1.0, 1.0, 8, z, mode)
+
+        var big_c: InlineArray[Float64, 8] = [
+            0.02246622324857452,
+            0.03736477545301955,
+            0.00044476218957212,
+            0.00000247080756363,
+            0.00000000791913533,
+            0.00000000001649807,
+            0.00000000000002411,
+            0.00000000000000002,
+        ]
+        var result_c1 = cheb_eval_mode(big_c, 7, -1.0, 1.0, 7, z, mode)
+
+        var result = SFSResult()
+        result.val = 0.375 + (result_c0.val - x * (0.25 + result_c1.val))
+        result.err = result_c0.err + abs(x * result_c1.err)
+        result.err += MSL_DBL_EPSILON * abs(result.val)
+        return result
+    elif x < 2.0:
+        var z = 2.0 * x * x * x / (x * x) - 1.0
+
+        var aip_c: InlineArray[Float64, 12] = [
+            0.0703125,
+            -0.23236044689120375,
+            -0.17280839208486408,
+            -0.04413631820376054,
+            -0.00789115823325302,
+            -0.00123227172217886,
+            -0.00016985419524351,
+            -0.00002055842267024,
+            -0.00000219365210908,
+            -0.00000020561080923,
+            -0.00000001684929847,
+            -0.00000000120652576,
+        ]
+        var result_c0 = cheb_eval_mode(aip_c, 11, -1.0, 1.0, 8, z, mode)
+
+        var aig_c: InlineArray[Float64, 8] = [
+            0.01815236558116127,
+            0.02157256316601076,
+            0.00025678356987483,
+            0.00000142652141197,
+            0.00000000457211492,
+            0.00000000000952517,
+            0.00000000000001392,
+            0.00000000000000001,
+        ]
+        var result_c1 = cheb_eval_mode(aig_c, 7, -1.0, 1.0, 7, z, mode)
+
+        var x32 = x * sqrt(x)
+
+        var result = SFSResult()
+        result.val = (
+            0.625 + result_c0.val - x * (0.375 + result_c1.val)
+        ) / sqrt(x32)
+        result.err = (result_c0.err + abs(x * result_c1.err)) / sqrt(x32)
+        result.err += MSL_DBL_EPSILON * abs(result.val)
+        return result
+    else:
+        var z = 16.0 / (x * sqrt(x)) - 1.0
+
+        var bip_c: InlineArray[Float64, 12] = [
+            0.625,
+            1.0794554296523708,
+            0.4497656761576845,
+            0.1063659635665385,
+            0.02106664127139533,
+            0.00367932139886029,
+            0.00056937708959058,
+            0.00007783558737798,
+            0.00000942155111777,
+            0.00000101222930279,
+            9.636538e-8,
+            8.139e-9,
+        ]
+        var result_c0 = cheb_eval_mode(bip_c, 11, -1.0, 1.0, 8, z, mode)
+
+        var big_c: InlineArray[Float64, 8] = [
+            0.02246622324857452,
+            0.03736477545301955,
+            0.00044476218957212,
+            0.00000247080756363,
+            0.00000000791913533,
+            0.00000000001649807,
+            0.00000000000002411,
+            0.00000000000000002,
+        ]
+        var result_c1 = cheb_eval_mode(big_c, 7, -1.0, 1.0, 7, z, mode)
+
+        var y = sqrt(sqrt(x))
+
+        var result = SFSResult()
+        result.val = (1.875 + result_c0.val - x * (0.625 + result_c1.val)) / y
+        result.err = (result_c0.err + abs(x * result_c1.err)) / y
+        result.err += MSL_DBL_EPSILON * abs(result.val)
+        return result
+
+
+def airy_ai_scaled(x: Float64, mode: Int = SFPrecisionDouble) -> SFSResult:
+    if x < -1.0:
+        _ = SFSResult()
+        _ = SFSResult()
+        var (mod, theta) = airy_mod_phase(x, mode)
+        var cos_result = sf_cos_err(theta.val, theta.err)
+
+        var result = SFSResult()
+        result.val = mod.val * cos_result.val
+        result.err = abs(mod.val * cos_result.err) + abs(
+            cos_result.val * mod.err
+        )
+        result.err += MSL_DBL_EPSILON * abs(result.val)
+        return result
+    elif x <= 1.0:
+        var z = x * x * x
+
+        var aif_c: InlineArray[Float64, 9] = [
+            -0.03797135849666999750,
+            0.05919188853726363857,
+            0.00098629280577279975,
+            0.00000684884381907656,
+            0.00000002594202596219,
+            0.00000000006176612774,
+            0.00000000000010092454,
+            0.00000000000000012014,
+            0.00000000000000000010,
+        ]
+        var result_c0 = cheb_eval_mode(aif_c, 8, -1.0, 1.0, 8, z, mode)
+
+        var aig_c: InlineArray[Float64, 8] = [
+            0.01815236558116127,
+            0.02157256316601076,
+            0.00025678356987483,
+            0.00000142652141197,
+            0.00000000457211492,
+            0.00000000000952517,
+            0.00000000000001392,
+            0.00000000000000001,
+        ]
+        var result_c1 = cheb_eval_mode(aig_c, 7, -1.0, 1.0, 7, z, mode)
+
+        var result = SFSResult()
+        result.val = 0.375 + (result_c0.val - x * (0.25 + result_c1.val))
+        result.err = result_c0.err + abs(x * result_c1.err)
+        result.err += MSL_DBL_EPSILON * abs(result.val)
+
+        if x > 0.0:
+            var scale = exp(2.0 / 3.0 * sqrt(z))
+            result.val = result.val * scale
+            result.err = result.err * scale
+
+        return result
+    else:
+        return airy_aie(x, mode)
+
+
+def airy_bi_scaled(x: Float64, mode: Int = SFPrecisionDouble) -> SFSResult:
+    if x < -1.0:
+        _ = SFSResult()
+        _ = SFSResult()
+        var (mod, theta) = airy_mod_phase(x, mode)
+        var sin_result = sf_sin_err(theta.val, theta.err)
+
+        var result = SFSResult()
+        result.val = mod.val * sin_result.val
+        result.err = abs(mod.val * sin_result.err) + abs(
+            sin_result.val * mod.err
+        )
+        result.err += MSL_DBL_EPSILON * abs(result.val)
+        return result
+    elif x <= 1.0:
+        var z = x * x * x
+
+        var bif_c: InlineArray[Float64, 9] = [
+            -0.01673021647198664948,
+            0.10252335834249445610,
+            0.00170830925073815165,
+            0.00001186254546774468,
+            0.00000004493290701779,
+            0.00000000010698207143,
+            0.00000000000017480643,
+            0.00000000000000020810,
+            0.00000000000000000018,
+        ]
+        var result_c0 = cheb_eval_mode(bif_c, 8, -1.0, 1.0, 8, z, mode)
+
+        var big_c: InlineArray[Float64, 8] = [
+            0.02246622324857452,
+            0.03736477545301955,
+            0.00044476218957212,
+            0.00000247080756363,
+            0.00000000791913533,
+            0.00000000001649807,
+            0.00000000000002411,
+            0.00000000000000002,
+        ]
+        var result_c1 = cheb_eval_mode(big_c, 7, -1.0, 1.0, 7, z, mode)
+
+        var result = SFSResult()
+        result.val = 0.375 + (result_c0.val - x * (0.25 + result_c1.val))
+        result.err = result_c0.err + abs(x * result_c1.err)
+        result.err += MSL_DBL_EPSILON * abs(result.val)
+
+        if x > 0.0:
+            var scale = exp(-2.0 / 3.0 * sqrt(z))
+            result.val = result.val * scale
+            result.err = result.err * scale
+
+        return result
+    else:
+        return airy_bie(x, mode)
+
+
+def airy_ai_deriv(x: Float64, mode: Int = SFPrecisionDouble) -> SFSResult:
+    return airy_ai_deriv_scaled(x, mode)
+
+
+def airy_bi_deriv(x: Float64, mode: Int = SFPrecisionDouble) -> SFSResult:
+    return airy_bi_deriv_scaled(x, mode)
+
+
+def airy_ai_deriv_scaled(
+    x: Float64, mode: Int = SFPrecisionDouble
+) -> SFSResult:
+    if x < -1.0:
+        _ = SFSResult()
+        _ = SFSResult()
+        var (mod, theta) = airy_mod_phase(x, mode)
+        var sin_result = sf_sin_err(theta.val, theta.err)
+
+        var result = SFSResult()
+        result.val = -mod.val * sin_result.val
+        result.err = abs(mod.val * sin_result.err) + abs(
+            sin_result.val * mod.err
+        )
+        result.err += MSL_DBL_EPSILON * abs(result.val)
+        return result
+    elif x <= 1.0:
+        var result = SFSResult()
+
+        if abs(x) < MSL_DBL_EPSILON:
+            result.val = -0.2588194037724879
+            result.err = MSL_DBL_EPSILON
+            return result
+
+        var x2 = x * x
+        var z = x2 * x2
+
+        var aif_c: InlineArray[Float64, 9] = [
+            -0.03797135849666999750,
+            0.05919188853726363857,
+            0.00098629280577279975,
+            0.00000684884381907656,
+            0.00000002594202596219,
+            0.00000000006176612774,
+            0.00000000000010092454,
+            0.00000000000000012014,
+            0.00000000000000000010,
+        ]
+        var c0 = cheb_eval_mode(aif_c, 8, -1.0, 1.0, 8, z, mode)
+
+        var aig_c: InlineArray[Float64, 8] = [
+            0.01815236558116127,
+            0.02157256316601076,
+            0.00025678356987483,
+            0.00000142652141197,
+            0.00000000457211492,
+            0.00000000000952517,
+            0.00000000000001392,
+            0.00000000000000001,
+        ]
+        var c1 = cheb_eval_mode(aig_c, 7, -1.0, 1.0, 7, z, mode)
+
+        result.val = -x * (0.375 + c0.val + 0.5 * c1.val)
+        result.err = (
+            c0.err + abs(x * c1.err) + MSL_DBL_EPSILON * abs(result.val)
+        )
+        return result
+    else:
+        var sqx = sqrt(x)
+        var x32 = x * sqx
+        var z = 2.0 / (x * sqx) - 1.0
+
+        var aip1_c: InlineArray[Float64, 9] = [
+            -0.375,
+            0.3745990447334779,
+            0.1928507877655783,
+            0.0475356697641584,
+            0.0091569801738944,
+            0.0015463410408915,
+            0.0002313097224174,
+            3.053e-5,
+            3.58e-6,
+        ]
+        var c0 = cheb_eval_mode(aip1_c, 8, -1.0, 1.0, 6, z, mode)
+
+        var result = SFSResult()
+        var s = exp(-2.0 * x32 / 3.0)
+        result.val = (-0.140625 + c0.val) * s / sqx
+        result.err = c0.err * s / sqx + abs(result.val) * x32 * MSL_DBL_EPSILON
+        result.err += MSL_DBL_EPSILON * abs(result.val)
+        return result
+
+
+def airy_bi_deriv_scaled(
+    x: Float64, mode: Int = SFPrecisionDouble
+) -> SFSResult:
+    if x < -1.0:
+        _ = SFSResult()
+        _ = SFSResult()
+        var (mod, theta) = airy_mod_phase(x, mode)
+        var cos_result = sf_cos_err(theta.val, theta.err)
+
+        var result = SFSResult()
+        result.val = mod.val * cos_result.val
+        result.err = abs(mod.val * cos_result.err) + abs(
+            cos_result.val * mod.err
+        )
+        result.err += MSL_DBL_EPSILON * abs(result.val)
+        return result
+    elif x <= 1.0:
+        var result = SFSResult()
+
+        if abs(x) < MSL_DBL_EPSILON:
+            result.val = 0.4482883573538263
+            result.err = MSL_DBL_EPSILON
+            return result
+
+        var x2 = x * x
+        var z = x2 * x2
+
+        var bif_c: InlineArray[Float64, 9] = [
+            -0.01673021647198664948,
+            0.10252335834249445610,
+            0.00170830925073815165,
+            0.00001186254546774468,
+            0.00000004493290701779,
+            0.00000000010698207143,
+            0.00000000000017480643,
+            0.00000000000000020810,
+            0.00000000000000000018,
+        ]
+        var c0 = cheb_eval_mode(bif_c, 8, -1.0, 1.0, 8, z, mode)
+
+        var big_c: InlineArray[Float64, 8] = [
+            0.02246622324857452,
+            0.03736477545301955,
+            0.00044476218957212,
+            0.00000247080756363,
+            0.00000000791913533,
+            0.00000000001649807,
+            0.00000000000002411,
+            0.00000000000000002,
+        ]
+        var c1 = cheb_eval_mode(big_c, 7, -1.0, 1.0, 7, z, mode)
+
+        result.val = x * (0.375 + c0.val - 0.5 * c1.val)
+        result.err = (
+            c0.err + abs(x * c1.err) + MSL_DBL_EPSILON * abs(result.val)
+        )
+        return result
+    else:
+        var result = SFSResult()
+
+        if x < 2.0:
+            var sqx = sqrt(x)
+            var z = 8.7506905708484345 / (x * sqx) - 2.0938363213560543
+
+            var bip1_c: InlineArray[Float64, 9] = [
+                0.375,
+                0.2713721561297926,
+                0.1250593785093774,
+                0.0392457382621135,
+                0.0097658452335542,
+                0.0020969763795389,
+                0.0003945661262184,
+                6.556e-5,
+                9.63e-6,
+            ]
+            var c0 = cheb_eval_mode(bip1_c, 8, -1.0, 1.0, 6, z, mode)
+            result.val = (0.140625 + c0.val) / (sqx * sqx * sqx)
+            result.err = c0.err / (sqx * sqx * sqx) + MSL_DBL_EPSILON * abs(
+                result.val
+            )
+        else:
+            var sqx = sqrt(x)
+            var z = 16.0 / (x * sqx) - 1.0
+
+            var bip1_c: InlineArray[Float64, 9] = [
+                0.375,
+                0.2713721561297926,
+                0.1250593785093774,
+                0.0392457382621135,
+                0.0097658452335542,
+                0.0020969763795389,
+                0.0003945661262184,
+                6.556e-5,
+                9.63e-6,
+            ]
+            var c0 = cheb_eval_mode(bip1_c, 8, -1.0, 1.0, 6, z, mode)
+            result.val = (0.140625 + c0.val) / (sqx * sqx * sqx)
+            result.err = c0.err / (sqx * sqx * sqx) + MSL_DBL_EPSILON * abs(
+                result.val
+            )
+
+        return result
