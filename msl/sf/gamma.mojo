@@ -752,98 +752,11 @@ def lndoublefact(n: UInt64) -> SFSResult:
 
 
 # ===----------------------------------------------------------------------=== #
-# Beta function
-# ===----------------------------------------------------------------------=== #
-
-
-def _beta(a: Float64, b: Float64) -> SFSResult:
-    var result = SFSResult()
-
-    if a <= 0.0 or b <= 0.0:
-        result.val = 0.0
-        result.err = 0.0
-        return result^
-
-    if a > b:
-        return _beta(b, a)
-
-    if a + b < 170.0:
-        result.val = exp(lngamma(a + b).val - lngamma(a).val - lngamma(b).val)
-        result.err = result.val * (
-            lngamma(a + b).err + lngamma(a).err + lngamma(b).err
-        )
-    else:
-        var lg_a = lngamma(a)
-        var lg_b = lngamma(b)
-        var lg_ab = lngamma(a + b)
-
-        if lg_ab.val - lg_a.val - lg_b.val < -700.0:
-            result.val = 0.0
-            result.err = MSL_DBL_EPSILON
-        else:
-            result.val = exp(lg_ab.val - lg_a.val - lg_b.val)
-            result.err = result.val * (lg_ab.err + lg_a.err + lg_b.err)
-
-    result.err += MSL_DBL_EPSILON * abs(result.val)
-    return result^
-
-
-# ===----------------------------------------------------------------------=== #
-# Log Beta function
-# ===----------------------------------------------------------------------=== #
-
-
-def _lnbeta(a: Float64, b: Float64) -> SFSResult:
-    var result = SFSResult()
-
-    if a <= 0.0 or b <= 0.0:
-        result.val = 0.0
-        result.err = 0.0
-        return result^
-
-    var lg_a = lngamma(a)
-    var lg_b = lngamma(b)
-    var lg_ab = lngamma(a + b)
-
-    result.val = lg_ab.val - lg_a.val - lg_b.val
-    result.err = lg_ab.err + lg_a.err + lg_b.err
-    result.err += MSL_DBL_EPSILON * abs(result.val)
-    return result^
-
-
-# ===----------------------------------------------------------------------=== #
 # Public API
 # ===----------------------------------------------------------------------=== #
 
-
 def gamma(x: Float64) -> SFSResult:
-    if x <= 0.0:
-        var result = SFSResult()
-        result.val = 0.0
-        result.err = 0.0
-        return result^
-
-    if x < 0.5:
-        var rint_x = Int(floor(x + 0.5))
-        var f_x = x - Float64(rint_x)
-        var sgn_gamma = 1.0 if (rint_x % 2) == 0 else -1.0
-        var sin_term = sgn_gamma * sin(MSL_PI * f_x) / MSL_PI
-
-        if sin_term == 0.0:
-            var result = SFSResult()
-            result.val = 0.0
-            result.err = 0.0
-            return result^
-
-        var g = _gamma_lanczos(1.0 - x)
-        var result = SFSResult()
-        result.val = 1.0 / (sin_term * g.val)
-        result.err = abs(g.err / g.val) * abs(
-            result.val
-        ) + 2.0 * MSL_DBL_EPSILON * abs(result.val)
-        return result^
-
-    return _gamma_lanczos(x)
+    return _gamma(x)
 
 
 def lngamma(x: Float64) -> SFSResult:
@@ -872,11 +785,3 @@ def ln_factorial(n: UInt64) -> SFSResult:
 
 def ln_double_factorial(n: UInt64) -> SFSResult:
     return lndoublefact(n)
-
-
-def beta(a: Float64, b: Float64) -> SFSResult:
-    return _beta(a, b)
-
-
-def lnbeta(a: Float64, b: Float64) -> SFSResult:
-    return _lnbeta(a, b)

@@ -522,3 +522,357 @@ def bessel_Y1(x: Float64) -> SFSResult:
         result.err = abs(ampl) * sp_err + abs(sp_val) * ca.err / sqrty
         result.err += MSL_DBL_EPSILON * abs(result.val)
         return result^
+
+
+# ===----------------------------------------------------------------------=== #
+# Modified Bessel I0
+# ===----------------------------------------------------------------------=== #
+
+
+def bessel_I0(x: Float64) -> SFSResult:
+    var y = abs(x)
+
+    if y < 2.0 * MSL_SQRT_DBL_EPSILON:
+        var result = SFSResult()
+        result.val = 1.0
+        result.err = y * y
+        return result
+    elif y <= 4.0:
+        var bi0_c: InlineArray[Float64, 13] = [
+            0.0441891604541899,
+            0.450358340603743,
+            0.127474324165233,
+            0.0223152542422695,
+            0.0026566796608573,
+            0.0002305194814519,
+            0.0000138599875892,
+            0.0000006022330420,
+            0.0000000193443772,
+            0.0000000004728274,
+            0.0000000000089555,
+            0.0000000000001334,
+            0.0000000000000016,
+        ]
+        var z = 0.125 * y * y - 1.0
+        return cheb_eval(bi0_c, 12, -1.0, 1.0, z)
+    else:
+        var z = 16.0 / (y * y) - 1.0
+
+        var bim0_c: InlineArray[Float64, 19] = [
+            0.249505230526282,
+            -0.0000412666474633,
+            0.0000018687834231,
+            -0.0000001765437648,
+            0.0000000245654224,
+            -0.0000000043395356,
+            0.0000000008913655,
+            -0.0000000002045838,
+            0.0000000000514187,
+            -0.0000000000137784,
+            0.0000000000038608,
+            -0.0000000000011190,
+            0.0000000000003330,
+            -0.0000000000001013,
+            0.0000000000000314,
+            -0.0000000000000099,
+            0.0000000000000031,
+            -0.0000000000000010,
+            0.0000000000000003,
+        ]
+        var ca = cheb_eval(bim0_c, 18, -1.0, 1.0, z)
+
+        var sqrty = sqrt(y)
+        var result = SFSResult()
+        result.val = (0.5 + ca.val) / sqrty * exp(y)
+        result.err = (
+            (ca.err / sqrty + (0.5 + ca.val) / sqrty) * MSL_DBL_EPSILON * exp(y)
+        )
+        result.err += MSL_DBL_EPSILON * abs(result.val)
+        return result^
+
+
+# ===----------------------------------------------------------------------=== #
+# Modified Bessel I1
+# ===----------------------------------------------------------------------=== #
+
+
+def bessel_I1(x: Float64) -> SFSResult:
+    var y = abs(x)
+    var sign_x = 1.0 if x > 0.0 else -1.0
+
+    if y < 2.0 * MSL_SQRT_DBL_EPSILON:
+        var result = SFSResult()
+        result.val = 0.5 * x
+        result.err = y * y
+        return result
+    elif y <= 4.0:
+        var bi1_c: InlineArray[Float64, 13] = [
+            0.0072995592376945,
+            0.260805308193142,
+            0.115318456458377,
+            0.0200950406701093,
+            0.0023849779372592,
+            0.0002044278900296,
+            0.0000121892097220,
+            0.0000005275476211,
+            0.0000000169309773,
+            0.0000000004112517,
+            0.0000000000077766,
+            0.0000000000001157,
+            0.0000000000000014,
+        ]
+        var z = 0.125 * y * y - 1.0
+        var result_c = cheb_eval(bi1_c, 12, -1.0, 1.0, z)
+
+        var result = SFSResult()
+        result.val = sign_x * y * result_c.val
+        result.err = y * result_c.err
+        result.err += MSL_DBL_EPSILON * abs(result.val)
+        return result^
+    else:
+        var z = 16.0 / (y * y) - 1.0
+
+        var bim1_c: InlineArray[Float64, 19] = [
+            0.333095859022228,
+            -0.001469084870662,
+            0.0000933771327677,
+            -0.0000098974980950,
+            0.0000014571696562,
+            -0.0000002693803777,
+            0.0000000563779537,
+            -0.0000000129905813,
+            0.0000000031635988,
+            -0.0000000008022816,
+            0.0000000002095084,
+            -0.0000000000559992,
+            0.0000000000152400,
+            -0.0000000000042255,
+            0.0000000000011886,
+            -0.0000000000003390,
+            0.0000000000000976,
+            -0.0000000000000283,
+            0.0000000000000083,
+        ]
+        var ca = cheb_eval(bim1_c, 18, -1.0, 1.0, z)
+
+        var sqrty = sqrt(y)
+        var result = SFSResult()
+        result.val = sign_x * (0.25 + ca.val) / sqrty * exp(y)
+        result.err = (
+            ((ca.err + abs(ca.err)) / sqrty + abs(0.25 + ca.val) / sqrty)
+            * MSL_DBL_EPSILON
+            * exp(y)
+        )
+        result.err += MSL_DBL_EPSILON * abs(result.val)
+        return result^
+
+
+# ===----------------------------------------------------------------------=== #
+# Modified Bessel K0
+# ===----------------------------------------------------------------------=== #
+
+
+def bessel_K0(x: Float64) -> SFSResult:
+    if x <= 0.0:
+        var result = SFSResult()
+        result.val = 0.0
+        result.err = 0.0
+        return result
+
+    var y = x
+
+    if y < 2.0 * MSL_SQRT_DBL_EPSILON:
+        var result = SFSResult()
+        result.val = -log(y)
+        result.err = 1.0
+        return result
+    elif y <= 4.0:
+        var bk0_c: InlineArray[Float64, 13] = [
+            0.0129745833230940,
+            -0.104404983299170,
+            0.0356689352347854,
+            -0.0061599960445826,
+            0.0006109842484084,
+            -0.0000420143327697,
+            0.0000020996202954,
+            -0.0000000789347220,
+            0.0000000022823612,
+            -0.0000000000514181,
+            0.0000000000009142,
+            -0.0000000000000129,
+            0.0000000000000001,
+        ]
+        var z = 0.125 * y * y - 1.0
+        var result_c = cheb_eval(bk0_c, 12, -1.0, 1.0, z)
+
+        var result = SFSResult()
+        result.val = result_c.val - log(y) * bessel_I0(y).val
+        result.err = result_c.err + abs(log(y)) * bessel_I0(y).err
+        result.err += MSL_DBL_EPSILON * abs(result.val)
+        return result^
+    else:
+        var z = 16.0 / (y * y) - 1.0
+
+        var bkm0_c: InlineArray[Float64, 19] = [
+            0.159182408570797,
+            -0.0022339519477607,
+            0.0000987613446424,
+            -0.0000105838269824,
+            0.0000015872216350,
+            -0.0000002956231099,
+            0.0000000621777414,
+            -0.0000000142523739,
+            0.0000000034615829,
+            -0.0000000008759293,
+            0.0000000002278259,
+            -0.0000000000604932,
+            0.0000000000163763,
+            -0.0000000000045098,
+            0.0000000000012617,
+            -0.0000000000003584,
+            0.0000000000001030,
+            -0.0000000000000299,
+            0.0000000000000088,
+        ]
+        var ca = cheb_eval(bkm0_c, 18, -1.0, 1.0, z)
+
+        var sqrty = sqrt(y)
+        var result = SFSResult()
+        result.val = (0.5 + ca.val) / sqrty * exp(-y)
+        result.err = (
+            (ca.err / sqrty + (0.5 + ca.val) / sqrty)
+            * MSL_DBL_EPSILON
+            * exp(-y)
+        )
+        result.err += MSL_DBL_EPSILON * abs(result.val)
+        return result^
+
+
+# ===----------------------------------------------------------------------=== #
+# Modified Bessel K1
+# ===----------------------------------------------------------------------=== #
+
+
+def bessel_K1(x: Float64) -> SFSResult:
+    if x <= 0.0:
+        var result = SFSResult()
+        result.val = 0.0
+        result.err = 0.0
+        return result
+
+    var y = x
+
+    if y < 2.0 * MSL_SQRT_DBL_EPSILON:
+        var result = SFSResult()
+        result.val = 1.0 / y
+        result.err = 1.0
+        return result
+    elif y <= 4.0:
+        var bk1_c: InlineArray[Float64, 13] = [
+            -0.0014377633780934,
+            -0.150226342304776,
+            0.0865054235600797,
+            -0.0190266048042478,
+            0.0025332448505834,
+            -0.0002343777456214,
+            0.0000155006225212,
+            -0.0000007673684973,
+            0.0000000295213789,
+            -0.0000000008902698,
+            0.0000000000212146,
+            -0.0000000000004000,
+            0.0000000000000060,
+        ]
+        var z = 0.125 * y * y - 1.0
+        var result_c = cheb_eval(bk1_c, 12, -1.0, 1.0, z)
+
+        var i1 = bessel_I1(y)
+
+        var result = SFSResult()
+        result.val = y * result_c.val + (i1.val / y + bessel_I0(y).val)
+        result.err = y * result_c.err + abs(i1.err / y + bessel_I0(y).err)
+        result.err += MSL_DBL_EPSILON * abs(result.val)
+        return result^
+    else:
+        var z = 16.0 / (y * y) - 1.0
+
+        var bkm1_c: InlineArray[Float64, 19] = [
+            0.218850767684584,
+            -0.0055468183653642,
+            0.0003303857646899,
+            -0.0000430440957271,
+            0.0000072492693760,
+            -0.0000014931612184,
+            0.0000003437421553,
+            -0.0000000855226529,
+            0.0000000223552520,
+            -0.0000000060605860,
+            0.0000000016768140,
+            -0.0000000004719685,
+            0.0000000001346794,
+            -0.0000000000389725,
+            0.0000000000114188,
+            -0.0000000000033783,
+            0.0000000000010079,
+            -0.0000000000003030,
+            0.0000000000000917,
+        ]
+        var ca = cheb_eval(bkm1_c, 18, -1.0, 1.0, z)
+
+        var sqrty = sqrt(y)
+        var result = SFSResult()
+        result.val = (0.75 + ca.val) / sqrty * exp(-y)
+        result.err = (
+            (ca.err / sqrty + (0.75 + ca.val) / sqrty)
+            * MSL_DBL_EPSILON
+            * exp(-y)
+        )
+        result.err += MSL_DBL_EPSILON * abs(result.val)
+        return result^
+
+
+# ===----------------------------------------------------------------------=== #
+# Public API
+# ===----------------------------------------------------------------------=== #
+
+
+def bessel_j0(x: Float64) -> SFSResult:
+    if x == 0.0:
+        var result = SFSResult()
+        result.val = 1.0
+        result.err = 0.0
+        return result
+    return bessel_J0(x)
+
+
+def bessel_j1(x: Float64) -> SFSResult:
+    if x == 0.0:
+        var result = SFSResult()
+        result.val = 0.0
+        result.err = 0.0
+        return result
+    return bessel_J1(x)
+
+
+def bessel_y0(x: Float64) -> SFSResult:
+    return bessel_Y0(x)
+
+
+def bessel_y1(x: Float64) -> SFSResult:
+    return bessel_Y1(x)
+
+
+def bessel_i0_scaled(x: Float64) -> SFSResult:
+    return bessel_I0(x)
+
+
+def bessel_i1_scaled(x: Float64) -> SFSResult:
+    return bessel_I1(x)
+
+
+def bessel_k0_scaled(x: Float64) -> SFSResult:
+    return bessel_K0(x)
+
+
+def bessel_k1_scaled(x: Float64) -> SFSResult:
+    return bessel_K1(x)
