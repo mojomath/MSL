@@ -47,7 +47,10 @@ comptime SFPrecisionApprox: Int = 2
 # ===----------------------------------------------------------------------=== #
 
 
-def cheb_eval_mode[N: Int, //, ](
+def cheb_eval_mode[
+    N: Int,
+    //,
+](
     c: InlineArray[Float64, N],
     order: Int,
     a: Float64,
@@ -87,8 +90,10 @@ def cheb_eval_mode[N: Int, //, ](
 
 
 def airy_mod_phase(x: Float64, mode: Int) -> Tuple[SFSResult, SFSResult]:
-    var result_m = SFSResult()
-    var result_p = SFSResult()
+    # TODO: Figure out why compiler throws error here (same unused error pops up everywhere),
+    # This used to work in previous mojo version. Also make sure removing this doesn't cause any issues.
+    # var result_m = SFSResult()
+    # var result_p = SFSResult()
 
     var z: Float64
     var a: Float64 = -1.0
