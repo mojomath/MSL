@@ -832,6 +832,135 @@ def bessel_K1(x: Float64) -> SFSResult:
 
 
 # ===----------------------------------------------------------------------=== #
+# Bessel Jn (integer order)
+# ===----------------------------------------------------------------------=== #
+
+
+def bessel_Jn(n: Int, x: Float64) -> SFSResult:
+    var sign: Float64 = 1.0
+    var nn = n
+
+    if nn < 0:
+        nn = -nn
+        if nn % 2 == 1:
+            sign = -1.0
+
+    var xx = x
+    if xx < 0.0:
+        xx = -x
+        if nn % 2 == 1:
+            sign = -1.0
+
+    if nn == 0:
+        return bessel_J0(xx)
+    elif nn == 1:
+        return bessel_J1(xx)
+    else:
+        if xx == 0.0:
+            var result = SFSResult()
+            result.val = 0.0
+            result.err = 0.0
+            return result^
+
+        var nfp1 = Float64(nn + 1)
+        if xx * xx < 10.0 * nfp1 * MSL_DBL_EPSILON * 5.0:
+            var result = SFSResult()
+            result.val = 0.0
+            result.err = MSL_DBL_EPSILON
+            return result^
+
+        var ratio: Float64
+        var sgn: Float64
+
+        var a: Float64 = 2.0 * Float64(nn) / xx
+        var b: Float64 = 2.0 / xx
+        var c: Float64 = 0.0
+        var d: Float64 = 1.0
+        var i = 0
+        while i < 300:
+            c = b + a * d
+            d = 1.0 / c
+            var new_d = b * d
+            if abs(new_d - 1.0) < 1e-30:
+                break
+            a = a + b * b
+            i += 1
+
+        ratio = d
+        # sgn = c
+
+        var Jkp1: Float64 = 1e-190 * ratio
+        var Jk: Float64 = 1e-190
+        var Jkm1: Float64
+
+        var k = nn
+        while k > 0:
+            Jkm1 = 2.0 * Float64(k) / xx * Jk - Jkp1
+            Jkp1 = Jk
+            Jk = Jkm1
+            k -= 1
+
+        var ans: Float64
+        var err: Float64
+
+        if abs(Jkp1) > abs(Jk):
+            var b1 = bessel_J1(xx)
+            ans = b1.val / Jkp1 * 1e-190
+            err = b1.err / Jkp1 * 1e-190
+        else:
+            var b0 = bessel_J0(xx)
+            ans = b0.val / Jk * 1e-190
+            err = b0.err / Jk * 1e-190
+
+        var result = SFSResult()
+        result.val = sign * ans
+        result.err = abs(err) + MSL_DBL_EPSILON * abs(result.val)
+        return result^
+
+
+def bessel_Jnu_asympx(nu: Float64, x: Float64) -> SFSResult:
+    var mu = 4.0 * nu * nu
+    var chi = x - (0.5 * nu + 0.25) * MSL_PI
+
+    var P: Float64 = 0.0
+    var Q: Float64 = 0.0
+
+    var k: Float64 = 0.0
+    var t: Float64 = 1.0
+    var convP: Bool
+    var convQ: Bool
+
+    while k < 1000.0:
+        if k == 0.0:
+            t = 1.0
+        else:
+            t = -(mu - (2.0 * k - 1.0) * (2.0 * k - 1.0)) / (k * 8.0 * x)
+
+        convP = abs(t) < MSL_DBL_EPSILON * abs(P)
+        P += t
+
+        k += 1.0
+
+        t *= (mu - (2.0 * k - 1.0) * (2.0 * k - 1.0)) / (k * 8.0 * x)
+        convQ = abs(t) < MSL_DBL_EPSILON * abs(Q)
+        Q += t
+
+        if convP and convQ and k > nu / 2.0:
+            break
+
+        k += 1.0
+
+    var pre = sqrt(2.0 / (MSL_PI * x))
+    var c = cos(chi)
+    var s = sin(chi)
+
+    var result = SFSResult()
+    result.val = pre * (c * P - s * Q)
+    result.err = pre * MSL_DBL_EPSILON * (abs(c * P) + abs(s * Q) + abs(t)) * (1.0 + abs(x))
+    return result^
+
+
+# ===----------------------------------------------------------------------=== #
 # Public API
 # ===----------------------------------------------------------------------=== #
 
