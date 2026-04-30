@@ -55,7 +55,9 @@ def _legendre_P2(x: Float64) -> SFSResult:
 def _legendre_P3(x: Float64) -> SFSResult:
     var result = SFSResult()
     result.val = 0.5 * x * (5.0 * x * x - 3.0)
-    result.err = MSL_DBL_EPSILON * (abs(result.val) + 0.5 * abs(x) * (abs(5.0 * x * x) + 3.0))
+    result.err = MSL_DBL_EPSILON * (
+        abs(result.val) + 0.5 * abs(x) * (abs(5.0 * x * x) + 3.0)
+    )
     return result^
 
 
@@ -65,34 +67,34 @@ def legendre_Pl(l: Int, x: Float64) -> SFSResult:
         result.val = 0.0
         result.err = 0.0
         return result^
-    
+
     if x < -1.0 or x > 1.0:
         var result = SFSResult()
         result.val = 0.0
         result.err = 0.0
         return result^
-    
+
     if l == 0:
         var result = SFSResult()
         result.val = 1.0
         result.err = 0.0
         return result^
-    
+
     if l == 1:
         return _legendre_P1(x)
-    
+
     if l == 2:
         return _legendre_P2(x)
-    
+
     if l == 3:
         return _legendre_P3(x)
-    
+
     if x == 1.0:
         var result = SFSResult()
         result.val = 1.0
         result.err = 0.0
         return result^
-    
+
     if x == -1.0:
         var result = SFSResult()
         if l % 2 == 1:
@@ -101,7 +103,7 @@ def legendre_Pl(l: Int, x: Float64) -> SFSResult:
             result.val = 1.0
         result.err = 0.0
         return result^
-    
+
     if l < 100000:
         var p_ellm2: Float64 = 1.0
         var p_ellm1: Float64 = x
@@ -113,11 +115,20 @@ def legendre_Pl(l: Int, x: Float64) -> SFSResult:
 
         var ell = 2
         while ell <= l:
-            p_ell = (x * Float64(2 * ell - 1) * p_ellm1 - Float64(ell - 1) * p_ellm2) / Float64(ell)
+            p_ell = (
+                x * Float64(2 * ell - 1) * p_ellm1 - Float64(ell - 1) * p_ellm2
+            ) / Float64(ell)
             p_ellm2 = p_ellm1
             p_ellm1 = p_ell
 
-            e_ell = 0.5 * (abs(x) * Float64(2 * ell - 1) * e_ellm1 + Float64(ell - 1) * e_ellm2) / Float64(ell)
+            e_ell = (
+                0.5
+                * (
+                    abs(x) * Float64(2 * ell - 1) * e_ellm1
+                    + Float64(ell - 1) * e_ellm2
+                )
+                / Float64(ell)
+            )
             e_ellm2 = e_ellm1
             e_ellm1 = e_ell
             ell += 1
@@ -126,15 +137,15 @@ def legendre_Pl(l: Int, x: Float64) -> SFSResult:
         result.val = p_ell
         result.err = e_ell + Float64(l) * abs(p_ell) * MSL_DBL_EPSILON
         return result^
-    
+
     var u = Float64(l) + 0.5
     var th = acos(x)
     var j0 = bessel_Jnu_asympx(u, u * th)
     var jm1 = bessel_Jnu_asympx(u, u * th)
-    
+
     var pre: Float64
     var B00: Float64
-    
+
     if th < MSL_SQRT_DBL_EPSILON:
         B00 = (1.0 + th * th / 15.0) / 24.0
         pre = 1.0 + th * th / 12.0
