@@ -46,6 +46,38 @@ from .bessel import (
     bessel_k1_scaled,
 )
 
+from .gamma import (
+    gamma,
+    lngamma,
+    gammastar,
+    gammainv,
+    factorial,
+    double_factorial,
+    ln_factorial,
+    ln_double_factorial,
+)
+
+from .beta import (
+    beta,
+    lnbeta,
+)
+
+from .erf import (
+    erf,
+    erfc,
+    log_erfc,
+    erf_Z,
+    erf_Q,
+    hazard,
+)
+
+from .legendre import (
+    legendre_P1,
+    legendre_P2,
+    legendre_P3,
+    legendre_Pl,
+)
+
 from .result import SFSResult
 
 comptime PrecisionDouble: Int = 0

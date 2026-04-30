@@ -27,8 +27,6 @@
 # ===----------------------------------------------------------------------=== #
 """
 Workspace and result types for numerical integration.
-
-This is a direct port of the GSL workspace structures.
 """
 
 from std.memory import UnsafePointer, memset_zero

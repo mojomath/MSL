@@ -956,7 +956,12 @@ def bessel_Jnu_asympx(nu: Float64, x: Float64) -> SFSResult:
 
     var result = SFSResult()
     result.val = pre * (c * P - s * Q)
-    result.err = pre * MSL_DBL_EPSILON * (abs(c * P) + abs(s * Q) + abs(t)) * (1.0 + abs(x))
+    result.err = (
+        pre
+        * MSL_DBL_EPSILON
+        * (abs(c * P) + abs(s * Q) + abs(t))
+        * (1.0 + abs(x))
+    )
     return result^
 
 

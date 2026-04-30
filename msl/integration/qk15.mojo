@@ -65,7 +65,9 @@ comptime _wgk: InlineArray[Float64, 8] = [
 ]
 
 
-def _rescale_error(err: Float64, result_abs: Float64, result_asc: Float64) -> Float64:
+def _rescale_error(
+    err: Float64, result_abs: Float64, result_asc: Float64
+) -> Float64:
     var e = abs(err)
     if result_asc != 0.0 and e != 0.0:
         var scale = pow(200.0 * e / result_asc, 1.5)
