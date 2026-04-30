@@ -91,8 +91,8 @@ def qng_integrate[
     var res10: Float64 = 0.0
     var res21: Float64 = w21b[5] * f(0.5 * (b + a))
     var resabs: Float64 = w21b[5] * abs(f(0.5 * (b + a)))
-    var res43: Float64 = 0.0
-    var res87: Float64 = 0.0
+    var res43: Float64
+    var res87: Float64
 
     var half_length = 0.5 * (b - a)
     var abs_half_length = abs(half_length)

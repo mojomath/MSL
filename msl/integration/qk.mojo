@@ -70,6 +70,9 @@ def _qk_generic[
 ) -> QKResult:
     """Generic n-point Gauss-Kronrod quadrature.
 
+    Parameters:
+        f: Function to integrate
+
     Args:
         n: Number of Kronrod points (half + 1 for symmetric rule)
         xgk: Kronrod abscissae (size n)
@@ -77,7 +80,6 @@ def _qk_generic[
         wgk: Kronrod weights (size n)
         fv1: Workspace for function values (size n)
         fv2: Workspace for function values (size n)
-        f: Function to integrate
         a: Lower limit
         b: Upper limit
 
@@ -92,7 +94,7 @@ def _qk_generic[
     var result_gauss: Float64 = 0.0
     var result_kronrod = f_center * wgk[n - 1]
     var result_abs = abs(result_kronrod)
-    var result_asc: Float64 = 0.0
+    var result_asc: Float64
 
     if n % 2 == 0:
         result_gauss = f_center * wg[n // 2 - 1]

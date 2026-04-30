@@ -874,7 +874,7 @@ def bessel_Jn(n: Int, x: Float64) -> SFSResult:
 
         var a: Float64 = 2.0 * Float64(nn) / xx
         var b: Float64 = 2.0 / xx
-        var c: Float64 = 0.0
+        var c: Float64
         var d: Float64 = 1.0
         var i = 0
         while i < 300:

@@ -111,7 +111,7 @@ def qk15[f: def(Float64) -> Float64](a: Float64, b: Float64) -> QKResult:
     var result_gauss: Float64 = 0.0
     var result_kronrod = f_center * _wgk[n - 1]
     var result_abs = abs(result_kronrod)
-    var result_asc: Float64 = 0.0
+    var result_asc: Float64
 
     if n % 2 == 0:
         result_gauss = f_center * _wg[n // 2 - 1]

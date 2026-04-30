@@ -37,4 +37,4 @@ test = "bash tests/tests.sh"
 
 [dependencies]
 mojo = ">=0.26.2.0,<0.27"
-gsl = ">=2.8,<3"
+mojoblas = {git = "https://github.com/shivasankarka/mojoBLAS.git", branch = "main"}

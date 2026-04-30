@@ -75,8 +75,10 @@ comptime _wgk: InlineArray[Float64, 11] = [
 def qk21[f: def(Float64) -> Float64](a: Float64, b: Float64) -> QKResult:
     """21-point Gauss-Kronrod quadrature.
 
-    Args:
+    Parameters:
         f: Function to integrate.
+
+    Args:
         a: Lower limit.
         b: Upper limit.
 
