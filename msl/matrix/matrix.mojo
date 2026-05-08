@@ -37,7 +37,6 @@ from std.sys.info import simd_width_of
 
 from msl.core import Block
 from msl.core.const import MSL_DBL_EPSILON
-from msl.core.types import STATUS_SUCCESS, STATUS_FAILURE
 
 
 # ===----------------------------------------------------------------------=== #

@@ -72,12 +72,6 @@ struct MTState(Copyable, Movable):
     def __setitem__(mut self, i: Int, value: UInt64):
         self.state.store(i, value)
 
-    def get(self, i: Int) -> UInt64:
-        return self.state[i]
-
-    def set(mut self, i: Int, value: UInt64):
-        self.state.store(i, value)
-
     def __len__(self) -> Int:
         return MT_N
 
@@ -89,7 +83,7 @@ struct MTState(Copyable, Movable):
 
 def mt19937_init(mut state: MTState, seed: UInt64):
     """Initialize MT19937 with seed."""
-    state.set(0, seed)
+    state[0] = seed
     for i in range(1, MT_N):
         var prev = state.state[i - 1]
         state.state.store(

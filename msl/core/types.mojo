@@ -31,18 +31,3 @@ Type definitions for MSL.
 Base types and function callback types used throughout MSL.
 """
 
-# ===----------------------------------------------------------------------=== #
-# Status codes (same as error codes but for return values)
-# ===----------------------------------------------------------------------=== #
-
-comptime STATUS_SUCCESS: Int = 0
-comptime STATUS_FAILURE: Int = -1
-comptime STATUS_CONTINUE: Int = -2
-
-
-# ===----------------------------------------------------------------------=== #
-# Boolean type
-# ===----------------------------------------------------------------------=== #
-
-comptime MSL_TRUE: Int = 1
-comptime MSL_FALSE: Int = 0
