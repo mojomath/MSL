@@ -41,6 +41,7 @@ from msl.core.const import (
     MSL_PI_4,
 )
 from msl.sf.result import SFSResult
+from msl.core.errno import GSL_EDOM
 from std.math import sqrt, exp, cos, sin, abs, log
 from std.collections import InlineArray
 
@@ -298,8 +299,7 @@ def bessel_J1(x: Float64) -> SFSResult:
 def bessel_Y0(x: Float64) -> SFSResult:
     if x <= 0.0:
         var result = SFSResult()
-        result.val = 0.0
-        result.err = 0.0
+        result.errno = GSL_EDOM
         return result
 
     var y = x
@@ -414,8 +414,7 @@ def bessel_Y0(x: Float64) -> SFSResult:
 def bessel_Y1(x: Float64) -> SFSResult:
     if x <= 0.0:
         var result = SFSResult()
-        result.val = 0.0
-        result.err = 0.0
+        result.errno = GSL_EDOM
         return result
 
     var y = x
@@ -675,8 +674,7 @@ def bessel_I1(x: Float64) -> SFSResult:
 def bessel_K0(x: Float64) -> SFSResult:
     if x <= 0.0:
         var result = SFSResult()
-        result.val = 0.0
-        result.err = 0.0
+        result.errno = GSL_EDOM
         return result
 
     var y = x
@@ -756,8 +754,7 @@ def bessel_K0(x: Float64) -> SFSResult:
 def bessel_K1(x: Float64) -> SFSResult:
     if x <= 0.0:
         var result = SFSResult()
-        result.val = 0.0
-        result.err = 0.0
+        result.errno = GSL_EDOM
         return result
 
     var y = x

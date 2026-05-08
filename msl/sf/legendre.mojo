@@ -32,6 +32,7 @@ This is a direct port of the GSL special functions implementation.
 """
 
 from msl.core.const import MSL_DBL_EPSILON, MSL_SQRT_DBL_EPSILON, MSL_PI
+from msl.core.errno import GSL_EDOM
 from msl.sf.result import SFSResult
 from msl.sf.gamma import lngamma
 from std.math import sqrt, log, cos, sin, acos, abs, floor
@@ -64,14 +65,12 @@ def _legendre_P3(x: Float64) -> SFSResult:
 def legendre_Pl(l: Int, x: Float64) -> SFSResult:
     if l < 0:
         var result = SFSResult()
-        result.val = 0.0
-        result.err = 0.0
+        result.errno = GSL_EDOM
         return result^
 
     if x < -1.0 or x > 1.0:
         var result = SFSResult()
-        result.val = 0.0
-        result.err = 0.0
+        result.errno = GSL_EDOM
         return result^
 
     if l == 0:

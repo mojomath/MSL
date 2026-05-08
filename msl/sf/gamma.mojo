@@ -35,6 +35,7 @@ from std.math import sqrt, exp, log, cos, sin, abs, floor
 from std.collections import InlineArray
 
 from msl.core.const import MSL_DBL_EPSILON, MSL_SQRT_DBL_EPSILON, MSL_PI
+from msl.core.errno import GSL_EDOM
 from msl.sf.result import SFSResult
 
 
@@ -516,8 +517,7 @@ def _gamma(x: Float64) -> SFSResult:
     var result = SFSResult()
 
     if x <= 0.0:
-        result.val = 0.0
-        result.err = 0.0
+        result.errno = GSL_EDOM
         return result^
 
     if x < 0.5:
@@ -560,8 +560,7 @@ def _gammastar(x: Float64) -> SFSResult:
     var result = SFSResult()
 
     if x <= 0.0:
-        result.val = 0.0
-        result.err = 0.0
+        result.errno = GSL_EDOM
         return result^
 
     if x < 0.5:
@@ -664,8 +663,7 @@ def _gammainv(x: Float64) -> SFSResult:
     var result = SFSResult()
 
     if x <= 0.0:
-        result.val = 0.0
-        result.err = 0.0
+        result.errno = GSL_EDOM
         return result^
 
     var lg = lngamma(x)

@@ -158,14 +158,11 @@ comptime GSL_EOF: Int = 32
 # ===----------------------------------------------------------------------=== #
 
 
-def msl_error(reason: String, file: String, line: Int, errno: Int):
-    """Report an error."""
-    print(reason + " in " + file + " line " + String(line))
-    print("Error code: " + String(errno))
+def msl_error(reason: String, file: String, line: Int, errno: Int) raises:
+    """Report an error by raising."""
+    raise Error(reason + " (code " + String(errno) + ") in " + file + ":" + String(line))
 
 
-def msl_assert(reason: String, file: String, line: Int):
-    """Assert an error."""
-    print(
-        "Assertion failure: " + reason + " in " + file + " line " + String(line)
-    )
+def msl_assert(reason: String, file: String, line: Int) raises:
+    """Assert an error by raising."""
+    raise Error("Assertion failure: " + reason + " in " + file + ":" + String(line))

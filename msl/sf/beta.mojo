@@ -33,6 +33,7 @@ from std.math import exp
 
 from msl.core.const import MSL_DBL_EPSILON, MSL_SQRT_DBL_EPSILON, MSL_PI
 from msl.sf.result import SFSResult
+from msl.core.errno import GSL_EDOM
 
 # ===----------------------------------------------------------------------=== #
 # Beta function
@@ -43,8 +44,7 @@ def _beta(a: Float64, b: Float64) -> SFSResult:
     var result = SFSResult()
 
     if a <= 0.0 or b <= 0.0:
-        result.val = 0.0
-        result.err = 0.0
+        result.errno = GSL_EDOM
         return result^
 
     if a > b:
@@ -80,8 +80,7 @@ def _lnbeta(a: Float64, b: Float64) -> SFSResult:
     var result = SFSResult()
 
     if a <= 0.0 or b <= 0.0:
-        result.val = 0.0
-        result.err = 0.0
+        result.errno = GSL_EDOM
         return result^
 
     var lg_a = lngamma(a)

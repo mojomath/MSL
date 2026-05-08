@@ -41,4 +41,9 @@ from .workspace import (
 )
 
 from .qk15 import qk15
+from .qk21 import qk21
+from .qk31 import qk31
+from .qk41 import qk41
+from .qk51 import qk51
+from .qk61 import qk61
 from .qng import qng_integrate
