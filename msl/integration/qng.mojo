@@ -78,7 +78,7 @@ comptime w21b: InlineArray[Float64, 6] = [
 
 
 def qng_integrate[
-    fn_: def(Float64) thin -> Float64
+    fn_: def(Float64) -> Float64
 ](
     a: Float64, b: Float64, epsabs: Float64, epsrel: Float64
 ) -> IntegrationResult:
