@@ -187,8 +187,7 @@ def vector_set_all(mut vec: Vector, x: Float64):
     """
     comptime simd_width: Int = simd_width_of[f64]()
 
-    @parameter
-    def closure[width: Int](i: Int) unified {mut vec, read x}:
+    def closure[width: Int](i: Int) unified {mut vec, x}:
         vec.data[i * vec.stride] = x
 
     vectorize[simd_width](vec.size, closure)
