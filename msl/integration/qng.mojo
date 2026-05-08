@@ -78,7 +78,7 @@ comptime w21b: InlineArray[Float64, 6] = [
 
 
 def qng_integrate[
-    f: def(Float64) -> Float64
+    fn_: def(Float64) thin -> Float64
 ](
     a: Float64, b: Float64, epsabs: Float64, epsrel: Float64
 ) -> IntegrationResult:
@@ -89,15 +89,15 @@ def qng_integrate[
     var savfun = InlineArray[Float64, 21](uninitialized=True)
 
     var res10: Float64 = 0.0
-    var res21: Float64 = w21b[5] * f(0.5 * (b + a))
-    var resabs: Float64 = w21b[5] * abs(f(0.5 * (b + a)))
+    var res21: Float64 = w21b[5] * fn_(0.5 * (b + a))
+    var resabs: Float64 = w21b[5] * abs(fn_(0.5 * (b + a)))
     var res43: Float64
     var res87: Float64
 
     var half_length = 0.5 * (b - a)
     var abs_half_length = abs(half_length)
     var center = 0.5 * (b + a)
-    var f_center = f(center)
+    var f_center = fn_(center)
 
     if epsabs <= 0.0 and (epsrel < 50.0 * MSL_DBL_EPSILON or epsrel < 0.5e-28):
         var res = IntegrationResult()
@@ -106,8 +106,8 @@ def qng_integrate[
     var k = 0
     while k < 5:
         var abscissa = half_length * x1[k]
-        var fval1 = f(center + abscissa)
-        var fval2 = f(center - abscissa)
+        var fval1 = fn_(center + abscissa)
+        var fval2 = fn_(center - abscissa)
         var fval = fval1 + fval2
         res10 += w10[k] * fval
         res21 += w21a[k] * fval
@@ -120,8 +120,8 @@ def qng_integrate[
     k = 0
     while k < 5:
         var abscissa = half_length * x2[k]
-        var fval1 = f(center + abscissa)
-        var fval2 = f(center - abscissa)
+        var fval1 = fn_(center + abscissa)
+        var fval2 = fn_(center - abscissa)
         var fval = fval1 + fval2
         res21 += w21b[k] * fval
         resabs += w21b[k] * (abs(fval1) + abs(fval2))

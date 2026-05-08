@@ -82,7 +82,7 @@ def _rescale_error(
     return e
 
 
-def qk15[f: def(Float64) -> Float64](a: Float64, b: Float64) -> QKResult:
+def qk15[fn_: def(Float64) thin -> Float64](a: Float64, b: Float64) -> QKResult:
     var n = 8
 
     var fv1_0: Float64 = 0.0
@@ -106,7 +106,7 @@ def qk15[f: def(Float64) -> Float64](a: Float64, b: Float64) -> QKResult:
     var center = 0.5 * (a + b)
     var half_length = 0.5 * (b - a)
     var abs_half_length = abs(half_length)
-    var f_center = f(center)
+    var f_center = fn_(center)
 
     var result_gauss: Float64 = 0.0
     var result_kronrod = f_center * _wgk[n - 1]
@@ -119,8 +119,8 @@ def qk15[f: def(Float64) -> Float64](a: Float64, b: Float64) -> QKResult:
     for j in range((n - 1) // 2):
         var jtw = j * 2 + 1
         var abscissa = half_length * _xgk[jtw]
-        var fval1 = f(center - abscissa)
-        var fval2 = f(center + abscissa)
+        var fval1 = fn_(center - abscissa)
+        var fval2 = fn_(center + abscissa)
         var fsum = fval1 + fval2
 
         if jtw == 0:
@@ -155,8 +155,8 @@ def qk15[f: def(Float64) -> Float64](a: Float64, b: Float64) -> QKResult:
     for j in range(n // 2):
         var jtwm1 = j * 2
         var abscissa = half_length * _xgk[jtwm1]
-        var fval1 = f(center - abscissa)
-        var fval2 = f(center + abscissa)
+        var fval1 = fn_(center - abscissa)
+        var fval2 = fn_(center + abscissa)
 
         if jtwm1 == 0:
             fv1_0 = fval1

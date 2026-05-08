@@ -57,7 +57,7 @@ def _rescale_error(
 
 
 def _qk_generic[
-    f: def(Float64) -> Float64,
+    fn_: def(Float64) thin -> Float64,
 ](
     n: Int,
     xgk: InlineArray[Float64, _],
@@ -89,7 +89,7 @@ def _qk_generic[
     var center = 0.5 * (a + b)
     var half_length = 0.5 * (b - a)
     var abs_half_length = abs(half_length)
-    var f_center = f(center)
+    var f_center = fn_(center)
 
     var result_gauss: Float64 = 0.0
     var result_kronrod = f_center * wgk[n - 1]
@@ -102,8 +102,8 @@ def _qk_generic[
     for j in range((n - 1) // 2):
         var jtw = j * 2 + 1
         var abscissa = half_length * xgk[jtw]
-        var fval1 = f(center - abscissa)
-        var fval2 = f(center + abscissa)
+        var fval1 = fn_(center - abscissa)
+        var fval2 = fn_(center + abscissa)
         var fsum = fval1 + fval2
         fv1[jtw] = fval1
         fv2[jtw] = fval2
@@ -114,8 +114,8 @@ def _qk_generic[
     for j in range(n // 2):
         var jtwm1 = j * 2
         var abscissa = half_length * xgk[jtwm1]
-        var fval1 = f(center - abscissa)
-        var fval2 = f(center + abscissa)
+        var fval1 = fn_(center - abscissa)
+        var fval2 = fn_(center + abscissa)
         fv1[jtwm1] = fval1
         fv2[jtwm1] = fval2
         result_kronrod += wgk[jtwm1] * (fval1 + fval2)

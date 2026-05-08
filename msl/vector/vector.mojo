@@ -53,7 +53,7 @@ struct Vector(Copyable, Movable):
     var size: Int
     var stride: Int
     var data: UnsafePointer[Float64, MutExt]
-    var block: UnsafePointer[Block, MutExt]
+    var block: Optional[UnsafePointer[Block, MutExt]]
     var owner: Int
 
     def __init__(out self, size: Int, *, initialize: Bool = False):
@@ -61,8 +61,9 @@ struct Vector(Copyable, Movable):
         self.stride = 1
         var blk = Block(size, initialize=initialize)
         self.data = blk.data
-        self.block = alloc[Block](1)
-        self.block.init_pointee_move(blk^)
+        var bptr = alloc[Block](1)
+        bptr.init_pointee_move(blk^)
+        self.block = bptr
         self.owner = 1
 
     def __init__(out self, size: Int, stride: Int, *, initialize: Bool = False):
@@ -70,14 +71,15 @@ struct Vector(Copyable, Movable):
         self.stride = stride
         var blk = Block(size * stride, initialize=initialize)
         self.data = blk.data
-        self.block = alloc[Block](1)
-        self.block.init_pointee_move(blk^)
+        var bptr = alloc[Block](1)
+        bptr.init_pointee_move(blk^)
+        self.block = bptr
         self.owner = 1
 
     def __del__(deinit self):
-        if self.owner == 1 and self.block != UnsafePointer[Block, MutExt]():
-            self.block.destroy_pointee()
-            self.block.free()
+        if self.owner == 1 and self.block:
+            self.block.value().destroy_pointee()
+            self.block.value().free()
 
     def get_size(self) -> Int:
         """Return the size of the vector."""
@@ -187,7 +189,7 @@ def vector_set_all(mut vec: Vector, x: Float64):
     """
     comptime simd_width: Int = simd_width_of[f64]()
 
-    def closure[width: Int](i: Int) unified {mut vec, x}:
+    def closure[width: Int](i: Int) {mut vec, x}:
         vec.data[i * vec.stride] = x
 
     vectorize[simd_width](vec.size, closure)

@@ -145,7 +145,7 @@ def _gamma_func(x: Float64) -> Float64:
     xn -= 1.0
     var a = c[0]
     var t = xn + g + 0.5
-    for i in range(1, 10):
+    for i in range(1, 9):
         a += c[i] / (xn + Float64(i))
     return log(t) + 0.5 * exp(-t) - 0.918938533204673 + log(a / t)
 

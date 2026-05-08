@@ -32,7 +32,7 @@ A block is a simple array wrapper that manages memory allocation
 for contiguous data storage. Vectors can be created from blocks.
 """
 
-from std.memory import UnsafePointer, memset_zero
+from std.memory import UnsafePointer, memset_zero, memcpy
 
 from msl.core.const import MSL_DBL_EPSILON
 from msl.core.types import STATUS_SUCCESS, STATUS_FAILURE
@@ -56,8 +56,18 @@ struct Block(Copyable, Movable):
         if initialize:
             memset_zero(self.data, size)
 
+    def __init__(out self, *, copy: Self):
+        self.size = copy.size
+        self.data = alloc[Float64](copy.size)
+        if copy.size > 0:
+            memcpy(dest=self.data, src=copy.data, count=copy.size)
+
+    def __init__(out self, *, deinit take: Self):
+        self.size = take.size
+        self.data = take.data
+
     def __del__(deinit self):
-        if self.data != UnsafePointer[Float64, MutExt]() and self.size > 0:
+        if self.size > 0:
             self.data.free()
 
     def nelems(self) -> Int:

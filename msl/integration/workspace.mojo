@@ -41,7 +41,7 @@ comptime GSL_KRONROD_51: Int = 5
 comptime GSL_KRONROD_61: Int = 6
 
 
-struct QKResult(Movable):
+struct QKResult(Copyable, Movable):
     var result: Float64
     var abserr: Float64
     var resabs: Float64
@@ -53,8 +53,20 @@ struct QKResult(Movable):
         self.resabs = 0.0
         self.resasc = 0.0
 
+    def __init__(out self, *, copy: Self):
+        self.result = copy.result
+        self.abserr = copy.abserr
+        self.resabs = copy.resabs
+        self.resasc = copy.resasc
 
-struct IntegrationResult(Movable):
+    def __init__(out self, *, deinit take: Self):
+        self.result = take.result
+        self.abserr = take.abserr
+        self.resabs = take.resabs
+        self.resasc = take.resasc
+
+
+struct IntegrationResult(Copyable, Movable):
     """Result of an integration operation."""
 
     var val: Float64
@@ -63,3 +75,11 @@ struct IntegrationResult(Movable):
     def __init__(out self):
         self.val = 0.0
         self.err = 0.0
+
+    def __init__(out self, *, copy: Self):
+        self.val = copy.val
+        self.err = copy.err
+
+    def __init__(out self, *, deinit take: Self):
+        self.val = take.val
+        self.err = take.err

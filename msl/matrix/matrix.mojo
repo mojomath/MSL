@@ -54,7 +54,7 @@ struct Matrix(Copyable, Movable):
     """Number of columns. (size2 in gsl)."""
     var tda: Int
     var data: UnsafePointer[Float64, MutExt]
-    var block: UnsafePointer[Block, MutExt]
+    var block: Optional[UnsafePointer[Block, MutExt]]
     var owner: Int
 
     def __init__(out self, n1: Int, n2: Int, *, initialize: Bool = False):
@@ -63,14 +63,15 @@ struct Matrix(Copyable, Movable):
         self.tda = n2
         var blk = Block(n1 * n2, initialize=initialize)
         self.data = blk.data
-        self.block = alloc[Block](1)
-        self.block.init_pointee_move(blk^)
+        var bptr = alloc[Block](1)
+        bptr.init_pointee_move(blk^)
+        self.block = bptr
         self.owner = 1
 
     def __del__(deinit self):
-        if self.owner == 1 and self.block != UnsafePointer[Block, MutExt]():
-            self.block.destroy_pointee()
-            self.block.free()
+        if self.owner == 1 and self.block:
+            self.block.value().destroy_pointee()
+            self.block.value().free()
 
     def size1(self) -> Int:
         """Return number of rows."""
@@ -132,8 +133,7 @@ struct Matrix(Copyable, Movable):
         var mat = Matrix(n1, n2, initialize=True)
         comptime simd_width: Int = simd_width_of[f64]()
 
-        @parameter
-        def closure[width: Int](i: Int) unified {mut mat, read x}:
+        def closure[width: Int](i: Int) {mut mat, x}:
             mat.data[i] = x
 
         vectorize[simd_width](mat.nelems(), closure)
@@ -213,8 +213,7 @@ def matrix_set_all(mut mat: Matrix, x: Float64):
     """
     comptime simd_width: Int = simd_width_of[f64]()
 
-    @parameter
-    def closure[width: Int](i: Int) unified {mut mat, read x}:
+    def closure[width: Int](i: Int) {mut mat, x}:
         mat.data[i] = x
 
     vectorize[simd_width](mat.nelems(), closure)

@@ -72,7 +72,7 @@ comptime _wgk: InlineArray[Float64, 11] = [
 ]
 
 
-def qk21[f: def(Float64) -> Float64](a: Float64, b: Float64) -> QKResult:
+def qk21[fn_: def(Float64) thin -> Float64](a: Float64, b: Float64) -> QKResult:
     """21-point Gauss-Kronrod quadrature.
 
     Parameters:
@@ -85,6 +85,6 @@ def qk21[f: def(Float64) -> Float64](a: Float64, b: Float64) -> QKResult:
     Returns:
         QKResult with result, abserr, resabs, resasc.
     """
-    var fv1 = InlineArray[Float64, 11]()
-    var fv2 = InlineArray[Float64, 11]()
-    return _qk_generic[f](11, _xgk, _wg, _wgk, fv1, fv2, a, b)
+    var fv1 = InlineArray[Float64, 11](uninitialized=True)
+    var fv2 = InlineArray[Float64, 11](uninitialized=True)
+    return _qk_generic[fn_](11, _xgk, _wg, _wgk, fv1, fv2, a, b)
