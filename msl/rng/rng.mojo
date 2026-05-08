@@ -27,14 +27,32 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 # ===----------------------------------------------------------------------=== #
 """
-Random number generator: Mersenne Twister (MT19937).
+Random number generator infrastructure and MT19937 implementation.
 
-This is a pure Mojo implementation of the Mersenne Twister algorithm.
-Based on the GSL implementation which is based on the original
-algorithm by Makoto Matsumoto and Takuji Nishimura.
+Defines the `RNGAlgorithm` trait and the parametric `RNG[T]` wrapper.
+`MT19937` is the default algorithm.
 """
 
 from std.memory import UnsafePointer
+
+
+# ===----------------------------------------------------------------------=== #
+# RNGAlgorithm trait
+# ===----------------------------------------------------------------------=== #
+
+
+trait RNGAlgorithm(Copyable, Movable, ImplicitlyDestructible):
+    """Interface for RNG algorithms.
+
+    Implementors provide raw 64-bit integer generation and seeding.
+    The `RNG[T]` wrapper adds the uniform/integer convenience API on top.
+    """
+
+    def next(mut self) -> UInt64:
+        ...
+
+    def seed(mut self, s: UInt64):
+        ...
 
 
 # ===----------------------------------------------------------------------=== #
@@ -54,7 +72,7 @@ comptime MT_LOWER_MASK: UInt64 = 0x7FFFFFFF
 
 
 struct MTState(Copyable, Movable):
-    """Mersenne Twister state."""
+    """Mersenne Twister internal state buffer."""
 
     var state: UnsafePointer[UInt64, MutExt]
     var idx: Int
@@ -62,6 +80,16 @@ struct MTState(Copyable, Movable):
     def __init__(out self):
         self.state = alloc[UInt64](MT_N)
         self.idx = MT_N
+
+    def __init__(out self, *, deinit take: Self):
+        self.state = take.state
+        self.idx = take.idx
+
+    def __init__(out self, *, copy: Self):
+        self.state = alloc[UInt64](MT_N)
+        self.idx = copy.idx
+        for i in range(MT_N):
+            self.state.store(i, copy.state[i])
 
     def __del__(deinit self):
         self.state.free()
@@ -77,114 +105,131 @@ struct MTState(Copyable, Movable):
 
 
 # ===----------------------------------------------------------------------=== #
-# MT19937 functions
+# MT19937 algorithm struct
 # ===----------------------------------------------------------------------=== #
 
 
-def mt19937_init(mut state: MTState, seed: UInt64):
-    """Initialize MT19937 with seed."""
-    state[0] = seed
-    for i in range(1, MT_N):
-        var prev = state.state[i - 1]
-        state.state.store(
-            i,
-            (1812433253 * (prev ^ (prev >> 30)) + UInt64(i))
-            % UInt64(0x100000000),
-        )
-    state.idx = MT_N
+struct MT19937(RNGAlgorithm):
+    """Mersenne Twister MT19937 random number generator algorithm."""
 
+    var _state: MTState
 
-def mt19937_get(mut state: MTState) -> UInt64:
-    """Generate next MT19937 random value."""
-    if state.idx >= MT_N:
-        var i: Int = 0
-        while i < MT_N - MT_M:
-            var y = (state.state[i] & MT_UPPER_MASK) | (
-                state.state[i + 1] & MT_LOWER_MASK
+    def __init__(out self, s: UInt64 = 5489):
+        self._state = MTState()
+        self.seed(s)
+
+    def __init__(out self, *, deinit take: Self):
+        self._state = take._state^
+
+    def __init__(out self, *, copy: Self):
+        self._state = copy._state.copy()
+
+    def seed(mut self, s: UInt64):
+        """Re-seed the generator."""
+        self._state[0] = s
+        for i in range(1, MT_N):
+            var prev = self._state.state[i - 1]
+            self._state.state.store(
+                i,
+                (1812433253 * (prev ^ (prev >> 30)) + UInt64(i))
+                % UInt64(0x100000000),
             )
-            var idx = i + MT_M
-            state.state.store(
-                i, state.state[idx] ^ (y >> 1) ^ MT_MATRIX_A * (y & 1)
+        self._state.idx = MT_N
+
+    def next(mut self) -> UInt64:
+        """Generate next raw 64-bit value."""
+        if self._state.idx >= MT_N:
+            var i: Int = 0
+            while i < MT_N - MT_M:
+                var y = (self._state.state[i] & MT_UPPER_MASK) | (
+                    self._state.state[i + 1] & MT_LOWER_MASK
+                )
+                var idx = i + MT_M
+                self._state.state.store(
+                    i, self._state.state[idx] ^ (y >> 1) ^ MT_MATRIX_A * (y & 1)
+                )
+                i += 1
+
+            while i < MT_N - 1:
+                var y = (self._state.state[i] & MT_UPPER_MASK) | (
+                    self._state.state[i + 1] & MT_LOWER_MASK
+                )
+                var idx = i + MT_M - MT_N
+                self._state.state.store(
+                    i, self._state.state[idx] ^ (y >> 1) ^ MT_MATRIX_A * (y & 1)
+                )
+                i += 1
+
+            var y = (self._state.state[MT_N - 1] & MT_UPPER_MASK) | (
+                self._state.state[0] & MT_LOWER_MASK
             )
-            i += 1
-
-        while i < MT_N - 1:
-            var y = (state.state[i] & MT_UPPER_MASK) | (
-                state.state[i + 1] & MT_LOWER_MASK
+            self._state.state.store(
+                MT_N - 1, self._state.state[MT_M - 1] ^ (y >> 1) ^ MT_MATRIX_A * (y & 1)
             )
-            var idx = i + MT_M - MT_N
-            state.state.store(
-                i, state.state[idx] ^ (y >> 1) ^ MT_MATRIX_A * (y & 1)
-            )
-            i += 1
+            self._state.idx = 0
 
-        y = (state.state[MT_N - 1] & MT_UPPER_MASK) | (
-            state.state[0] & MT_LOWER_MASK
-        )
-        var idx = MT_M - 1
-        state.state.store(
-            MT_N - 1, state.state[idx] ^ (y >> 1) ^ MT_MATRIX_A * (y & 1)
-        )
+        var y2 = self._state.state[self._state.idx]
+        self._state.idx += 1
 
-        state.idx = 0
+        y2 ^= y2 >> 11
+        y2 ^= (y2 << 7) & 0x9D2C5680
+        y2 ^= (y2 << 15) & 0xEFC60000
+        y2 ^= y2 >> 18
 
-    var y2 = state.state[state.idx]
-    state.idx += 1
-
-    y2 ^= y2 >> 11
-    y2 ^= (y2 << 7) & 0x9D2C5680
-    y2 ^= (y2 << 15) & 0xEFC60000
-    y2 ^= y2 >> 18
-
-    return y2
-
-
-def mt19937_get_double(mut state: MTState) -> Float64:
-    """Generate uniform double in [0, 1)."""
-    return Float64(mt19937_get(state)) / Float64(0x100000000)
+        return y2
 
 
 # ===----------------------------------------------------------------------=== #
-# RNG wrapper
+# RNG parametric wrapper
 # ===----------------------------------------------------------------------=== #
 
 
-struct RNG(Copyable, Movable):
-    """Random number generator using MT19937."""
+struct RNG[T: RNGAlgorithm](Copyable, Movable):
+    """Parametric random number generator.
 
-    var state: MTState
+    Wraps any `RNGAlgorithm` implementation and provides the standard
+    uniform/integer sampling API. Default algorithm is MT19937.
+
+    Example:
+        var rng = RNG[MT19937](seed=42)
+        var x = rng.uniform()
+    """
+
+    var _algo: Self.T
     var seed_val: UInt64
-    var name: String
 
-    def __init__(out self, seed: UInt64 = 5489):
-        self.state = MTState()
+    def __init__(out self, var algo: Self.T, seed: UInt64):
         self.seed_val = seed
-        self.name = "mt19937"
-        mt19937_init(self.state, seed)
+        self._algo = algo^
 
-    def __del__(deinit self):
-        _ = self.state
+    def __init__(out self, *, deinit take: Self):
+        self.seed_val = take.seed_val
+        self._algo = take._algo^
 
-    def set_seed(mut self, seed: UInt64):
-        """Set the seed."""
-        self.seed_val = seed
-        mt19937_init(self.state, seed)
+    def __init__(out self, *, copy: Self):
+        self.seed_val = copy.seed_val
+        self._algo = copy._algo.copy()
+
+    def set_seed(mut self, s: UInt64):
+        """Re-seed the generator."""
+        self.seed_val = s
+        self._algo.seed(s)
 
     def get(mut self) -> UInt64:
-        """Get next unsigned 64-bit integer."""
-        return mt19937_get(self.state)
+        """Return next raw 64-bit integer."""
+        return self._algo.next()
 
     def uniform(mut self) -> Float64:
-        """Get uniform random double in [0, 1)."""
-        return mt19937_get_double(self.state)
+        """Return uniform random double in [0, 1)."""
+        return Float64(self._algo.next()) / Float64(0x100000000)
 
     def uniform_pos(mut self) -> Float64:
-        """Get uniform random double in (0, 1)."""
+        """Return uniform random double in (0, 1)."""
         var x = self.uniform()
         while x == 0.0:
             x = self.uniform()
         return x
 
     def uniform_int(mut self, n: Int) -> Int:
-        """Get uniform random integer in [0, n)."""
+        """Return uniform random integer in [0, n)."""
         return Int(self.uniform() * Float64(n))

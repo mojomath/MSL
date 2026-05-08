@@ -82,7 +82,7 @@ from msl.integration import (
 )
 
 # RNG
-from msl.rng import RNG
+from msl.rng import RNGAlgorithm, MT19937, RNG
 
 # Distributions
 from msl.distributions import (

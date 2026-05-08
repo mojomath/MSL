@@ -33,14 +33,14 @@ Pure Mojo implementation of common probability distributions.
 from std.math import exp, log, sqrt, cos, sin
 
 from msl.core.const import MSL_PI, MSL_FLT_EPSILON
-from msl.rng import RNG
+from msl.rng import RNG, RNGAlgorithm, MT19937
 
 # ===----------------------------------------------------------------------=== #
 # Gaussian
 # ===----------------------------------------------------------------------=== #
 
 
-def gaussian(mut rng: RNG, sigma: Float64) -> Float64:
+def gaussian[T: RNGAlgorithm](mut rng: RNG[T], sigma: Float64) -> Float64:
     var x1 = rng.uniform()
     var x2 = rng.uniform()
 
@@ -61,7 +61,7 @@ def gaussian_pdf(x: Float64, sigma: Float64) -> Float64:
 # ===----------------------------------------------------------------------=== #
 
 
-def uniform(mut rng: RNG, a: Float64, b: Float64) -> Float64:
+def uniform[T: RNGAlgorithm](mut rng: RNG[T], a: Float64, b: Float64) -> Float64:
     return a + (b - a) * rng.uniform()
 
 
@@ -76,7 +76,7 @@ def uniform_pdf(x: Float64, a: Float64, b: Float64) -> Float64:
 # ===----------------------------------------------------------------------=== #
 
 
-def exponential(mut rng: RNG, mu: Float64) -> Float64:
+def exponential[T: RNGAlgorithm](mut rng: RNG[T], mu: Float64) -> Float64:
     return -mu * log(rng.uniform())
 
 
@@ -91,7 +91,7 @@ def exponential_pdf(x: Float64, mu: Float64) -> Float64:
 # ===----------------------------------------------------------------------=== #
 
 
-def gamma(mut rng: RNG, a: Float64, b: Float64) -> Float64:
+def gamma[T: RNGAlgorithm](mut rng: RNG[T], a: Float64, b: Float64) -> Float64:
     if a < 1.0:
         return gamma(rng, a + 1.0, b) * rng.uniform() ** (1.0 / a)
 
@@ -155,7 +155,7 @@ def _gamma_func(x: Float64) -> Float64:
 # ===----------------------------------------------------------------------=== #
 
 
-def beta(mut rng: RNG, a: Float64, b: Float64) -> Float64:
+def beta[T: RNGAlgorithm](mut rng: RNG[T], a: Float64, b: Float64) -> Float64:
     var x = gamma(rng, a, 1.0)
     var y = gamma(rng, b, 1.0)
     return x / (x + y)
@@ -166,7 +166,7 @@ def beta(mut rng: RNG, a: Float64, b: Float64) -> Float64:
 # ===----------------------------------------------------------------------=== #
 
 
-def chisq(mut rng: RNG, nu: Float64) -> Float64:
+def chisq[T: RNGAlgorithm](mut rng: RNG[T], nu: Float64) -> Float64:
     return 2.0 * gamma(rng, nu / 2.0, 1.0)
 
 
@@ -175,7 +175,7 @@ def chisq(mut rng: RNG, nu: Float64) -> Float64:
 # ===----------------------------------------------------------------------=== #
 
 
-def poisson(mut rng: RNG, mu: Float64) -> Int:
+def poisson[T: RNGAlgorithm](mut rng: RNG[T], mu: Float64) -> Int:
     if mu < 30.0:
         var em: Float64 = -1.0
         var sum: Float64 = 0.0

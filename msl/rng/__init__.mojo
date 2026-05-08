@@ -1,1 +1,1 @@
-from .rng import RNG
+from .rng import RNGAlgorithm, MT19937, RNG
