@@ -57,7 +57,7 @@ def _rescale_error(
 
 
 def _qk_generic[
-    fn_: def(Float64) -> Float64,
+    fn_: def(Float64) capturing -> Float64,
 ](
     n: Int,
     xgk: InlineArray[Float64, _],
