@@ -35,6 +35,7 @@ linear algebra operations.
 from std.memory import UnsafePointer, memset_zero
 from std.algorithm.functional import vectorize
 from std.sys.info import simd_width_of
+from std.math import sqrt
 
 from msl.core import Block
 from msl.core.const import MSL_DBL_EPSILON
@@ -192,3 +193,84 @@ def vector_set_all(mut vec: Vector, x: Float64):
         vec.data[i * vec.stride] = x
 
     vectorize[simd_width](vec.size, closure)
+
+
+def vector_add(mut a: Vector, b: Vector):
+    """Add vector b into a in-place: a[i] += b[i].
+
+    Args:
+        a: Destination vector (mutated).
+        b: Source vector.
+    """
+    for i in range(a.size):
+        a.data[i * a.stride] += b.data[i * b.stride]
+
+
+def vector_sub(mut a: Vector, b: Vector):
+    """Subtract vector b from a in-place: a[i] -= b[i].
+
+    Args:
+        a: Destination vector (mutated).
+        b: Source vector.
+    """
+    for i in range(a.size):
+        a.data[i * a.stride] -= b.data[i * b.stride]
+
+
+def vector_scale(mut vec: Vector, alpha: Float64):
+    """Scale all elements by alpha in-place: vec[i] *= alpha.
+
+    Args:
+        vec: Vector to scale.
+        alpha: Scalar multiplier.
+    """
+    comptime simd_width: Int = simd_width_of[f64]()
+
+    def closure[width: Int](i: Int) {mut vec, alpha}:
+        vec.data[i * vec.stride] *= alpha
+
+    vectorize[simd_width](vec.size, closure)
+
+
+def vector_axpy(alpha: Float64, x: Vector, mut y: Vector):
+    """AXPY: y[i] += alpha * x[i].
+
+    Args:
+        alpha: Scalar multiplier.
+        x: Source vector.
+        y: Destination vector (mutated).
+    """
+    for i in range(y.size):
+        y.data[i * y.stride] += alpha * x.data[i * x.stride]
+
+
+def vector_dot(a: Vector, b: Vector) -> Float64:
+    """Dot product: sum of a[i] * b[i].
+
+    Args:
+        a: First vector.
+        b: Second vector.
+
+    Returns:
+        Dot product value.
+    """
+    var result: Float64 = 0.0
+    for i in range(a.size):
+        result += a.data[i * a.stride] * b.data[i * b.stride]
+    return result
+
+
+def vector_norm(vec: Vector) -> Float64:
+    """Euclidean norm: sqrt(sum of vec[i]^2).
+
+    Args:
+        vec: Vector to compute norm of.
+
+    Returns:
+        Euclidean norm.
+    """
+    var result: Float64 = 0.0
+    for i in range(vec.size):
+        var v = vec.data[i * vec.stride]
+        result += v * v
+    return sqrt(result)

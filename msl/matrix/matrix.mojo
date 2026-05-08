@@ -228,3 +228,77 @@ def matrix_set_identity(mut mat: Matrix):
     for i in range(mat.s1):
         if i < mat.s2:
             mat.data[i * mat.tda + i] = 1.0
+
+
+def matrix_add(mut a: Matrix, b: Matrix):
+    """Add matrix b into a in-place: a[i,j] += b[i,j].
+
+    Args:
+        a: Destination matrix (mutated).
+        b: Source matrix.
+    """
+    for i in range(a.s1):
+        for j in range(a.s2):
+            a.data[i * a.tda + j] += b.data[i * b.tda + j]
+
+
+def matrix_sub(mut a: Matrix, b: Matrix):
+    """Subtract matrix b from a in-place: a[i,j] -= b[i,j].
+
+    Args:
+        a: Destination matrix (mutated).
+        b: Source matrix.
+    """
+    for i in range(a.s1):
+        for j in range(a.s2):
+            a.data[i * a.tda + j] -= b.data[i * b.tda + j]
+
+
+def matrix_scale(mut mat: Matrix, alpha: Float64):
+    """Scale all elements by alpha in-place: mat[i,j] *= alpha.
+
+    Args:
+        mat: Matrix to scale.
+        alpha: Scalar multiplier.
+    """
+    comptime simd_width: Int = simd_width_of[f64]()
+
+    def closure[width: Int](i: Int) {mut mat, alpha}:
+        mat.data[i] *= alpha
+
+    vectorize[simd_width](mat.nelems(), closure)
+
+
+def matrix_transpose(a: Matrix) -> Matrix:
+    """Return a new matrix that is the transpose of a.
+
+    Args:
+        a: Input matrix of shape (m, n).
+
+    Returns:
+        New matrix of shape (n, m).
+    """
+    var result = Matrix(a.s2, a.s1)
+    for i in range(a.s1):
+        for j in range(a.s2):
+            result.data[j * result.tda + i] = a.data[i * a.tda + j]
+    return result^
+
+
+def matrix_mul(a: Matrix, b: Matrix) -> Matrix:
+    """Matrix multiplication: result = a @ b.
+
+    Args:
+        a: Left matrix of shape (m, k).
+        b: Right matrix of shape (k, n).
+
+    Returns:
+        New matrix of shape (m, n).
+    """
+    var result = Matrix(a.s1, b.s2, initialize=True)
+    for i in range(a.s1):
+        for k in range(a.s2):
+            var aik = a.data[i * a.tda + k]
+            for j in range(b.s2):
+                result.data[i * result.tda + j] += aik * b.data[k * b.tda + j]
+    return result^

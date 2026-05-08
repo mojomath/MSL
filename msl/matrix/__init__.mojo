@@ -7,4 +7,9 @@ from .matrix import (
     matrix_set_zero,
     matrix_set_all,
     matrix_set_identity,
+    matrix_add,
+    matrix_sub,
+    matrix_scale,
+    matrix_transpose,
+    matrix_mul,
 )

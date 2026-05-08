@@ -6,4 +6,10 @@ from .vector import (
     vector_stride,
     vector_set_zero,
     vector_set_all,
+    vector_add,
+    vector_sub,
+    vector_scale,
+    vector_axpy,
+    vector_dot,
+    vector_norm,
 )

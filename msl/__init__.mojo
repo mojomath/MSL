@@ -101,6 +101,6 @@ from msl.distributions import (
 )
 
 # Linear algebra primitives
-from msl.vector import Vector, vector_alloc, vector_calloc, vector_size, vector_stride, vector_set_zero, vector_set_all
-from msl.matrix import Matrix, matrix_alloc, matrix_calloc, matrix_size1, matrix_size2, matrix_set_zero, matrix_set_all, matrix_set_identity
+from msl.vector import Vector, vector_alloc, vector_calloc, vector_size, vector_stride, vector_set_zero, vector_set_all, vector_add, vector_sub, vector_scale, vector_axpy, vector_dot, vector_norm
+from msl.matrix import Matrix, matrix_alloc, matrix_calloc, matrix_size1, matrix_size2, matrix_set_zero, matrix_set_all, matrix_set_identity, matrix_add, matrix_sub, matrix_scale, matrix_transpose, matrix_mul
 from msl.permutation import Permutation, permutation_alloc, permutation_init, permutation_next
