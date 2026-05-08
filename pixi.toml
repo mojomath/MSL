@@ -1,6 +1,6 @@
 [workspace]
 authors = ["shivasankar <shivasankar.ka@gmail.com>"]
-channels = ["conda-forge", "https://conda.modular.com/max/"]
+channels = ["https://conda.modular.com/max/", "conda-forge"]
 name = "gsl-bindings"
 platforms = ["osx-arm64"]
 version = "0.1.0"
@@ -19,22 +19,22 @@ backend = {name = "pixi-build-mojo", version = "0.*", channels = [
 name = "msl"
 
 [package.host-dependencies]
-mojo = "26.2.*"
+mojo = "==1.0.0b1"
 gsl = ">=2.8,<3"
 
 [package.build-dependencies]
-mojo = "26.2.*"
+mojo = "==1.0.0b1"
 gsl = ">=2.8,<3"
 
 [package.run-dependencies]
-mojo = "26.2.*"
+mojo = "==1.0.0b1"
 gsl = ">=2.8,<3"
 
 [tasks]
 format = "mojo format ./msl"
 package = "mojo package msl"
-test = "bash tests/tests.sh"
+tests = "bash tests/tests.sh"
 
 [dependencies]
-mojo = ">=0.26.2.0,<0.27"
 mojoblas = {git = "https://github.com/shivasankarka/mojoBLAS.git", branch = "main"}
+mojo = ">=1.0.0b1,<2"
