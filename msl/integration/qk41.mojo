@@ -95,7 +95,9 @@ comptime _wgk: InlineArray[Float64, 21] = [
 ]
 
 
-def qk41[fn_: def(Float64) capturing -> Float64](a: Float64, b: Float64) -> QKResult:
+def qk41[
+    fn_: def(Float64) capturing -> Float64
+](a: Float64, b: Float64) -> QKResult:
     """41-point Gauss-Kronrod quadrature."""
     var fv1 = InlineArray[Float64, 21](uninitialized=True)
     var fv2 = InlineArray[Float64, 21](uninitialized=True)

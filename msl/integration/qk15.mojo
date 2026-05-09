@@ -82,7 +82,9 @@ def _rescale_error(
     return e
 
 
-def qk15[fn_: def(Float64) capturing -> Float64](a: Float64, b: Float64) -> QKResult:
+def qk15[
+    fn_: def(Float64) capturing -> Float64
+](a: Float64, b: Float64) -> QKResult:
     var n = 8
 
     var fv1_0: Float64 = 0.0

@@ -80,6 +80,12 @@ from .legendre import (
 
 from .result import SFSResult
 
+from .psi import psi, psi_n
+
+from .gamma_inc import gamma_inc, gamma_inc_P, gamma_inc_Q
+
+from .beta_inc import beta_inc
+
 comptime PrecisionDouble: Int = 0
 comptime PrecisionSingle: Int = 1
 comptime PrecisionApprox: Int = 2

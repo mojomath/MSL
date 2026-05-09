@@ -30,4 +30,3 @@ Type definitions for MSL.
 
 Base types and function callback types used throughout MSL.
 """
-

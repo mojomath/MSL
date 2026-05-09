@@ -61,7 +61,9 @@ def gaussian_pdf(x: Float64, sigma: Float64) -> Float64:
 # ===----------------------------------------------------------------------=== #
 
 
-def uniform[T: RNGAlgorithm](mut rng: RNG[T], a: Float64, b: Float64) -> Float64:
+def uniform[
+    T: RNGAlgorithm
+](mut rng: RNG[T], a: Float64, b: Float64) -> Float64:
     return a + (b - a) * rng.uniform()
 
 

@@ -41,7 +41,7 @@ from std.memory import UnsafePointer
 # ===----------------------------------------------------------------------=== #
 
 
-trait RNGAlgorithm(Copyable, Movable, ImplicitlyDestructible):
+trait RNGAlgorithm(Copyable, ImplicitlyDestructible, Movable):
     """Interface for RNG algorithms.
 
     Implementors provide raw 64-bit integer generation and seeding.
@@ -164,7 +164,8 @@ struct MT19937(RNGAlgorithm):
                 self._state.state[0] & MT_LOWER_MASK
             )
             self._state.state.store(
-                MT_N - 1, self._state.state[MT_M - 1] ^ (y >> 1) ^ MT_MATRIX_A * (y & 1)
+                MT_N - 1,
+                self._state.state[MT_M - 1] ^ (y >> 1) ^ MT_MATRIX_A * (y & 1),
             )
             self._state.idx = 0
 
