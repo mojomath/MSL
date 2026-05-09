@@ -179,28 +179,16 @@ def chisq[T: RNGAlgorithm](mut rng: RNG[T], nu: Float64) -> Float64:
 
 
 def poisson[T: RNGAlgorithm](mut rng: RNG[T], mu: Float64) -> Int:
-    if mu < 30.0:
-        var em: Float64 = -1.0
-        var sum: Float64 = 0.0
-        while True:
-            em += 1.0
-            sum += exp(-(em + 1.0) / mu) * rng.uniform()
-            if sum > 1.0:
-                break
-        return Int(em)
-    else:
-        var L = exp(-mu)
-        var k: Int = 0
-        while True:
-            var p = L
-            var u = rng.uniform()
-            while u > p:
-                k += 1
-                p *= mu / Float64(k)
-                u = rng.uniform()
-            if u <= p:
-                break
-        return k
+    """Sample from Poisson(mu) using Knuth's algorithm."""
+    var L = exp(-mu)
+    var k: Int = 0
+    var p: Float64 = 1.0
+    while True:
+        k += 1
+        p *= rng.uniform()
+        if p <= L:
+            break
+    return k - 1
 
 
 def poisson_pdf(k: Int, mu: Float64) -> Float64:
