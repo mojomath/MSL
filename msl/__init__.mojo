@@ -104,6 +104,20 @@ from msl.distributions import (
     chisq,
     poisson,
     poisson_pdf,
+    tdist,
+    tdist_pdf,
+    lognormal,
+    lognormal_pdf,
+    weibull,
+    weibull_pdf,
+    binomial,
+    binomial_pdf,
+    negative_binomial,
+    negative_binomial_pdf,
+    cauchy,
+    cauchy_pdf,
+    laplace,
+    laplace_pdf,
 )
 
 # Linear algebra primitives
