@@ -867,8 +867,6 @@ def bessel_Jn(n: Int, x: Float64) -> SFSResult:
             return result^
 
         var ratio: Float64
-        var sgn: Float64
-
         var a: Float64 = 2.0 * Float64(nn) / xx
         var b: Float64 = 2.0 / xx
         var c: Float64

@@ -93,7 +93,6 @@ def _gamma_inc_P_series(a: Float64, x: Float64) -> Float64:
 
 
 def _gamma_inc_Q_CF(a: Float64, x: Float64) -> Float64:
-    var D = _D_factor(a, x)
     var FPMIN: Float64 = 1.0e-300
 
     # Seed the Lentz recurrence

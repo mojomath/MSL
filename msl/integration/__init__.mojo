@@ -47,3 +47,14 @@ from .qk41 import qk41
 from .qk51 import qk51
 from .qk61 import qk61
 from .qng import qng_integrate
+from .workspace import IntegrationWorkspace
+from .qag import (
+    qag,
+    GSL_INTEG_GAUSS15,
+    GSL_INTEG_GAUSS21,
+    GSL_INTEG_GAUSS31,
+    GSL_INTEG_GAUSS41,
+    GSL_INTEG_GAUSS51,
+    GSL_INTEG_GAUSS61,
+)
+from .qags import qags

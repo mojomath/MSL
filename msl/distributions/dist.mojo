@@ -222,7 +222,11 @@ def tdist_pdf(x: Float64, nu: Float64) -> Float64:
     """PDF of Student's t distribution."""
     var lg1 = lngamma_lanczos((nu + 1.0) / 2.0)
     var lg2 = lngamma_lanczos(nu / 2.0)
-    return exp(lg1 - lg2) / sqrt(MSL_PI * nu) * (1.0 + x * x / nu) ** (-(nu + 1.0) / 2.0)
+    return (
+        exp(lg1 - lg2)
+        / sqrt(MSL_PI * nu)
+        * (1.0 + x * x / nu) ** (-(nu + 1.0) / 2.0)
+    )
 
 
 # ===----------------------------------------------------------------------=== #
@@ -230,8 +234,11 @@ def tdist_pdf(x: Float64, nu: Float64) -> Float64:
 # ===----------------------------------------------------------------------=== #
 
 
-def lognormal[T: RNGAlgorithm](mut rng: RNG[T], zeta: Float64, sigma: Float64) -> Float64:
-    """Sample from log-normal distribution with log-mean zeta and log-std sigma."""
+def lognormal[
+    T: RNGAlgorithm
+](mut rng: RNG[T], zeta: Float64, sigma: Float64) -> Float64:
+    """Sample from log-normal distribution with log-mean zeta and log-std sigma.
+    """
     var u: Float64
     var v: Float64
     var r2: Float64
@@ -258,7 +265,9 @@ def lognormal_pdf(x: Float64, zeta: Float64, sigma: Float64) -> Float64:
 # ===----------------------------------------------------------------------=== #
 
 
-def weibull[T: RNGAlgorithm](mut rng: RNG[T], a: Float64, b: Float64) -> Float64:
+def weibull[
+    T: RNGAlgorithm
+](mut rng: RNG[T], a: Float64, b: Float64) -> Float64:
     """Sample from Weibull distribution with scale a and shape b."""
     return a * (-log(rng.uniform_pos())) ** (1.0 / b)
 
@@ -269,7 +278,7 @@ def weibull_pdf(x: Float64, a: Float64, b: Float64) -> Float64:
         return 0.0
     if x == 0.0:
         return 1.0 / a if b == 1.0 else 0.0
-    return (b / a) * exp(-(x / a) ** b + (b - 1.0) * log(x / a))
+    return (b / a) * exp(-((x / a) ** b) + (b - 1.0) * log(x / a))
 
 
 # ===----------------------------------------------------------------------=== #
@@ -312,7 +321,11 @@ def binomial_pdf(k: Int, p: Float64, n: Int) -> Float64:
         return 1.0 if k == n else 0.0
     var fk = Float64(k)
     var fln = Float64(n)
-    var lnchoose = lngamma_lanczos(fln + 1.0) - lngamma_lanczos(fk + 1.0) - lngamma_lanczos(fln - fk + 1.0)
+    var lnchoose = (
+        lngamma_lanczos(fln + 1.0)
+        - lngamma_lanczos(fk + 1.0)
+        - lngamma_lanczos(fln - fk + 1.0)
+    )
     return exp(lnchoose + fk * log(p) + (fln - fk) * log1p(-p))
 
 
@@ -321,7 +334,9 @@ def binomial_pdf(k: Int, p: Float64, n: Int) -> Float64:
 # ===----------------------------------------------------------------------=== #
 
 
-def negative_binomial[T: RNGAlgorithm](mut rng: RNG[T], p: Float64, n: Float64) -> Int:
+def negative_binomial[
+    T: RNGAlgorithm
+](mut rng: RNG[T], p: Float64, n: Float64) -> Int:
     """Sample from Negative Binomial(n, p) via Gamma-Poisson mixture."""
     var x = gamma(rng, n, 1.0)
     return poisson(rng, x * (1.0 - p) / p)
@@ -334,8 +349,11 @@ def negative_binomial_pdf(k: Int, p: Float64, n: Float64) -> Float64:
     var fk = Float64(k)
     var log_p = log(p)
     return exp(
-        lngamma_lanczos(n + fk) - lngamma_lanczos(n) - lngamma_lanczos(fk + 1.0)
-        + n * log_p + fk * log1p(-p)
+        lngamma_lanczos(n + fk)
+        - lngamma_lanczos(n)
+        - lngamma_lanczos(fk + 1.0)
+        + n * log_p
+        + fk * log1p(-p)
     )
 
 

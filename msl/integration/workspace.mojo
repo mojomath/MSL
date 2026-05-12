@@ -31,6 +31,8 @@ Workspace and result types for numerical integration.
 
 from std.memory import UnsafePointer, memset_zero
 
+from msl.core.const import MSL_DBL_MAX
+
 comptime MutExt = MutExternalOrigin
 
 comptime GSL_KRONROD_15: Int = 1
@@ -83,3 +85,203 @@ struct IntegrationResult(Copyable, Movable):
     def __init__(out self, *, deinit take: Self):
         self.val = take.val
         self.err = take.err
+
+
+struct IntegrationWorkspace(Movable):
+    """Adaptive integration workspace storing the interval heap.
+
+    Holds up to `limit` subintervals, sorted by descending error.
+    """
+
+    var limit: Int
+    var size: Int
+    var nrmax: Int
+    var i: Int
+    var maximum_level: Int
+    var alist: UnsafePointer[Float64, MutExt]
+    var blist: UnsafePointer[Float64, MutExt]
+    var rlist: UnsafePointer[Float64, MutExt]
+    var elist: UnsafePointer[Float64, MutExt]
+    var order: UnsafePointer[Int, MutExt]
+    var level: UnsafePointer[Int, MutExt]
+
+    def __init__(out self, limit: Int):
+        self.limit = limit
+        self.size = 0
+        self.nrmax = 0
+        self.i = 0
+        self.maximum_level = 0
+        self.alist = alloc[Float64](limit)
+        self.blist = alloc[Float64](limit)
+        self.rlist = alloc[Float64](limit)
+        self.elist = alloc[Float64](limit)
+        self.order = alloc[Int](limit)
+        self.level = alloc[Int](limit)
+        memset_zero(self.alist, limit)
+        memset_zero(self.blist, limit)
+        memset_zero(self.rlist, limit)
+        memset_zero(self.elist, limit)
+        memset_zero(self.order, limit)
+        memset_zero(self.level, limit)
+
+    def __init__(out self, *, deinit take: Self):
+        self.limit = take.limit
+        self.size = take.size
+        self.nrmax = take.nrmax
+        self.i = take.i
+        self.maximum_level = take.maximum_level
+        self.alist = take.alist
+        self.blist = take.blist
+        self.rlist = take.rlist
+        self.elist = take.elist
+        self.order = take.order
+        self.level = take.level
+
+    def __del__(deinit self):
+        self.alist.free()
+        self.blist.free()
+        self.rlist.free()
+        self.elist.free()
+        self.order.free()
+        self.level.free()
+
+    def initialise(
+        mut self, a: Float64, b: Float64, result: Float64, error: Float64
+    ):
+        """Set up workspace with the initial interval [a,b]."""
+        self.size = 1
+        self.nrmax = 0
+        self.i = 0
+        self.maximum_level = 0
+        self.alist[0] = a
+        self.blist[0] = b
+        self.rlist[0] = result
+        self.elist[0] = error
+        self.order[0] = 0
+        self.level[0] = 0
+
+    def retrieve(self) -> Tuple[Float64, Float64, Float64, Float64]:
+        """Return (a, b, result, error) for the current worst interval."""
+        return (
+            self.alist[self.i],
+            self.blist[self.i],
+            self.rlist[self.i],
+            self.elist[self.i],
+        )
+
+    def update(
+        mut self,
+        a1: Float64,
+        b1: Float64,
+        area1: Float64,
+        error1: Float64,
+        a2: Float64,
+        b2: Float64,
+        area2: Float64,
+        error2: Float64,
+    ):
+        """Store the two children of the bisected interval and run qpsrt."""
+        var i_max = self.i
+        var i_new = self.size
+        var new_level = self.level[i_max] + 1
+
+        if error2 > error1:
+            self.alist[i_max] = a2
+            self.blist[i_max] = b2
+            self.rlist[i_max] = area2
+            self.elist[i_max] = error2
+            self.level[i_max] = new_level
+
+            self.alist[i_new] = a1
+            self.blist[i_new] = b1
+            self.rlist[i_new] = area1
+            self.elist[i_new] = error1
+            self.level[i_new] = new_level
+        else:
+            self.alist[i_max] = a1
+            self.blist[i_max] = b1
+            self.rlist[i_max] = area1
+            self.elist[i_max] = error1
+            self.level[i_max] = new_level
+
+            self.alist[i_new] = a2
+            self.blist[i_new] = b2
+            self.rlist[i_new] = area2
+            self.elist[i_new] = error2
+            self.level[i_new] = new_level
+
+        self.size += 1
+        if new_level > self.maximum_level:
+            self.maximum_level = new_level
+
+        self._qpsrt()
+
+    def _qpsrt(mut self):
+        """Maintain order[] as descending-by-error index array."""
+        var last = self.size - 1
+        var i_nrmax = self.nrmax
+        var i_maxerr = self.order[i_nrmax]
+
+        if last < 2:
+            self.order[0] = 0
+            self.order[1] = 1
+            self.i = i_maxerr
+            return
+
+        var errmax = self.elist[i_maxerr]
+
+        while i_nrmax > 0 and errmax > self.elist[self.order[i_nrmax - 1]]:
+            self.order[i_nrmax] = self.order[i_nrmax - 1]
+            i_nrmax -= 1
+
+        var top: Int
+        if last < self.limit // 2 + 2:
+            top = last
+        else:
+            top = self.limit - last + 1
+
+        var idx = i_nrmax + 1
+        while idx < top and errmax < self.elist[self.order[idx]]:
+            self.order[idx - 1] = self.order[idx]
+            idx += 1
+        self.order[idx - 1] = i_maxerr
+
+        var errmin = self.elist[last]
+        var k = top - 1
+        while k > idx - 2 and errmin >= self.elist[self.order[k]]:
+            self.order[k + 1] = self.order[k]
+            k -= 1
+        self.order[k + 1] = last
+
+        self.i = self.order[i_nrmax]
+        self.nrmax = i_nrmax
+
+    def sum_results(self) -> Float64:
+        """Sum all rlist entries."""
+        var total: Float64 = 0.0
+        for k in range(self.size):
+            total += self.rlist[k]
+        return total
+
+    def large_interval(self) -> Bool:
+        return self.level[self.i] < self.maximum_level
+
+    def increase_nrmax(mut self) -> Bool:
+        """Advance nrmax past fully-refined intervals. Returns True if advanced.
+        """
+        var id = self.nrmax
+        var last = self.size - 1
+        var jupbnd = (
+            last if last > (1 + self.limit // 2) else self.limit + 1 - last
+        )
+        for _ in range(jupbnd - id):
+            var i_max = self.order[self.nrmax]
+            self.i = i_max
+            if self.level[i_max] < self.maximum_level:
+                return True
+            self.nrmax += 1
+        return False
+
+    def reset_nrmax(mut self):
+        self.nrmax = 0
+        self.i = self.order[0]

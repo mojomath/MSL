@@ -105,11 +105,18 @@ def _psi_x(x: Float64) -> Float64:
     """Digamma for x > 0."""
     if x >= 2.0:
         var t = 8.0 / (x * x) - 1.0
-        return log(x) - 0.5 / x + cheb_eval[16](_apsics_data, 15, -1.0, 1.0, t).val
+        return (
+            log(x) - 0.5 / x + cheb_eval[16](_apsics_data, 15, -1.0, 1.0, t).val
+        )
     elif x >= 1.0:
-        return cheb_eval[23](_psics_data, 22, -1.0, 1.0, 2.0 * (x - 1.0) - 1.0).val
+        return cheb_eval[23](
+            _psics_data, 22, -1.0, 1.0, 2.0 * (x - 1.0) - 1.0
+        ).val
     else:
-        return -1.0 / x + cheb_eval[23](_psics_data, 22, -1.0, 1.0, 2.0 * x - 1.0).val
+        return (
+            -1.0 / x
+            + cheb_eval[23](_psics_data, 22, -1.0, 1.0, 2.0 * x - 1.0).val
+        )
 
 
 # ===----------------------------------------------------------------------=== #

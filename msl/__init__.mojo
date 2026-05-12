@@ -78,6 +78,7 @@ from msl.sf import (
 from msl.integration import (
     QKResult,
     IntegrationResult,
+    IntegrationWorkspace,
     qk15,
     qk21,
     qk31,
@@ -85,6 +86,8 @@ from msl.integration import (
     qk51,
     qk61,
     qng_integrate,
+    qag,
+    qags,
 )
 
 # RNG
