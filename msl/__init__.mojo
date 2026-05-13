@@ -123,6 +123,17 @@ from msl.distributions import (
     laplace_pdf,
 )
 
+# Interpolation
+from msl.interpolation import (
+    InterpResult,
+    LinearInterp,
+    CubicSpline,
+    AkimaSpline,
+)
+
+# Numerical differentiation
+from msl.deriv import DerivResult, deriv_central, deriv_forward, deriv_backward
+
 # Linear algebra primitives
 from msl.vector import (
     Vector,

@@ -80,9 +80,9 @@ struct DerivResult(Copyable, Movable):
 # ===----------------------------------------------------------------------=== #
 
 
-def _central_deriv[fn_: def(Float64) capturing -> Float64](
-    x: Float64, h: Float64
-) -> Tuple[Float64, Float64, Float64]:
+def _central_deriv[
+    fn_: def(Float64) capturing -> Float64
+](x: Float64, h: Float64) -> Tuple[Float64, Float64, Float64]:
     """5-point central rule with embedded 3-point for error decomposition.
 
     Returns (result, abserr_round, abserr_trunc).
@@ -112,9 +112,9 @@ def _central_deriv[fn_: def(Float64) capturing -> Float64](
 # ===----------------------------------------------------------------------=== #
 
 
-def _forward_deriv[fn_: def(Float64) capturing -> Float64](
-    x: Float64, h: Float64
-) -> Tuple[Float64, Float64, Float64]:
+def _forward_deriv[
+    fn_: def(Float64) capturing -> Float64
+](x: Float64, h: Float64) -> Tuple[Float64, Float64, Float64]:
     """4-point forward rule with embedded 2-point for error decomposition.
 
     Returns (result, abserr_round, abserr_trunc).
@@ -125,9 +125,15 @@ def _forward_deriv[fn_: def(Float64) capturing -> Float64](
     var f4 = fn_(x + h)
 
     var r2 = 2.0 * (f4 - f2)
-    var r4 = (22.0 / 3.0) * (f4 - f3) - (62.0 / 3.0) * (f3 - f2) + (52.0 / 3.0) * (f2 - f1)
+    var r4 = (
+        (22.0 / 3.0) * (f4 - f3)
+        - (62.0 / 3.0) * (f3 - f2)
+        + (52.0 / 3.0) * (f2 - f1)
+    )
 
-    var e4 = 2.0 * 20.67 * (abs(f4) + abs(f3) + abs(f2) + abs(f1)) * MSL_DBL_EPSILON
+    var e4 = (
+        2.0 * 20.67 * (abs(f4) + abs(f3) + abs(f2) + abs(f1)) * MSL_DBL_EPSILON
+    )
     var dy = max(abs(r2 / h), abs(r4 / h)) * abs(x / h) * MSL_DBL_EPSILON
 
     var result = r4 / h
@@ -141,9 +147,9 @@ def _forward_deriv[fn_: def(Float64) capturing -> Float64](
 # ===----------------------------------------------------------------------=== #
 
 
-def deriv_central[fn_: def(Float64) capturing -> Float64](
-    x: Float64, h: Float64 = 1e-4
-) -> DerivResult:
+def deriv_central[
+    fn_: def(Float64) capturing -> Float64
+](x: Float64, h: Float64 = 1e-4) -> DerivResult:
     """First derivative via 5-point central differences.
 
     Uses the 5-point rule (x±h, x±h/2) with an embedded 3-point rule
@@ -180,9 +186,9 @@ def deriv_central[fn_: def(Float64) capturing -> Float64](
     return DerivResult(r0, error)
 
 
-def deriv_forward[fn_: def(Float64) capturing -> Float64](
-    x: Float64, h: Float64 = 1e-4
-) -> DerivResult:
+def deriv_forward[
+    fn_: def(Float64) capturing -> Float64
+](x: Float64, h: Float64 = 1e-4) -> DerivResult:
     """First derivative via 4-point forward differences.
 
     Uses evaluations at x+h/4, x+h/2, x+3h/4, x+h. Suitable for
@@ -219,9 +225,9 @@ def deriv_forward[fn_: def(Float64) capturing -> Float64](
     return DerivResult(r0, error)
 
 
-def deriv_backward[fn_: def(Float64) capturing -> Float64](
-    x: Float64, h: Float64 = 1e-4
-) -> DerivResult:
+def deriv_backward[
+    fn_: def(Float64) capturing -> Float64
+](x: Float64, h: Float64 = 1e-4) -> DerivResult:
     """First derivative via backward differences.
 
     Equivalent to deriv_forward evaluated at -h — the same 4-point

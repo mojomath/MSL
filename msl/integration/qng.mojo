@@ -242,9 +242,7 @@ def qng_integrate[
     """
     var result = IntegrationResult()
 
-    if epsabs <= 0.0 and (
-        epsrel < 50.0 * MSL_DBL_EPSILON or epsrel < 0.5e-28
-    ):
+    if epsabs <= 0.0 and (epsrel < 50.0 * MSL_DBL_EPSILON or epsrel < 0.5e-28):
         return result^
 
     var half_length = 0.5 * (b - a)
@@ -296,9 +294,7 @@ def qng_integrate[
         resasc += w21b[k] * (abs(fv3[k] - mean) + abs(fv4[k] - mean))
     resasc *= abs_half_length
 
-    var err21 = _rescale_error(
-        (res21 - res10) * half_length, resabs, resasc
-    )
+    var err21 = _rescale_error((res21 - res10) * half_length, resabs, resasc)
 
     if err21 <= max(epsabs, epsrel * abs(res21 * half_length)):
         result.val = res21 * half_length
@@ -318,9 +314,7 @@ def qng_integrate[
         savfun[idx] = fval
         idx += 1
 
-    var err43 = _rescale_error(
-        (res43 - res21) * half_length, resabs, resasc
-    )
+    var err43 = _rescale_error((res43 - res21) * half_length, resabs, resasc)
 
     if err43 <= max(epsabs, epsrel * abs(res43 * half_length)):
         result.val = res43 * half_length
@@ -336,9 +330,7 @@ def qng_integrate[
         var abscissa = half_length * x4[k]
         res87 += w87b[k] * (fn_(center + abscissa) + fn_(center - abscissa))
 
-    var err87 = _rescale_error(
-        (res87 - res43) * half_length, resabs, resasc
-    )
+    var err87 = _rescale_error((res87 - res43) * half_length, resabs, resasc)
 
     result.val = res87 * half_length
     result.err = err87
