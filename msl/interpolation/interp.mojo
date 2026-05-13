@@ -95,8 +95,7 @@ def _alloc_f64(n: Int) -> UnsafePointer[Float64, MutExternalOrigin]:
 
 
 struct LinearInterp[mut: Bool, origin: Origin[mut=mut], //](Movable):
-    """Piecewise linear interpolation.
-    """
+    """Piecewise linear interpolation."""
 
     var _xa: UnsafePointer[Float64, Self.origin]
     var _ya: UnsafePointer[Float64, Self.origin]
@@ -176,6 +175,7 @@ struct CubicSpline[mut: Bool, origin: Origin[mut=mut], //](Movable):
     Second derivatives at endpoints are zero (natural boundary conditions).
     Coefficients b, c, d stored per interval; c[i] = second derivative / 2.
     """
+
     comptime MutExt = MutExternalOrigin
 
     var _xa: UnsafePointer[Float64, Self.origin]
@@ -319,6 +319,7 @@ struct AkimaSpline[mut: Bool, origin: Origin[mut=mut], //](Movable):
     Uses weighted slope averages to compute Hermite cubic coefficients.
     More robust than cubic spline for data with outliers.
     """
+
     comptime MutExt = MutExternalOrigin
 
     var _xa: UnsafePointer[Float64, Self.origin]
