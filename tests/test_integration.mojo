@@ -78,6 +78,29 @@ def test_qng_exp() raises:
     print("test_qng_exp: PASSED")
 
 
+def test_qng_oscillatory_43() raises:
+    # sin(10x) needs higher-order rule; 21-point won't hit 1e-12
+    def fn_(x: Float64) capturing -> Float64:
+        return sin(10.0 * x)
+
+    var res = qng_integrate[fn_](0.0, 1.0, 1e-12, 1e-12)
+    # integral = (1 - cos(10)) / 10
+    var expected = (1.0 - cos(10.0)) / 10.0
+    assert tolerance(res.val, expected, 1e-10)
+    print("test_qng_oscillatory_43: PASSED")
+
+
+def test_qng_high_freq_87() raises:
+    # sin(50x) requires the 87-point rule at tight tolerance
+    def fn_(x: Float64) capturing -> Float64:
+        return sin(50.0 * x)
+
+    var res = qng_integrate[fn_](0.0, 1.0, 1e-10, 1e-10)
+    var expected = (1.0 - cos(50.0)) / 50.0
+    assert tolerance(res.val, expected, 1e-8)
+    print("test_qng_high_freq_87: PASSED")
+
+
 def main() raises:
     TestSuite.discover_tests[__functions_in_module()]().run()
     print("All integration tests PASSED")
