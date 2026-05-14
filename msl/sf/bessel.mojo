@@ -28,7 +28,7 @@
 """
 Bessel functions.
 
-This is a direct port of the GSL special functions implementation.
+
 """
 
 # TODO: Cross check this with CEPHES library implementations for accuracy.

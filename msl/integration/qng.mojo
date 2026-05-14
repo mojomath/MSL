@@ -229,7 +229,7 @@ def qng_integrate[
     function evaluations, until the tolerance is satisfied.
 
     Parameters:
-        fn_: Function to integrate, must have `capturing` effect.
+        fn_: Scalar function to integrate.
 
     Args:
         a: Lower limit.

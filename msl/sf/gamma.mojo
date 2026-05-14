@@ -28,7 +28,7 @@
 """
 Gamma functions.
 
-This is a direct port of the GSL special functions implementation.
+
 """
 
 from std.math import sqrt, exp, log, cos, sin, abs, floor

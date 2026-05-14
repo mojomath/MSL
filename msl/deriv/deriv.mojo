@@ -157,7 +157,7 @@ def deriv_central[
     truncation error, refines h once to minimise the total error.
 
     Parameters:
-        fn_: Function to differentiate, must have `capturing` effect.
+        fn_: Scalar function to differentiate.
 
     Args:
         x: Point at which to evaluate the derivative.
@@ -196,7 +196,7 @@ def deriv_forward[
     once if rounding error is dominant.
 
     Parameters:
-        fn_: Function to differentiate, must have `capturing` effect.
+        fn_: Scalar function to differentiate.
 
     Args:
         x: Point at which to evaluate the derivative.
@@ -234,7 +234,7 @@ def deriv_backward[
     stencil mirrored. Suitable for right-boundary points.
 
     Parameters:
-        fn_: Function to differentiate, must have `capturing` effect.
+        fn_: Scalar function to differentiate.
 
     Args:
         x: Point at which to evaluate the derivative.

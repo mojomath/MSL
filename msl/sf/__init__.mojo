@@ -21,7 +21,7 @@
 
 """Special functions (sf) module.
 
-This module implements special mathematical functions from GSL.
+This module implements special mathematical functions.
 """
 
 from .airy import (

@@ -209,7 +209,7 @@ def qags[
     and integrands with endpoint singularities.
 
     Parameters:
-        integrand: Function to integrate, must have `capturing` effect.
+        integrand: Scalar function to integrate.
 
     Args:
         a: Lower limit.

@@ -38,7 +38,7 @@ from .workspace import QKResult
 def _rescale_error(
     err: Float64, result_abs: Float64, result_asc: Float64
 ) -> Float64:
-    """Rescale the error estimate following GSL convention."""
+    """Rescale the error estimate."""
     var e = abs(err)
 
     if result_asc != 0.0 and e != 0.0:

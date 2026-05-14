@@ -88,7 +88,7 @@ def qag[
     """Adaptive Gauss-Kronrod integration of integrand over [a, b].
 
     Parameters:
-        integrand: Function to integrate, must have `capturing` effect.
+        integrand: Scalar function to integrate.
 
     Args:
         a: Lower limit.

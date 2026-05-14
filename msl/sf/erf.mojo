@@ -28,7 +28,7 @@
 """
 Error functions.
 
-This is a direct port of the GSL special functions implementation.
+
 """
 
 from msl.core.const import MSL_DBL_EPSILON, MSL_SQRTPI, MSL_SQRT2

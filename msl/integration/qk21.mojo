@@ -28,7 +28,7 @@
 """
 21-point Gauss-Kronrod quadrature rule.
 
-This is a direct port of the GSL QK21 routine.
+
 """
 
 from .qk import _qk_generic

@@ -123,6 +123,9 @@ from msl.distributions import (
     laplace_pdf,
 )
 
+# Optimization (root-finding + minimization)
+from msl.optimizer import RootResult, MinResult, root_bisect, root_brent, root_newton, root_secant, min_brent, min_golden
+
 # Interpolation
 from msl.interpolation import (
     InterpResult,
