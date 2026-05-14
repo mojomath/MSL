@@ -1,7 +1,7 @@
 from std.testing import TestSuite
 from std.math import abs, sin, cos, exp, sqrt, log
 
-from msl.integration import qag, qags, GSL_INTEG_GAUSS15, GSL_INTEG_GAUSS21, GSL_INTEG_GAUSS61
+from msl.integration import qag, qags, MSL_INTEG_GAUSS15, MSL_INTEG_GAUSS21, MSL_INTEG_GAUSS61
 
 
 def tolerance(x: Float64, expected: Float64, tol: Float64) -> Bool:
@@ -48,7 +48,7 @@ def test_qag_oscillatory() raises:
     def integrand(x: Float64) capturing -> Float64:
         return sin(100.0 * x)
 
-    var r = qag[integrand](0.0, 3.141592653589793, 1e-8, 1e-8, limit=200, key=GSL_INTEG_GAUSS61)
+    var r = qag[integrand](0.0, 3.141592653589793, 1e-8, 1e-8, limit=200, key=MSL_INTEG_GAUSS61)
     assert r.err < 1e-5
     print("test_qag_oscillatory: PASSED")
 
@@ -57,8 +57,8 @@ def test_qag_rule_selection() raises:
     def integrand(x: Float64) capturing -> Float64:
         return x * x * x
 
-    var r15 = qag[integrand](0.0, 1.0, 0.0, 1e-12, key=GSL_INTEG_GAUSS15)
-    var r21 = qag[integrand](0.0, 1.0, 0.0, 1e-12, key=GSL_INTEG_GAUSS21)
+    var r15 = qag[integrand](0.0, 1.0, 0.0, 1e-12, key=MSL_INTEG_GAUSS15)
+    var r21 = qag[integrand](0.0, 1.0, 0.0, 1e-12, key=MSL_INTEG_GAUSS21)
     assert tolerance(r15.val, 0.25, 1e-12)
     assert tolerance(r21.val, 0.25, 1e-12)
     print("test_qag_rule_selection: PASSED")

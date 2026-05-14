@@ -46,9 +46,9 @@ from msl.core.const import MSL_DBL_EPSILON
 # ===----------------------------------------------------------------------=== #
 
 
-# NOTE: I have kept the fields to be same as GSL for compatibility, but we will move to using matmojo so this is only temporary.
+
 struct Vector(Copyable, Movable):
-    """GSL vector structure for 1D arrays with stride."""
+    """1D array with stride."""
 
     var size: Int
     var stride: Int

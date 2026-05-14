@@ -35,12 +35,12 @@ from msl.core.const import MSL_DBL_MAX
 
 comptime MutExt = MutExternalOrigin
 
-comptime GSL_KRONROD_15: Int = 1
-comptime GSL_KRONROD_21: Int = 2
-comptime GSL_KRONROD_31: Int = 3
-comptime GSL_KRONROD_41: Int = 4
-comptime GSL_KRONROD_51: Int = 5
-comptime GSL_KRONROD_61: Int = 6
+comptime MSL_KRONROD_15: Int = 1
+comptime MSL_KRONROD_21: Int = 2
+comptime MSL_KRONROD_31: Int = 3
+comptime MSL_KRONROD_41: Int = 4
+comptime MSL_KRONROD_51: Int = 5
+comptime MSL_KRONROD_61: Int = 6
 
 
 struct QKResult(Copyable, Movable):

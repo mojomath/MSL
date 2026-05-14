@@ -1,3 +1,11 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (C) 2026 Shivasankar K.A.
+"""
+MSL (Mojo Scientific Library) — public API.
+
+Re-exports the full public surface of all MSL submodules.
+"""
+
 comptime MutExt = MutExternalOrigin
 """Alias for mutable external origin, used for pointers to external data."""
 
@@ -9,21 +17,21 @@ comptime __version__: String = "0.1.0"
 # Core
 from msl.core import Block, block_alloc, block_calloc, block_size, block_data
 from msl.core.errno import (
-    GSL_SUCCESS,
-    GSL_FAILURE,
-    GSL_CONTINUE,
-    GSL_EDOM,
-    GSL_ERANGE,
-    GSL_EINVAL,
-    GSL_EFAILED,
-    GSL_EMAXITER,
-    GSL_EZERODIV,
-    GSL_EBADTOL,
-    GSL_ETOL,
-    GSL_EUNDRFLW,
-    GSL_EOVRFLW,
-    GSL_ELOSS,
-    GSL_EROUND,
+    MSL_SUCCESS,
+    MSL_FAILURE,
+    MSL_CONTINUE,
+    MSL_EDOM,
+    MSL_ERANGE,
+    MSL_EINVAL,
+    MSL_EFAILED,
+    MSL_EMAXITER,
+    MSL_EZERODIV,
+    MSL_EBADTOL,
+    MSL_ETOL,
+    MSL_EUNDRFLW,
+    MSL_EOVRFLW,
+    MSL_ELOSS,
+    MSL_EROUND,
     msl_error,
 )
 

@@ -32,12 +32,12 @@ Numerical integration routines.
 from .workspace import (
     IntegrationResult,
     QKResult,
-    GSL_KRONROD_15,
-    GSL_KRONROD_21,
-    GSL_KRONROD_31,
-    GSL_KRONROD_41,
-    GSL_KRONROD_51,
-    GSL_KRONROD_61,
+    MSL_KRONROD_15,
+    MSL_KRONROD_21,
+    MSL_KRONROD_31,
+    MSL_KRONROD_41,
+    MSL_KRONROD_51,
+    MSL_KRONROD_61,
 )
 
 from .qk15 import qk15
@@ -50,11 +50,11 @@ from .qng import qng_integrate
 from .workspace import IntegrationWorkspace
 from .qag import (
     qag,
-    GSL_INTEG_GAUSS15,
-    GSL_INTEG_GAUSS21,
-    GSL_INTEG_GAUSS31,
-    GSL_INTEG_GAUSS41,
-    GSL_INTEG_GAUSS51,
-    GSL_INTEG_GAUSS61,
+    MSL_INTEG_GAUSS15,
+    MSL_INTEG_GAUSS21,
+    MSL_INTEG_GAUSS31,
+    MSL_INTEG_GAUSS41,
+    MSL_INTEG_GAUSS51,
+    MSL_INTEG_GAUSS61,
 )
 from .qags import qags

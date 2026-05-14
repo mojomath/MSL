@@ -35,7 +35,7 @@ Regularized incomplete gamma functions P(a,x) and Q(a,x).
 from std.math import exp, log, sqrt, abs, erfc, log1p
 
 from msl.core.const import MSL_DBL_EPSILON, MSL_PI
-from msl.core.errno import GSL_EDOM
+from msl.core.errno import MSL_EDOM
 from msl.sf.result import SFSResult
 from msl.sf.gamma import lngamma_lanczos, _gammastar
 
@@ -241,7 +241,7 @@ def gamma_inc_Q(a: Float64, x: Float64) -> SFSResult:
     """
     var result = SFSResult()
     if a <= 0.0 or x < 0.0:
-        result.errno = GSL_EDOM
+        result.errno = MSL_EDOM
         return result^
 
     if x == 0.0:
@@ -285,7 +285,7 @@ def gamma_inc_P(a: Float64, x: Float64) -> SFSResult:
     """
     var result = SFSResult()
     if a <= 0.0 or x < 0.0:
-        result.errno = GSL_EDOM
+        result.errno = MSL_EDOM
         return result^
 
     if x == 0.0:

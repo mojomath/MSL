@@ -36,7 +36,7 @@ Regularized incomplete beta function I_x(a,b).
 from std.math import exp, log, log1p, abs
 
 from msl.core.const import MSL_DBL_EPSILON
-from msl.core.errno import GSL_EDOM
+from msl.core.errno import MSL_EDOM
 from msl.sf.result import SFSResult
 from msl.sf.gamma import lngamma_lanczos
 
@@ -122,7 +122,7 @@ def beta_inc(a: Float64, b: Float64, x: Float64) -> SFSResult:
     """
     var result = SFSResult()
     if a <= 0.0 or b <= 0.0 or x < 0.0 or x > 1.0:
-        result.errno = GSL_EDOM
+        result.errno = MSL_EDOM
         return result^
 
     if x == 0.0:

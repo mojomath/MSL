@@ -1,3 +1,9 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (C) 2026 Shivasankar K.A.
+"""
+Probability distributions — samplers and PDFs.
+"""
+
 from .dist import (
     gaussian,
     gaussian_pdf,

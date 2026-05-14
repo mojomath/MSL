@@ -35,7 +35,7 @@ error is within tolerance, or the subinterval limit is reached.
 from std.math import abs
 
 from msl.core.const import MSL_DBL_EPSILON, MSL_DBL_MIN
-from msl.core.errno import GSL_EDOM, GSL_EMAXITER, GSL_EROUND, GSL_ESING
+from msl.core.errno import MSL_EDOM, MSL_EMAXITER, MSL_EROUND, MSL_ESING
 from msl.sf.result import SFSResult
 from .workspace import IntegrationWorkspace, IntegrationResult, QKResult
 from .qk15 import qk15
@@ -45,12 +45,12 @@ from .qk41 import qk41
 from .qk51 import qk51
 from .qk61 import qk61
 
-comptime GSL_INTEG_GAUSS15: Int = 1
-comptime GSL_INTEG_GAUSS21: Int = 2
-comptime GSL_INTEG_GAUSS31: Int = 3
-comptime GSL_INTEG_GAUSS41: Int = 4
-comptime GSL_INTEG_GAUSS51: Int = 5
-comptime GSL_INTEG_GAUSS61: Int = 6
+comptime MSL_INTEG_GAUSS15: Int = 1
+comptime MSL_INTEG_GAUSS21: Int = 2
+comptime MSL_INTEG_GAUSS31: Int = 3
+comptime MSL_INTEG_GAUSS41: Int = 4
+comptime MSL_INTEG_GAUSS51: Int = 5
+comptime MSL_INTEG_GAUSS61: Int = 6
 
 
 def _subinterval_too_small(a1: Float64, a2: Float64, b2: Float64) -> Bool:
@@ -61,15 +61,15 @@ def _subinterval_too_small(a1: Float64, a2: Float64, b2: Float64) -> Bool:
 def _apply_rule[
     integrand: def(Float64) capturing -> Float64
 ](a: Float64, b: Float64, key: Int) -> QKResult:
-    if key == GSL_INTEG_GAUSS21:
+    if key == MSL_INTEG_GAUSS21:
         return qk21[integrand](a, b)
-    elif key == GSL_INTEG_GAUSS31:
+    elif key == MSL_INTEG_GAUSS31:
         return qk31[integrand](a, b)
-    elif key == GSL_INTEG_GAUSS41:
+    elif key == MSL_INTEG_GAUSS41:
         return qk41[integrand](a, b)
-    elif key == GSL_INTEG_GAUSS51:
+    elif key == MSL_INTEG_GAUSS51:
         return qk51[integrand](a, b)
-    elif key == GSL_INTEG_GAUSS61:
+    elif key == MSL_INTEG_GAUSS61:
         return qk61[integrand](a, b)
     else:
         return qk15[integrand](a, b)
@@ -83,7 +83,7 @@ def qag[
     epsabs: Float64,
     epsrel: Float64,
     limit: Int = 50,
-    key: Int = GSL_INTEG_GAUSS21,
+    key: Int = MSL_INTEG_GAUSS21,
 ) -> IntegrationResult:
     """Adaptive Gauss-Kronrod integration of integrand over [a, b].
 
@@ -96,7 +96,7 @@ def qag[
         epsabs: Absolute error tolerance.
         epsrel: Relative error tolerance.
         limit: Maximum number of subintervals (default 50).
-        key: Quadrature rule - one of GSL_INTEG_GAUSS{15,21,31,41,51,61}.
+        key: Quadrature rule - one of MSL_INTEG_GAUSS{15,21,31,41,51,61}.
 
     Returns:
         IntegrationResult with val (integral estimate) and err (error bound).

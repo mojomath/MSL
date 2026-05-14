@@ -1,3 +1,9 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (C) 2026 Shivasankar K.A.
+"""
+Dense 2D matrix and linear algebra operations.
+"""
+
 from .matrix import (
     Matrix,
     matrix_alloc,

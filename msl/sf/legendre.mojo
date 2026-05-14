@@ -32,7 +32,7 @@ Legendre polynomials and functions.
 """
 
 from msl.core.const import MSL_DBL_EPSILON, MSL_SQRT_DBL_EPSILON, MSL_PI
-from msl.core.errno import GSL_EDOM
+from msl.core.errno import MSL_EDOM
 from msl.sf.result import SFSResult
 from msl.sf.gamma import lngamma
 from std.math import sqrt, log, cos, sin, acos, abs, floor
@@ -65,12 +65,12 @@ def _legendre_P3(x: Float64) -> SFSResult:
 def legendre_Pl(l: Int, x: Float64) -> SFSResult:
     if l < 0:
         var result = SFSResult()
-        result.errno = GSL_EDOM
+        result.errno = MSL_EDOM
         return result^
 
     if x < -1.0 or x > 1.0:
         var result = SFSResult()
-        result.errno = GSL_EDOM
+        result.errno = MSL_EDOM
         return result^
 
     if l == 0:

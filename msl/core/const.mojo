@@ -33,7 +33,7 @@ These are standard constants used throughout MSL.
 
 
 # ===----------------------------------------------------------------------=== #
-# Mathematical constants (from gsl_math.h, gsl_const_num.h)
+# Mathematical constants
 # ===----------------------------------------------------------------------=== #
 
 comptime MSL_E: Scalar[f64] = 2.71828182845904523536028747135
@@ -89,7 +89,7 @@ comptime MSL_EULER: Scalar[f64] = 0.57721566490153286060651209008
 
 
 # ===----------------------------------------------------------------------=== #
-# Machine constants (from gsl_machine.h)
+# Machine constants
 # ===----------------------------------------------------------------------=== #
 
 comptime MSL_DBL_EPSILON: Scalar[f64] = 2.2204460492503131e-16
@@ -118,7 +118,7 @@ comptime MSL_FLT_MAX: Scalar[f64] = 3.4028234663852886e38
 
 
 # ===----------------------------------------------------------------------=== #
-# IEEE floating point (from gsl_ieee_utils.h)
+# IEEE floating-point limits
 # ===----------------------------------------------------------------------=== #
 
 comptime MSL_IEEE_SINGLE: Int = 1
@@ -127,7 +127,7 @@ comptime MSL_IEEE_EXTENDED: Int = 3
 
 
 # ===----------------------------------------------------------------------=== #
-# Precision modes (from gsl_mode.h)
+# Precision modes
 # ===----------------------------------------------------------------------=== #
 
 comptime MSL_PRECISION_DOUBLE: Int = 0
@@ -136,7 +136,7 @@ comptime MSL_PRECISION_APPROX: Int = 2
 
 
 # ===----------------------------------------------------------------------=== #
-# Range checking (from gsl_check_range.h)
+# Range checking
 # ===----------------------------------------------------------------------=== #
 
 comptime MSL_RANGE_CHECK: Int = 1

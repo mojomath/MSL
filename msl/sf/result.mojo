@@ -23,7 +23,7 @@
 """Special function result types."""
 
 from msl.core.const import MSL_DBL_EPSILON
-from msl.core.errno import GSL_SUCCESS, GSL_EDOM
+from msl.core.errno import MSL_SUCCESS, MSL_EDOM
 
 
 struct SFSResult(ImplicitlyCopyable, Movable, Writable):
@@ -34,12 +34,12 @@ struct SFSResult(ImplicitlyCopyable, Movable, Writable):
     def __init__(out self, val: Float64, err: Float64):
         self.val = val
         self.err = err
-        self.errno = GSL_SUCCESS
+        self.errno = MSL_SUCCESS
 
     def __init__(out self):
         self.val = 0.0
         self.err = 0.0
-        self.errno = GSL_SUCCESS
+        self.errno = MSL_SUCCESS
 
     def write_to[W: Writer](self, mut writer: W):
         writer.write("val: ", self.val, ", err: ", self.err)
@@ -55,13 +55,13 @@ struct SFSResultE10:
         self.val = val
         self.err = err
         self.e10 = e10
-        self.errno = GSL_SUCCESS
+        self.errno = MSL_SUCCESS
 
     def __init__(out self):
         self.val = 0.0
         self.err = 0.0
         self.e10 = 0
-        self.errno = GSL_SUCCESS
+        self.errno = MSL_SUCCESS
 
     def write_to[W: Writer](self, mut writer: W):
         writer.write(

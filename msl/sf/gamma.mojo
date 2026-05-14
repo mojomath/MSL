@@ -35,7 +35,7 @@ from std.math import sqrt, exp, log, cos, sin, abs, floor
 from std.collections import InlineArray
 
 from msl.core.const import MSL_DBL_EPSILON, MSL_SQRT_DBL_EPSILON, MSL_PI
-from msl.core.errno import GSL_EDOM
+from msl.core.errno import MSL_EDOM
 from msl.sf.result import SFSResult
 
 
@@ -61,7 +61,7 @@ comptime lanczos_c: InlineArray[Float64, 9] = [
 
 # ===----------------------------------------------------------------------=== #
 # Precomputed factorials for n = 0 to n = 150 (151 values)
-# GSL uses 170 for fact, 297 for doublefact but we limit both to 150
+# Limit to 150 (compiler limit on large InlineArray literals)
 # because Mojo cannot compile large InlineArray literals (>200 elements)
 # ===----------------------------------------------------------------------=== #
 
@@ -517,7 +517,7 @@ def _gamma(x: Float64) -> SFSResult:
     var result = SFSResult()
 
     if x <= 0.0:
-        result.errno = GSL_EDOM
+        result.errno = MSL_EDOM
         return result^
 
     if x < 0.5:
@@ -560,7 +560,7 @@ def _gammastar(x: Float64) -> SFSResult:
     var result = SFSResult()
 
     if x <= 0.0:
-        result.errno = GSL_EDOM
+        result.errno = MSL_EDOM
         return result^
 
     if x < 0.5:
@@ -663,7 +663,7 @@ def _gammainv(x: Float64) -> SFSResult:
     var result = SFSResult()
 
     if x <= 0.0:
-        result.errno = GSL_EDOM
+        result.errno = MSL_EDOM
         return result^
 
     var lg = lngamma(x)

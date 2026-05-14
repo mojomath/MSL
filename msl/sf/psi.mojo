@@ -35,7 +35,7 @@ from std.math import log, sqrt, abs, floor
 from std.collections import InlineArray
 
 from msl.core.const import MSL_DBL_EPSILON, MSL_PI
-from msl.core.errno import GSL_EDOM
+from msl.core.errno import MSL_EDOM
 from msl.sf.result import SFSResult
 from msl.sf.gamma import cheb_eval
 
@@ -135,7 +135,7 @@ def psi(x: Float64) -> SFSResult:
     """
     var result = SFSResult()
     if x <= 0.0:
-        result.errno = GSL_EDOM
+        result.errno = MSL_EDOM
         return result^
     result.val = _psi_x(x)
     result.err = MSL_DBL_EPSILON * abs(result.val)
@@ -157,7 +157,7 @@ def psi_n(n: Int, x: Float64) -> SFSResult:
     """
     var result = SFSResult()
     if x <= 0.0 or n < 0:
-        result.errno = GSL_EDOM
+        result.errno = MSL_EDOM
         return result^
     if n == 0:
         return psi(x)

@@ -36,7 +36,7 @@ from std.memory import UnsafePointer, memset_zero
 from std.math import abs
 
 from msl.core.const import MSL_DBL_EPSILON
-from msl.core.errno import GSL_EDOM
+from msl.core.errno import MSL_EDOM
 
 
 # ===----------------------------------------------------------------------=== #
@@ -119,7 +119,7 @@ struct LinearInterp[mut: Bool, origin: Origin[mut=mut], //](Movable):
     def eval(self, x: Float64) -> InterpResult:
         """Evaluate interpolant at x."""
         if x < self._xa[0] or x > self._xa[self._n - 1]:
-            return InterpResult(errno=GSL_EDOM)
+            return InterpResult(errno=MSL_EDOM)
         var i = _bsearch(self._xa, self._n, x)
         var x_lo = self._xa[i]
         var x_hi = self._xa[i + 1]
@@ -131,7 +131,7 @@ struct LinearInterp[mut: Bool, origin: Origin[mut=mut], //](Movable):
     def deriv(self, x: Float64) -> InterpResult:
         """First derivative (piecewise constant)."""
         if x < self._xa[0] or x > self._xa[self._n - 1]:
-            return InterpResult(errno=GSL_EDOM)
+            return InterpResult(errno=MSL_EDOM)
         var i = _bsearch(self._xa, self._n, x)
         var dx = self._xa[i + 1] - self._xa[i]
         return InterpResult((self._ya[i + 1] - self._ya[i]) / dx)
@@ -139,13 +139,13 @@ struct LinearInterp[mut: Bool, origin: Origin[mut=mut], //](Movable):
     def deriv2(self, x: Float64) -> InterpResult:
         """Second derivative (zero everywhere for linear)."""
         if x < self._xa[0] or x > self._xa[self._n - 1]:
-            return InterpResult(errno=GSL_EDOM)
+            return InterpResult(errno=MSL_EDOM)
         return InterpResult(0.0)
 
     def integral(self, a: Float64, b: Float64) -> InterpResult:
         """Definite integral from a to b via trapezoid rule."""
         if a < self._xa[0] or b > self._xa[self._n - 1]:
-            return InterpResult(errno=GSL_EDOM)
+            return InterpResult(errno=MSL_EDOM)
         var sum: Float64 = 0.0
         var i_a = _bsearch(self._xa, self._n, a)
         var i_b = _bsearch(self._xa, self._n, b)
@@ -260,7 +260,7 @@ struct CubicSpline[mut: Bool, origin: Origin[mut=mut], //](Movable):
     def eval(self, x: Float64) -> InterpResult:
         """Evaluate spline at x."""
         if x < self._xa[0] or x > self._xa[self._n - 1]:
-            return InterpResult(errno=GSL_EDOM)
+            return InterpResult(errno=MSL_EDOM)
         var i = _bsearch(self._xa, self._n, x)
         var dx = x - self._xa[i]
         var val = self._ya[i] + dx * (
@@ -271,7 +271,7 @@ struct CubicSpline[mut: Bool, origin: Origin[mut=mut], //](Movable):
     def deriv(self, x: Float64) -> InterpResult:
         """First derivative at x."""
         if x < self._xa[0] or x > self._xa[self._n - 1]:
-            return InterpResult(errno=GSL_EDOM)
+            return InterpResult(errno=MSL_EDOM)
         var i = _bsearch(self._xa, self._n, x)
         var dx = x - self._xa[i]
         var val = self._b[i] + dx * (2.0 * self._c[i] + 3.0 * self._d[i] * dx)
@@ -280,7 +280,7 @@ struct CubicSpline[mut: Bool, origin: Origin[mut=mut], //](Movable):
     def deriv2(self, x: Float64) -> InterpResult:
         """Second derivative at x."""
         if x < self._xa[0] or x > self._xa[self._n - 1]:
-            return InterpResult(errno=GSL_EDOM)
+            return InterpResult(errno=MSL_EDOM)
         var i = _bsearch(self._xa, self._n, x)
         var dx = x - self._xa[i]
         var val = 2.0 * self._c[i] + 6.0 * self._d[i] * dx
@@ -289,7 +289,7 @@ struct CubicSpline[mut: Bool, origin: Origin[mut=mut], //](Movable):
     def integral(self, a: Float64, b: Float64) -> InterpResult:
         """Definite integral from a to b."""
         if a < self._xa[0] or b > self._xa[self._n - 1]:
-            return InterpResult(errno=GSL_EDOM)
+            return InterpResult(errno=MSL_EDOM)
         var sum: Float64 = 0.0
         var i_a = _bsearch(self._xa, self._n, a)
         var i_b = _bsearch(self._xa, self._n, b)
@@ -408,7 +408,7 @@ struct AkimaSpline[mut: Bool, origin: Origin[mut=mut], //](Movable):
     def eval(self, x: Float64) -> InterpResult:
         """Evaluate spline at x."""
         if x < self._xa[0] or x > self._xa[self._n - 1]:
-            return InterpResult(errno=GSL_EDOM)
+            return InterpResult(errno=MSL_EDOM)
         var i = _bsearch(self._xa, self._n, x)
         var dx = x - self._xa[i]
         var val = self._ya[i] + dx * (
@@ -419,7 +419,7 @@ struct AkimaSpline[mut: Bool, origin: Origin[mut=mut], //](Movable):
     def deriv(self, x: Float64) -> InterpResult:
         """First derivative at x."""
         if x < self._xa[0] or x > self._xa[self._n - 1]:
-            return InterpResult(errno=GSL_EDOM)
+            return InterpResult(errno=MSL_EDOM)
         var i = _bsearch(self._xa, self._n, x)
         var dx = x - self._xa[i]
         var val = self._b[i] + dx * (2.0 * self._c[i] + 3.0 * self._d[i] * dx)
@@ -428,7 +428,7 @@ struct AkimaSpline[mut: Bool, origin: Origin[mut=mut], //](Movable):
     def deriv2(self, x: Float64) -> InterpResult:
         """Second derivative at x."""
         if x < self._xa[0] or x > self._xa[self._n - 1]:
-            return InterpResult(errno=GSL_EDOM)
+            return InterpResult(errno=MSL_EDOM)
         var i = _bsearch(self._xa, self._n, x)
         var dx = x - self._xa[i]
         var val = 2.0 * self._c[i] + 6.0 * self._d[i] * dx
@@ -437,7 +437,7 @@ struct AkimaSpline[mut: Bool, origin: Origin[mut=mut], //](Movable):
     def integral(self, a: Float64, b: Float64) -> InterpResult:
         """Definite integral from a to b."""
         if a < self._xa[0] or b > self._xa[self._n - 1]:
-            return InterpResult(errno=GSL_EDOM)
+            return InterpResult(errno=MSL_EDOM)
         var sum: Float64 = 0.0
         var i_a = _bsearch(self._xa, self._n, a)
         var i_b = _bsearch(self._xa, self._n, b)

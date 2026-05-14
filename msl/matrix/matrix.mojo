@@ -45,12 +45,12 @@ from msl.core.const import MSL_DBL_EPSILON
 
 
 struct Matrix(Copyable, Movable):
-    """GSL matrix structure for 2D arrays."""
+    """2D dense matrix."""
 
     var s1: Int
-    """Number of rows. (size1 in gsl)."""
+    """Number of rows."""
     var s2: Int
-    """Number of columns. (size2 in gsl)."""
+    """Number of columns."""
     var tda: Int
     var data: UnsafePointer[Float64, MutExt]
     var block: Optional[UnsafePointer[Block, MutExt]]

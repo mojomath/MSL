@@ -44,7 +44,7 @@ from msl.core.const import MSL_DBL_EPSILON
 
 
 struct Block(Copyable, Movable):
-    """GSL block structure for contiguous double arrays."""
+    """Contiguous double array block."""
 
     var size: Int
     var data: UnsafePointer[Float64, MutExt]

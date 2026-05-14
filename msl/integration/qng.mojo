@@ -44,7 +44,7 @@ from .workspace import IntegrationResult
 
 
 # ===----------------------------------------------------------------------=== #
-# Quadrature nodes and weights (from QUADPACK qng.f / GSL qng.c)
+# Quadrature nodes and weights (from QUADPACK qng.f)
 # Only positive nodes stored; use f(c+x) + f(c-x) for each.
 # ===----------------------------------------------------------------------=== #
 
