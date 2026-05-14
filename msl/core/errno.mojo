@@ -27,8 +27,6 @@
 # ===----------------------------------------------------------------------=== #
 """
 Error codes and error handling.
-
-Pure Mojo implementation of GSL error handling.
 """
 
 from std.ffi import c_int
@@ -36,121 +34,113 @@ from std.memory import UnsafePointer
 
 
 # ===----------------------------------------------------------------------=== #
-# Error codes (from gsl_errno.h)
+# Error codes
 # ===----------------------------------------------------------------------=== #
 
-comptime GSL_SUCCESS: Int = 0
+comptime MSL_SUCCESS: Int = 0
 """Success."""
 
-comptime GSL_FAILURE: Int = -1
+comptime MSL_FAILURE: Int = -1
 """Generic failure."""
 
-comptime GSL_CONTINUE: Int = -2
+comptime MSL_CONTINUE: Int = -2
 """Iteration has not converged."""
 
-comptime GSL_EDOM: Int = 1
+comptime MSL_EDOM: Int = 1
 """Input domain error, e.g. sqrt(-1)."""
 
-comptime GSL_ERANGE: Int = 2
+comptime MSL_ERANGE: Int = 2
 """Output range error, e.g. exp(1e100)."""
 
-comptime GSL_EFAULT: Int = 3
+comptime MSL_EFAULT: Int = 3
 """Invalid pointer."""
 
-comptime GSL_EINVAL: Int = 4
+comptime MSL_EINVAL: Int = 4
 """Invalid argument."""
 
-comptime GSL_EFAILED: Int = 5
+comptime MSL_EFAILED: Int = 5
 """Generic failure."""
 
-comptime GSL_EFACTOR: Int = 6
+comptime MSL_EFACTOR: Int = 6
 """Factorization failed."""
 
-comptime GSL_ESANITY: Int = 7
+comptime MSL_ESANITY: Int = 7
 """Sanity check failed."""
 
-comptime GSL_ENOMEM: Int = 8
+comptime MSL_ENOMEM: Int = 8
 """Malloc failed."""
 
-comptime GSL_EBADFUNC: Int = 9
+comptime MSL_EBADFUNC: Int = 9
 """Problem with user-supplied function."""
 
-comptime GSL_ERUNAWAY: Int = 10
+comptime MSL_ERUNAWAY: Int = 10
 """Iterative process is out of control."""
 
-comptime GSL_EMAXITER: Int = 11
+comptime MSL_EMAXITER: Int = 11
 """Exceeded max number of iterations."""
 
-comptime GSL_EZERODIV: Int = 12
+comptime MSL_EZERODIV: Int = 12
 """Tried to divide by zero."""
 
-comptime GSL_EBADTOL: Int = 13
+comptime MSL_EBADTOL: Int = 13
 """User specified an invalid tolerance."""
 
-comptime GSL_ETOL: Int = 14
+comptime MSL_ETOL: Int = 14
 """Failed to reach specified tolerance."""
 
-comptime GSL_EUNDRFLW: Int = 15
+comptime MSL_EUNDRFLW: Int = 15
 """Underflow."""
 
-comptime GSL_EOVRFLW: Int = 16
+comptime MSL_EOVRFLW: Int = 16
 """Overflow."""
 
-comptime GSL_ELOSS: Int = 17
+comptime MSL_ELOSS: Int = 17
 """Loss of accuracy."""
 
-comptime GSL_EROUND: Int = 18
+comptime MSL_EROUND: Int = 18
 """Failed because of roundoff error."""
 
-comptime GSL_EBADLEN: Int = 19
+comptime MSL_EBADLEN: Int = 19
 """Matrix/vector lengths not conformant."""
 
-comptime GSL_ENOTSQR: Int = 20
+comptime MSL_ENOTSQR: Int = 20
 """Matrix not square."""
 
-comptime GSL_ESING: Int = 21
+comptime MSL_ESING: Int = 21
 """Apparent singularity detected."""
 
-comptime GSL_EDIVERGE: Int = 22
+comptime MSL_EDIVERGE: Int = 22
 """Integral or series divergent."""
 
-comptime GSL_EUNSUP: Int = 23
+comptime MSL_EUNSUP: Int = 23
 """Requested feature not supported."""
 
-comptime GSL_EUNIMPL: Int = 24
+comptime MSL_EUNIMPL: Int = 24
 """Requested feature not implemented."""
 
-comptime GSL_ECACHE: Int = 25
+comptime MSL_ECACHE: Int = 25
 """Cache limit exceeded."""
 
-comptime GSL_ETABLE: Int = 26
+comptime MSL_ETABLE: Int = 26
 """Table limit exceeded."""
 
-comptime GSL_ENOPROG: Int = 27
+comptime MSL_ENOPROG: Int = 27
 """Iteration not making progress."""
 
-comptime GSL_ENOPROGJ: Int = 28
+comptime MSL_ENOPROGJ: Int = 28
 """Jacobian not improving solution."""
 
-comptime GSL_ETOLF: Int = 29
+comptime MSL_ETOLF: Int = 29
 """Cannot reach tolerance in F."""
 
-comptime GSL_ETOLX: Int = 30
+comptime MSL_ETOLX: Int = 30
 """Cannot reach tolerance in X."""
 
-comptime GSL_ETOLG: Int = 31
+comptime MSL_ETOLG: Int = 31
 """Cannot reach tolerance in gradient."""
 
-comptime GSL_EOF: Int = 32
+comptime MSL_EOF: Int = 32
 """End of file."""
-
-
-# ===----------------------------------------------------------------------=== #
-# Error handler type
-# ===----------------------------------------------------------------------=== #
-
-# comptime gsl_error_handler_t = def [NoneType, UnsafePointer[c_char], Int, Int]()
-# """Function pointer type for error handler."""
 
 
 # ===----------------------------------------------------------------------=== #
