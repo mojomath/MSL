@@ -38,7 +38,9 @@ from .utility import RootResult
 # ===----------------------------------------------------------------------=== #
 
 
-def root_bisect[fn_: def(Float64) capturing -> Float64](
+def root_bisect[
+    fn_: def(Float64) capturing -> Float64
+](
     a: Float64,
     b: Float64,
     epsabs: Float64 = 1e-10,
@@ -91,8 +93,11 @@ def root_bisect[fn_: def(Float64) capturing -> Float64](
             return RootResult(root=root, nit=i + 1, nfev=nfev, success=True)
 
     return RootResult(
-        root=0.5 * (x_lo + x_hi), nit=max_iter, nfev=nfev,
-        success=False, errno=MSL_EMAXITER,
+        root=0.5 * (x_lo + x_hi),
+        nit=max_iter,
+        nfev=nfev,
+        success=False,
+        errno=MSL_EMAXITER,
     )
 
 
@@ -101,7 +106,9 @@ def root_bisect[fn_: def(Float64) capturing -> Float64](
 # ===----------------------------------------------------------------------=== #
 
 
-def root_brent[fn_: def(Float64) capturing -> Float64](
+def root_brent[
+    fn_: def(Float64) capturing -> Float64
+](
     a: Float64,
     b: Float64,
     epsabs: Float64 = 1e-10,
@@ -142,13 +149,18 @@ def root_brent[fn_: def(Float64) capturing -> Float64](
 
     for i in range(max_iter):
         if fb * fc > 0.0:
-            x_c = x_a; fc = fa
-            d = x_b - x_a; e = d
+            x_c = x_a
+            fc = fa
+            d = x_b - x_a
+            e = d
 
         if abs(fc) < abs(fb):
-            x_a = x_b; fa = fb
-            x_b = x_c; fb = fc
-            x_c = x_a; fc = fa
+            x_a = x_b
+            fa = fb
+            x_b = x_c
+            fb = fc
+            x_c = x_a
+            fc = fa
 
         var tol = 0.5 * MSL_DBL_EPSILON * abs(x_b)
         var m = 0.5 * (x_c - x_b)
@@ -177,13 +189,17 @@ def root_brent[fn_: def(Float64) capturing -> Float64](
                 p = -p
 
             if 2.0 * p < min(3.0 * m * q - abs(tol * q), abs(e * q)):
-                e = d; d = p / q
+                e = d
+                d = p / q
             else:
-                d = m; e = m
+                d = m
+                e = m
         else:
-            d = m; e = m
+            d = m
+            e = m
 
-        x_a = x_b; fa = fb
+        x_a = x_b
+        fa = fb
 
         if abs(d) > tol:
             x_b += d
@@ -194,8 +210,11 @@ def root_brent[fn_: def(Float64) capturing -> Float64](
         nfev += 1
 
     return RootResult(
-        root=x_b, nit=max_iter, nfev=nfev,
-        success=False, errno=MSL_EMAXITER,
+        root=x_b,
+        nit=max_iter,
+        nfev=nfev,
+        success=False,
+        errno=MSL_EMAXITER,
     )
 
 
@@ -240,7 +259,9 @@ def root_newton[
         nfev += 2
 
         if dfx == 0.0:
-            return RootResult(root=x, nit=i, nfev=nfev, success=False, errno=MSL_EDOM)
+            return RootResult(
+                root=x, nit=i, nfev=nfev, success=False, errno=MSL_EDOM
+            )
 
         var dx = fx / dfx
         x -= dx
@@ -248,7 +269,9 @@ def root_newton[
         if abs(fx) <= epsabs or abs(dx) <= epsabs + epsrel * abs(x):
             return RootResult(root=x, nit=i + 1, nfev=nfev, success=True)
 
-    return RootResult(root=x, nit=max_iter, nfev=nfev, success=False, errno=MSL_EMAXITER)
+    return RootResult(
+        root=x, nit=max_iter, nfev=nfev, success=False, errno=MSL_EMAXITER
+    )
 
 
 # ===----------------------------------------------------------------------=== #
@@ -256,7 +279,9 @@ def root_newton[
 # ===----------------------------------------------------------------------=== #
 
 
-def root_secant[fn_: def(Float64) capturing -> Float64](
+def root_secant[
+    fn_: def(Float64) capturing -> Float64
+](
     x0: Float64,
     x1: Float64,
     epsabs: Float64 = 1e-10,
@@ -290,7 +315,9 @@ def root_secant[fn_: def(Float64) capturing -> Float64](
     for i in range(max_iter):
         var denom = fb - fa
         if denom == 0.0:
-            return RootResult(root=xb, nit=i, nfev=nfev, success=False, errno=MSL_EDOM)
+            return RootResult(
+                root=xb, nit=i, nfev=nfev, success=False, errno=MSL_EDOM
+            )
 
         var xc = xb - fb * (xb - xa) / denom
         var fc = fn_(xc)
@@ -299,7 +326,11 @@ def root_secant[fn_: def(Float64) capturing -> Float64](
         if abs(fc) <= epsabs or abs(xc - xb) <= epsabs + epsrel * abs(xc):
             return RootResult(root=xc, nit=i + 1, nfev=nfev, success=True)
 
-        xa = xb; fa = fb
-        xb = xc; fb = fc
+        xa = xb
+        fa = fb
+        xb = xc
+        fb = fc
 
-    return RootResult(root=xb, nit=max_iter, nfev=nfev, success=False, errno=MSL_EMAXITER)
+    return RootResult(
+        root=xb, nit=max_iter, nfev=nfev, success=False, errno=MSL_EMAXITER
+    )

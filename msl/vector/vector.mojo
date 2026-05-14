@@ -46,7 +46,6 @@ from msl.core.const import MSL_DBL_EPSILON
 # ===----------------------------------------------------------------------=== #
 
 
-
 struct Vector(Copyable, Movable):
     """1D array with stride."""
 

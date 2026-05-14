@@ -42,7 +42,9 @@ comptime _SQRT_DBL_EPSILON: Float64 = 1.4901161193847656e-8
 # ===----------------------------------------------------------------------=== #
 
 
-def min_brent[fn_: def(Float64) capturing -> Float64](
+def min_brent[
+    fn_: def(Float64) capturing -> Float64
+](
     a: Float64,
     x: Float64,
     b: Float64,
@@ -105,7 +107,11 @@ def min_brent[fn_: def(Float64) capturing -> Float64](
                 q = -q
             r = e
             e = d
-            if abs(p) < abs(0.5 * q * r) and p > q * (x_lo - z) and p < q * (x_hi - z):
+            if (
+                abs(p) < abs(0.5 * q * r)
+                and p > q * (x_lo - z)
+                and p < q * (x_hi - z)
+            ):
                 d = p / q
                 use_parabola = True
                 if (z + d - x_lo) < tol2 or (x_hi - z - d) < tol2:
@@ -125,21 +131,29 @@ def min_brent[fn_: def(Float64) capturing -> Float64](
                 x_hi = z
             else:
                 x_lo = z
-            v = w; f_v = f_w
-            w = z; f_w = f_z
-            z = u; f_z = f_u
+            v = w
+            f_v = f_w
+            w = z
+            f_w = f_z
+            z = u
+            f_z = f_u
         else:
             if u < z:
                 x_lo = u
             else:
                 x_hi = u
             if f_u <= f_w or w == z:
-                v = w; f_v = f_w
-                w = u; f_w = f_u
+                v = w
+                f_v = f_w
+                w = u
+                f_w = f_u
             elif f_u <= f_v or v == z or v == w:
-                v = u; f_v = f_u
+                v = u
+                f_v = f_u
 
-    return MinResult(x=z, fun=f_z, nit=max_iter, nfev=nfev, success=False, errno=MSL_EMAXITER)
+    return MinResult(
+        x=z, fun=f_z, nit=max_iter, nfev=nfev, success=False, errno=MSL_EMAXITER
+    )
 
 
 # ===----------------------------------------------------------------------=== #
@@ -147,7 +161,9 @@ def min_brent[fn_: def(Float64) capturing -> Float64](
 # ===----------------------------------------------------------------------=== #
 
 
-def min_golden[fn_: def(Float64) capturing -> Float64](
+def min_golden[
+    fn_: def(Float64) capturing -> Float64
+](
     a: Float64,
     x: Float64,
     b: Float64,
@@ -187,20 +203,31 @@ def min_golden[fn_: def(Float64) capturing -> Float64](
 
         if width <= tol:
             var xm = 0.5 * (x_lo + x_hi)
-            return MinResult(x=xm, fun=min(f_c, f_d), nit=i + 1, nfev=nfev, success=True)
+            return MinResult(
+                x=xm, fun=min(f_c, f_d), nit=i + 1, nfev=nfev, success=True
+            )
 
         if f_c < f_d:
             x_hi = x_d
-            x_d = x_c; f_d = f_c
+            x_d = x_c
+            f_d = f_c
             x_c = x_lo + invphi * (x_hi - x_lo)
             f_c = fn_(x_c)
             nfev += 1
         else:
             x_lo = x_c
-            x_c = x_d; f_c = f_d
+            x_c = x_d
+            f_c = f_d
             x_d = x_hi - invphi * (x_hi - x_lo)
             f_d = fn_(x_d)
             nfev += 1
 
     var xm = 0.5 * (x_lo + x_hi)
-    return MinResult(x=xm, fun=min(f_c, f_d), nit=max_iter, nfev=nfev, success=False, errno=MSL_EMAXITER)
+    return MinResult(
+        x=xm,
+        fun=min(f_c, f_d),
+        nit=max_iter,
+        nfev=nfev,
+        success=False,
+        errno=MSL_EMAXITER,
+    )
