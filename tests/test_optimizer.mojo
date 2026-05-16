@@ -35,7 +35,7 @@ def test_bisect_poly() raises:
 
 
 def test_bisect_domain_error() raises:
-    # f(a) and f(b) same sign — should fail with errno != 0
+    # f(a) and f(b) same sign - should fail with errno != 0
     def fn_(x: Float64) capturing -> Float64:
         return x * x + 1.0
 

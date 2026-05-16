@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-# TODO: Add scipy dependancy to cross check these values.
+# TODO: Add scipy dependancy to cross check these values or figure out how to 
+# use GSL to generate test data.
 
 from std.testing import TestSuite
 from std.math import abs
@@ -18,6 +19,10 @@ from msl.sf import (
     bessel_i1_scaled,
     bessel_k0_scaled,
     bessel_k1_scaled,
+    bessel_Jn,
+    bessel_Yn,
+    bessel_In,
+    bessel_Kn,
     gamma,
     lngamma,
     gammastar,
@@ -399,3 +404,100 @@ def test_legendre_Pl_100000() raises:
 def main() raises:
     TestSuite.discover_tests[__functions_in_module()]().run()
     print("All sf tests PASSED")
+
+
+# ===----------------------------------------------------------------------=== #
+# Integer-order Bessel functions Jn, Yn, In, Kn
+# ===----------------------------------------------------------------------=== #
+
+
+def test_bessel_Jn_order2() raises:
+    # J2(1) ≈ 0.11490348493190048
+    var r = bessel_Jn(2, 1.0)
+    assert r.errno == 0
+    assert tolerance(r.val, 0.11490348493190048, 1e-8)
+    print("test_bessel_Jn_order2: PASSED")
+
+
+def test_bessel_Jn_order3() raises:
+    # J3(2) ≈ 0.12894324947088750
+    var r = bessel_Jn(3, 2.0)
+    assert r.errno == 0
+    assert tolerance(r.val, 0.12894324947088750, 1e-8)
+    print("test_bessel_Jn_order3: PASSED")
+
+
+def test_bessel_Jn_negative_n() raises:
+    # J_{-n}(x) = (-1)^n * J_n(x)
+    var rp = bessel_Jn(3, 2.0)
+    var rn = bessel_Jn(-3, 2.0)
+    assert tolerance(rn.val, -rp.val, 1e-12)
+    print("test_bessel_Jn_negative_n: PASSED")
+
+
+def test_bessel_Yn_order2() raises:
+    # Y2(1) ≈ -1.6507376608498959
+    var r = bessel_Yn(2, 1.0)
+    assert r.errno == 0
+    assert tolerance(r.val, -1.6507376608498959, 1e-7)
+    print("test_bessel_Yn_order2: PASSED")
+
+
+def test_bessel_Yn_order3() raises:
+    # Y3(2) ≈ -0.98078799807890680
+    var r = bessel_Yn(3, 2.0)
+    assert r.errno == 0
+    assert tolerance(r.val, -0.98078799807890680, 1e-7)
+    print("test_bessel_Yn_order3: PASSED")
+
+
+def test_bessel_Yn_domain_error() raises:
+    var r = bessel_Yn(2, 0.0)
+    assert r.errno != 0
+    print("test_bessel_Yn_domain_error: PASSED")
+
+
+def test_bessel_In_order2() raises:
+    # I2(1) ≈ 0.13574766976703828
+    var r = bessel_In(2, 1.0)
+    assert r.errno == 0
+    assert tolerance(r.val, 0.13574766976703828, 1e-7)
+    print("test_bessel_In_order2: PASSED")
+
+
+def test_bessel_In_zero() raises:
+    # In(0) = 0 for n > 0
+    var r = bessel_In(3, 0.0)
+    assert r.errno == 0
+    assert r.val == 0.0
+    print("test_bessel_In_zero: PASSED")
+
+
+def test_bessel_In_negative_odd() raises:
+    # I_{-n}(x) = (-1)^n * I_n(x) for integer n
+    var rp = bessel_In(3, 2.0)
+    var rn = bessel_In(-3, 2.0)
+    assert tolerance(rn.val, -rp.val, 1e-12)
+    print("test_bessel_In_negative_odd: PASSED")
+
+
+def test_bessel_Kn_order2() raises:
+    # K2(1) ≈ 1.6248388986351774
+    var r = bessel_Kn(2, 1.0)
+    assert r.errno == 0
+    assert tolerance(r.val, 1.6248388986351774, 1e-7)
+    print("test_bessel_Kn_order2: PASSED")
+
+
+def test_bessel_Kn_order3() raises:
+    # K3(2) ≈ 0.64738539638074052
+    var r = bessel_Kn(3, 2.0)
+    assert r.errno == 0
+    assert tolerance(r.val, 0.64738539638074052, 1e-7)
+    print("test_bessel_Kn_order3: PASSED")
+
+
+def test_bessel_Kn_domain_error() raises:
+    var r = bessel_Kn(2, 0.0)
+    assert r.errno != 0
+    print("test_bessel_Kn_domain_error: PASSED")
