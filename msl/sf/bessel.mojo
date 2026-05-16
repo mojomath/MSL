@@ -963,7 +963,7 @@ def bessel_Jnu_asympx(nu: Float64, x: Float64) -> SFSResult:
 # ===----------------------------------------------------------------------=== #
 # Bessel Y_n — upward recurrence Y_{n+1} = (2n/x)*Y_n - Y_{n-1}
 # ===----------------------------------------------------------------------=== #
-
+# TODO: Consider making `n` a compile time parameter.
 
 def bessel_Yn(n: Int, x: Float64) -> SFSResult:
     """Bessel function of the second kind, integer order n."""

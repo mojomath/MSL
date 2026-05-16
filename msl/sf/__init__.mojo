@@ -44,6 +44,10 @@ from .bessel import (
     bessel_i1_scaled,
     bessel_k0_scaled,
     bessel_k1_scaled,
+    bessel_Jn,
+    bessel_Yn,
+    bessel_In,
+    bessel_Kn,
 )
 
 from .gamma import (
