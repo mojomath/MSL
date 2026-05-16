@@ -961,6 +961,138 @@ def bessel_Jnu_asympx(nu: Float64, x: Float64) -> SFSResult:
 
 
 # ===----------------------------------------------------------------------=== #
+# Bessel Y_n — upward recurrence Y_{n+1} = (2n/x)*Y_n - Y_{n-1}
+# ===----------------------------------------------------------------------=== #
+
+
+def bessel_Yn(n: Int, x: Float64) -> SFSResult:
+    """Bessel function of the second kind, integer order n."""
+    var result = SFSResult()
+    if x <= 0.0:
+        result.errno = MSL_EDOM
+        return result^
+
+    if n < 0:
+        # Y_{-n}(x) = (-1)^n * Y_n(x)
+        var r = bessel_Yn(-n, x)
+        if (-n) % 2 == 1:
+            r.val = -r.val
+        return r^
+
+    if n == 0:
+        return bessel_Y0(x)
+    if n == 1:
+        return bessel_Y1(x)
+
+    var Ykm1 = bessel_Y0(x)
+    var Yk = bessel_Y1(x)
+    var Ykp1 = SFSResult()
+
+    for k in range(1, n):
+        Ykp1.val = (2.0 * Float64(k) / x) * Yk.val - Ykm1.val
+        Ykp1.err = (2.0 * Float64(k) / x) * Yk.err + Ykm1.err + MSL_DBL_EPSILON * abs(Ykp1.val)
+        Ykm1 = Yk
+        Yk = Ykp1
+
+    result.val = Yk.val
+    result.err = Yk.err + Float64(n) * MSL_DBL_EPSILON * abs(Yk.val)
+    return result^
+
+
+# ===----------------------------------------------------------------------=== #
+# Modified Bessel I_n — backward recurrence (Miller's algorithm)
+# I_{n-1} = I_{n+1} + (2n/x)*I_n
+# ===----------------------------------------------------------------------=== #
+
+
+def bessel_In(n: Int, x: Float64) -> SFSResult:
+    """Modified Bessel function of the first kind, integer order n."""
+    var result = SFSResult()
+    var nn = abs(n) if n < 0 else n
+    var sign: Float64 = -1.0 if (n < 0 and nn % 2 == 1) else 1.0
+
+    if x == 0.0:
+        result.val = 1.0 if nn == 0 else 0.0
+        return result^
+
+    if nn == 0:
+        var r = bessel_I0(x)
+        r.val *= sign
+        return r^
+    if nn == 1:
+        var r = bessel_I1(x)
+        r.val *= sign
+        return r^
+
+    # Miller's backward recurrence from n_start down to 0/1
+    var n_start = nn + 30  # start well above target
+    var Ikp1: Float64 = 0.0
+    var Ik: Float64 = 1.0e-190
+    var target_val: Float64 = 0.0
+    var I0_norm: Float64 = 0.0
+    var I1_norm: Float64 = 0.0
+
+    var k = n_start
+    while k >= 1:
+        var Ikm1 = Ikp1 + (2.0 * Float64(k) / x) * Ik
+        Ikp1 = Ik
+        Ik = Ikm1
+        if k == nn:
+            target_val = Ikp1  # this is I_n before normalization
+        if k == 1:
+            I1_norm = Ikp1
+        k -= 1
+    I0_norm = Ik  # k=0 value
+
+    # Normalize using exact I0 or I1
+    var b0 = bessel_I0(x)
+    var b1 = bessel_I1(x)
+    var norm: Float64
+    if abs(I0_norm) > abs(I1_norm):
+        norm = b0.val / I0_norm
+    else:
+        norm = b1.val / I1_norm
+
+    result.val = sign * target_val * norm
+    result.err = abs(norm) * 1.0e-190 + MSL_DBL_EPSILON * abs(result.val) * Float64(nn)
+    return result^
+
+
+# ===----------------------------------------------------------------------=== #
+# Modified Bessel K_n — upward recurrence K_{n+1} = K_{n-1} + (2n/x)*K_n
+# ===----------------------------------------------------------------------=== #
+
+
+def bessel_Kn(n: Int, x: Float64) -> SFSResult:
+    """Modified Bessel function of the second kind, integer order n."""
+    var result = SFSResult()
+    var nn = abs(n)  # K_n = K_{-n}
+
+    if x <= 0.0:
+        result.errno = MSL_EDOM
+        return result^
+
+    if nn == 0:
+        return bessel_K0(x)
+    if nn == 1:
+        return bessel_K1(x)
+
+    var Kkm1 = bessel_K0(x)
+    var Kk = bessel_K1(x)
+    var Kkp1 = SFSResult()
+
+    for k in range(1, nn):
+        Kkp1.val = Kkm1.val + (2.0 * Float64(k) / x) * Kk.val
+        Kkp1.err = Kkm1.err + (2.0 * Float64(k) / x) * Kk.err + MSL_DBL_EPSILON * abs(Kkp1.val)
+        Kkm1 = Kk
+        Kk = Kkp1
+
+    result.val = Kk.val
+    result.err = Kk.err + Float64(nn) * MSL_DBL_EPSILON * abs(Kk.val)
+    return result^
+
+
+# ===----------------------------------------------------------------------=== #
 # Public API
 # ===----------------------------------------------------------------------=== #
 
