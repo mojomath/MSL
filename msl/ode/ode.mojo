@@ -114,12 +114,11 @@ def _alloc(n: Int) -> UnsafePointer[Float64, MutExt]:
 
 def ode_rk4[
     origin_y: MutOrigin, 
-    origin_dydt: MutOrigin,
     //,
-    rhs: def(
+    rhs: def[origin_fn_y: MutOrigin, origin_fn_dydt: MutOrigin, //](
         Float64,
-        UnsafePointer[Float64, origin_y],
-        UnsafePointer[Float64, origin_dydt],
+        UnsafePointer[Float64, origin_fn_y],
+        UnsafePointer[Float64, origin_fn_dydt],
     ) capturing,
 ](
     t0: Float64,
@@ -236,13 +235,12 @@ comptime _EC: InlineArray[Float64, 7] = [
 
 
 def ode_rkf45[
-    origin_y: MutOrigin,
-    origin_dydt: MutOrigin,
+    origin_y: MutOrigin, 
     //,
-    rhs: def(
+    rhs: def[origin_fn_y: MutOrigin, origin_fn_dydt: MutOrigin, //](
         Float64,
-        UnsafePointer[Float64, origin_y],
-        UnsafePointer[Float64, origin_dydt],
+        UnsafePointer[Float64, origin_fn_y],
+        UnsafePointer[Float64, origin_fn_dydt],
     ) capturing,
 ](
     t0: Float64,
