@@ -75,6 +75,31 @@ struct Vector(Copyable, Movable):
         self.block = bptr
         self.owner = 1
 
+    def __init__(
+        out self,
+        ptr: UnsafePointer[Float64, MutExt],
+        size: Int,
+        stride: Int = 1,
+        *,
+        borrow: Bool,
+    ):
+        """Create a non-owning view over an externally managed buffer.
+
+        The caller is responsible for keeping the buffer alive for the
+        lifetime of this Vector. No memory is allocated or freed.
+
+        Args:
+            ptr: Pointer to the first element of the buffer.
+            size: Number of logical elements.
+            stride: Element stride (default 1 = contiguous).
+            borrow: Must be True — keyword sentinel to distinguish from owning init.
+        """
+        self.size = size
+        self.stride = stride
+        self.data = ptr
+        self.block = None
+        self.owner = 0
+
     def __del__(deinit self):
         if self.owner == 1 and self.block:
             self.block.value().destroy_pointee()

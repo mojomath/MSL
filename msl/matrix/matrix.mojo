@@ -67,6 +67,34 @@ struct Matrix(Copyable, Movable):
         self.block = bptr
         self.owner = 1
 
+    def __init__(
+        out self,
+        ptr: UnsafePointer[Float64, MutExt],
+        n1: Int,
+        n2: Int,
+        tda: Int = 0,
+        *,
+        borrow: Bool,
+    ):
+        """Create a non-owning view over an externally managed buffer.
+
+        The caller is responsible for keeping the buffer alive for the
+        lifetime of this Matrix. No memory is allocated or freed.
+
+        Args:
+            ptr: Pointer to element [0,0] of the buffer (row-major layout).
+            n1: Number of rows.
+            n2: Number of columns.
+            tda: Leading dimension (elements per row). Defaults to n2 (contiguous).
+            borrow: Must be True — keyword sentinel to distinguish from owning init.
+        """
+        self.s1 = n1
+        self.s2 = n2
+        self.tda = tda if tda > 0 else n2
+        self.data = ptr
+        self.block = None
+        self.owner = 0
+
     def __del__(deinit self):
         if self.owner == 1 and self.block:
             self.block.value().destroy_pointee()
