@@ -173,6 +173,33 @@ def test_vector_norm() raises:
     print("test_vector_norm: PASSED")
 
 
+def test_vector_borrow_ptr() raises:
+    # Allocate raw buffer externally, wrap without owning
+    var buf = alloc[Float64](4)
+    buf[0] = 10.0; buf[1] = 20.0; buf[2] = 30.0; buf[3] = 40.0
+    var v = Vector(buf, 4)  # non-owning view
+    assert v.owner == 0
+    assert v[0] == 10.0 and v[1] == 20.0 and v[2] == 30.0 and v[3] == 40.0
+    # Mutations through view affect the original buffer
+    v[2] = 99.0
+    assert buf[2] == 99.0
+    # Destructor must NOT free buf (owner == 0)
+    buf.free()
+    print("test_vector_borrow_ptr: PASSED")
+
+
+def test_vector_borrow_stride() raises:
+    # Strided view: every other element
+    var buf = alloc[Float64](6)
+    for i in range(6):
+        buf[i] = Float64(i)
+    var v = Vector(buf, 3, 2)  # non-owning view  # size=3, stride=2 → elements 0,2,4
+    assert v[0] == 0.0 and v[1] == 2.0 and v[2] == 4.0
+    assert v.owner == 0
+    buf.free()
+    print("test_vector_borrow_stride: PASSED")
+
+
 def main() raises:
     TestSuite.discover_tests[__functions_in_module()]().run()
     print("All vector tests PASSED")
