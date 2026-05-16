@@ -48,9 +48,6 @@ from msl.core.const import MSL_DBL_EPSILON, MSL_DBL_MAX
 from msl.core.errno import MSL_SUCCESS, MSL_EMAXITER, MSL_EINVAL
 
 
-comptime MutExt = MutExternalOrigin
-
-
 # ===----------------------------------------------------------------------=== #
 # Result type
 # ===----------------------------------------------------------------------=== #
@@ -116,16 +113,19 @@ def _alloc(n: Int) -> UnsafePointer[Float64, MutExt]:
 
 
 def ode_rk4[
+    origin_y: MutOrigin, 
+    origin_dydt: MutOrigin,
+    //,
     rhs: def(
         Float64,
-        UnsafePointer[Float64, MutExt],
-        UnsafePointer[Float64, MutExt],
+        UnsafePointer[Float64, origin_y],
+        UnsafePointer[Float64, origin_dydt],
     ) capturing,
 ](
     t0: Float64,
     t1: Float64,
     h: Float64,
-    y: UnsafePointer[Float64, MutExt],
+    y: UnsafePointer[Float64, origin_y],
     dim: Int,
     max_steps: Int = 100000,
 ) -> OdeResult:
@@ -192,7 +192,11 @@ def ode_rk4[
         t += step
         nsteps += 1
 
-    k1.free(); k2.free(); k3.free(); k4.free(); ytmp.free()
+    k1.free()
+    k2.free()
+    k3.free()
+    k4.free()
+    ytmp.free()
 
     if nsteps >= max_steps and t < t1 - MSL_DBL_EPSILON * abs(t1):
         return OdeResult(t=t, nsteps=nsteps, nfev=nfev, success=False, errno=MSL_EMAXITER)
@@ -232,16 +236,19 @@ comptime _EC: InlineArray[Float64, 7] = [
 
 
 def ode_rkf45[
+    origin_y: MutOrigin,
+    origin_dydt: MutOrigin,
+    //,
     rhs: def(
         Float64,
-        UnsafePointer[Float64, MutExt],
-        UnsafePointer[Float64, MutExt],
+        UnsafePointer[Float64, origin_y],
+        UnsafePointer[Float64, origin_dydt],
     ) capturing,
 ](
     t0: Float64,
     t1: Float64,
     h0: Float64,
-    y: UnsafePointer[Float64, MutExt],
+    y: UnsafePointer[Float64, origin_y],
     dim: Int,
     epsabs: Float64 = 1e-6,
     epsrel: Float64 = 1e-6,
