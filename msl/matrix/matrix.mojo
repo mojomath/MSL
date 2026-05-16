@@ -73,8 +73,6 @@ struct Matrix(Copyable, Movable):
         n1: Int,
         n2: Int,
         tda: Int = 0,
-        *,
-        borrow: Bool,
     ):
         """Create a non-owning view over an externally managed buffer.
 
@@ -86,7 +84,6 @@ struct Matrix(Copyable, Movable):
             n1: Number of rows.
             n2: Number of columns.
             tda: Leading dimension (elements per row). Defaults to n2 (contiguous).
-            borrow: Must be True — keyword sentinel to distinguish from owning init.
         """
         self.s1 = n1
         self.s2 = n2

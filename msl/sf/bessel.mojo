@@ -1029,7 +1029,7 @@ def bessel_In(n: Int, x: Float64) -> SFSResult:
     var Ikp1: Float64 = 0.0
     var Ik: Float64 = 1.0e-190
     var target_val: Float64 = 0.0
-    var I0_norm: Float64 = 0.0
+    var I0_norm: Float64
     var I1_norm: Float64 = 0.0
 
     var k = n_start
