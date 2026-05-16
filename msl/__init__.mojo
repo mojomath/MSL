@@ -155,6 +155,9 @@ from msl.interpolation import (
     AkimaSpline,
 )
 
+# ODE solvers
+from msl.ode import OdeResult, ode_rk4, ode_rkf45
+
 # Numerical differentiation
 from msl.deriv import DerivResult, deriv_central, deriv_forward, deriv_backward
 
