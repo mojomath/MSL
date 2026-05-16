@@ -67,9 +67,9 @@ struct Matrix(Copyable, Movable):
         self.block = bptr
         self.owner = 1
 
-    def __init__(
+    def __init__[mut: Bool, //, origin: Origin = Origin[mut=mut]](
         out self,
-        ptr: UnsafePointer[Float64, MutExt],
+        ptr: UnsafePointer[Float64, origin],
         n1: Int,
         n2: Int,
         tda: Int = 0,
@@ -88,7 +88,7 @@ struct Matrix(Copyable, Movable):
         self.s1 = n1
         self.s2 = n2
         self.tda = tda if tda > 0 else n2
-        self.data = ptr
+        self.data = rebind[UnsafePointer[Float64, MutExt]](ptr) # NOTE: idk if this is a safe operations to do. 
         self.block = None
         self.owner = 0
 

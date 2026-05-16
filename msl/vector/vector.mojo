@@ -75,9 +75,9 @@ struct Vector(Copyable, Movable):
         self.block = bptr
         self.owner = 1
 
-    def __init__(
+    def __init__[mut: Bool, //, origin: Origin = Origin[mut=mut]](
         out self,
-        ptr: UnsafePointer[Float64, MutExt],
+        ptr: UnsafePointer[Float64, origin],
         size: Int,
         stride: Int = 1,
     ):
@@ -93,7 +93,7 @@ struct Vector(Copyable, Movable):
         """
         self.size = size
         self.stride = stride
-        self.data = ptr
+        self.data = rebind[UnsafePointer[Float64, MutExt]](ptr) # NOTE: idk if this is a safe operations to do. 
         self.block = None
         self.owner = 0
 
