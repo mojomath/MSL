@@ -75,7 +75,7 @@ struct Vector(Copyable, Movable):
         self.block = bptr
         self.owner = 1
 
-    def __init__[mut: Bool, //, origin: Origin = Origin[mut=mut]](
+    def __init__[origin: Origin, //](
         out self,
         ptr: UnsafePointer[Float64, origin],
         size: Int,
