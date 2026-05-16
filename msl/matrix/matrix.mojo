@@ -61,7 +61,7 @@ struct Matrix(Copyable, Movable):
         self.data = alloc[Float64](n1 * n2)
         if initialize:
             memset_zero(self.data, n1 * n2)
-        self.owner = 1
+        self.owner = True
 
     def __init__[
         origin: Origin, //
@@ -87,10 +87,10 @@ struct Matrix(Copyable, Movable):
         self.s2 = n2
         self.tda = tda if tda > 0 else n2
         self.data = rebind[UnsafePointer[Float64, MutExt]](ptr)
-        self.owner = 0
+        self.owner = False
 
     def __del__(deinit self):
-        if self.owner == 1:
+        if self.owner:
             self.data.free()
 
     def size1(self) -> Int:

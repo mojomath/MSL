@@ -237,7 +237,7 @@ def test_matrix_borrow_ptr() raises:
     buf[0] = 1.0; buf[1] = 2.0; buf[2] = 3.0
     buf[3] = 4.0; buf[4] = 5.0; buf[5] = 6.0
     var m = Matrix(buf, 2, 3)  # non-owning view
-    assert m.owner == 0
+    assert not m.owner
     assert m[0, 0] == 1.0 and m[0, 2] == 3.0 and m[1, 0] == 4.0 and m[1, 2] == 6.0
     # Mutations through view affect original buffer
     m[1, 1] = 99.0
@@ -255,7 +255,7 @@ def test_matrix_borrow_tda() raises:
     var m = Matrix(buf, 2, 2, 4)  # non-owning view
     assert m[0, 0] == 0.0 and m[0, 1] == 1.0
     assert m[1, 0] == 4.0 and m[1, 1] == 5.0
-    assert m.owner == 0
+    assert not m.owner
     buf.free()
     print("test_matrix_borrow_tda: PASSED")
 

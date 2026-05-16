@@ -51,7 +51,7 @@ struct Vector(Copyable, Movable):
     var size: Int
     var stride: Int
     var data: UnsafePointer[Float64, MutExt]
-    var owner: Int
+    var owner: Bool
 
     def __init__(out self, size: Int, *, initialize: Bool = False):
         self.size = size
@@ -59,7 +59,7 @@ struct Vector(Copyable, Movable):
         self.data = alloc[Float64](size)
         if initialize:
             memset_zero(self.data, size)
-        self.owner = 1
+        self.owner = True
 
     def __init__(out self, size: Int, stride: Int, *, initialize: Bool = False):
         self.size = size
@@ -67,7 +67,7 @@ struct Vector(Copyable, Movable):
         self.data = alloc[Float64](size * stride)
         if initialize:
             memset_zero(self.data, size * stride)
-        self.owner = 1
+        self.owner = True
 
     def __init__[
         origin: Origin, //
@@ -90,10 +90,10 @@ struct Vector(Copyable, Movable):
         self.size = size
         self.stride = stride
         self.data = rebind[UnsafePointer[Float64, MutExt]](ptr)
-        self.owner = 0
+        self.owner = False
 
     def __del__(deinit self):
-        if self.owner == 1:
+        if self.owner:
             self.data.free()
 
     def get_size(self) -> Int:
