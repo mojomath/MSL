@@ -73,11 +73,11 @@ struct Block(Copyable, Movable):
         """Return the size of the block."""
         return self.size
 
-    def ptr_mut(mut self) -> UnsafePointer[Float64, origin_of(self)]:
+    def mut_ptr(mut self) -> UnsafePointer[Float64, origin_of(self)]:
         """Return pointer to the block data."""
         return self.data.unsafe_origin_cast[origin_of(self)]()
 
-    def ptr_read(self) -> UnsafePointer[Float64, origin_of(self)]:
+    def immut_ptr(self) -> UnsafePointer[Float64, origin_of(self)]:
         """Return pointer to the block data."""
         return self.data.as_immutable().unsafe_origin_cast[origin_of(self)]()
 

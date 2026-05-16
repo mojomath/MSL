@@ -50,9 +50,9 @@ def blas_dot(x: Vector, y: Vector) -> Float64:
         return 0.0
     return dot[DType.float64](
         x.size,
-        x.ptr_read(),
+        x.immut_ptr(),
         x.stride,
-        y.ptr_read(),
+        y.immut_ptr(),
         y.stride,
     )
 
@@ -68,7 +68,7 @@ def blas_nrm2(x: Vector) -> Float64:
     """
     return nrm2[DType.float64](
         x.size,
-        x.ptr_read(),
+        x.immut_ptr(),
         x.stride,
     )
 
@@ -84,7 +84,7 @@ def blas_asum(x: Vector) -> Float64:
     """
     return asum[DType.float64](
         x.size,
-        x.ptr_read(),
+        x.immut_ptr(),
         x.stride,
     )
 
@@ -102,9 +102,9 @@ def blas_axpy(alpha: Float64, x: Vector, mut y: Vector):
     axpy[DType.float64](
         x.size,
         alpha,
-        x.ptr_read(),
+        x.immut_ptr(),
         x.stride,
-        y.ptr_mut(),
+        y.mut_ptr(),
         y.stride,
     )
 
@@ -119,7 +119,7 @@ def blas_scal(alpha: Float64, mut x: Vector):
     scal[DType.float64](
         x.size,
         alpha,
-        x.ptr_mut(),
+        x.mut_ptr(),
         x.stride,
     )
 
@@ -135,9 +135,9 @@ def blas_copy(x: Vector, mut y: Vector):
         return
     copy[DType.float64](
         x.size,
-        x.ptr_read(),
+        x.immut_ptr(),
         x.stride,
-        y.ptr_mut(),
+        y.mut_ptr(),
         y.stride,
     )
 
@@ -153,9 +153,9 @@ def blas_swap(mut x: Vector, mut y: Vector):
         return
     vswap[DType.float64](
         x.size,
-        x.ptr_mut(),
+        x.mut_ptr(),
         x.stride,
-        y.ptr_mut(),
+        y.mut_ptr(),
         y.stride,
     )
 
@@ -191,12 +191,12 @@ def blas_gemv(
         m,
         n,
         alpha,
-        a.ptr_read(),
+        a.immut_ptr(),
         a.tda,
-        x.ptr_read(),
+        x.immut_ptr(),
         x.stride,
         beta,
-        y.ptr_mut(),
+        y.mut_ptr(),
         y.stride,
     )
 
@@ -238,11 +238,11 @@ def blas_gemm(
         n,
         k,
         alpha,
-        a.ptr_read(),
+        a.immut_ptr(),
         a.tda,
-        b.ptr_read(),
+        b.immut_ptr(),
         b.tda,
         beta,
-        c.ptr_mut(),
+        c.mut_ptr(),
         c.tda,
     )

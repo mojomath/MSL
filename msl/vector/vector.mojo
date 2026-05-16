@@ -104,11 +104,11 @@ struct Vector(Copyable, Movable):
         """Return the stride of the vector."""
         return self.stride
 
-    def ptr_mut(mut self) -> UnsafePointer[Float64, origin_of(self)]:
+    def mut_ptr(mut self) -> UnsafePointer[Float64, origin_of(self)]:
         """Return pointer to the vector data."""
         return self.data.unsafe_origin_cast[origin_of(self)]()
 
-    def ptr_read(ref self) -> UnsafePointer[Float64, origin_of(self)]:
+    def immut_ptr(ref self) -> UnsafePointer[Float64, origin_of(self)]:
         """Return pointer to the vector data."""
         return rebind[UnsafePointer[Float64, origin_of(self)]](
             self.data.unsafe_mut_cast[False]().unsafe_origin_cast[

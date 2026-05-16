@@ -120,7 +120,7 @@ def test_matrix_ptr() raises:
     mat[1, 0] = 3.0
     mat[1, 1] = 4.0
     
-    var ptr = mat.ptr_read()
+    var ptr = mat.immut_ptr()
     assert ptr[0] == 1.0
     assert ptr[1] == 2.0
     assert ptr[2] == 3.0

@@ -87,7 +87,7 @@ def test_vector_ptr() raises:
     vec.set(1, 2.0)
     vec.set(2, 3.0)
 
-    var ptr = vec.ptr_read()
+    var ptr = vec.immut_ptr()
     assert ptr[0] == 1.0
     assert ptr[1] == 2.0
     assert ptr[2] == 3.0

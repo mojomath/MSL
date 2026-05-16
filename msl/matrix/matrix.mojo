@@ -52,7 +52,7 @@ struct Matrix(Copyable, Movable):
     """Number of columns."""
     var tda: Int
     var data: UnsafePointer[Float64, MutExt]
-    var owner: Int
+    var owner: Bool
 
     def __init__(out self, n1: Int, n2: Int, *, initialize: Bool = False):
         self.s1 = n1
@@ -101,7 +101,7 @@ struct Matrix(Copyable, Movable):
         """Return number of columns."""
         return self.s2
 
-    def ptr_read(ref self) -> UnsafePointer[Float64, origin_of(self)]:
+    def immut_ptr(ref self) -> UnsafePointer[Float64, origin_of(self)]:
         """Return pointer to the matrix data."""
         return rebind[UnsafePointer[Float64, origin_of(self)]](
             self.data.unsafe_mut_cast[False]().unsafe_origin_cast[
@@ -109,7 +109,7 @@ struct Matrix(Copyable, Movable):
             ]()
         )
 
-    def ptr_mut(mut self) -> UnsafePointer[Float64, origin_of(self)]:
+    def mut_ptr(mut self) -> UnsafePointer[Float64, origin_of(self)]:
         """Return mutable pointer to the matrix data."""
         return self.data.unsafe_origin_cast[origin_of(self)]()
 
@@ -221,7 +221,7 @@ def matrix_set_zero(mut mat: Matrix):
     Args:
         mat: Matrix to zero.
     """
-    memset_zero(mat.ptr_mut(), mat.s1 * mat.s2)
+    memset_zero(mat.mut_ptr(), mat.s1 * mat.s2)
 
 
 def matrix_set_all(mut mat: Matrix, x: Float64):

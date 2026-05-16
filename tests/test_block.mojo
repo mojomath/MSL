@@ -36,7 +36,7 @@ def test_block_data() raises:
 
 def test_block_ptr_mut() raises:
     var block = block_alloc(3)
-    var ptr = block.ptr_mut()
+    var ptr = block.mut_ptr()
     ptr.store(0, 5.0)
     ptr.store(1, 10.0)
     ptr.store(2, 15.0)
@@ -48,12 +48,12 @@ def test_block_ptr_mut() raises:
 
 def test_block_ptr_read() raises:
     var block = block_alloc(3)
-    var ptr = block.ptr_mut()
+    var ptr = block.mut_ptr()
     ptr.store(0, 1.0)
     ptr.store(1, 2.0)
     ptr.store(2, 3.0)
     
-    var read_ptr = block.ptr_read()
+    var read_ptr = block.immut_ptr()
     assert read_ptr[0] == 1.0
     assert read_ptr[1] == 2.0
     assert read_ptr[2] == 3.0
