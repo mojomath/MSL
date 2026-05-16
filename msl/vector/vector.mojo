@@ -69,7 +69,9 @@ struct Vector(Copyable, Movable):
             memset_zero(self.data, size * stride)
         self.owner = 1
 
-    def __init__[origin: Origin, //](
+    def __init__[
+        origin: Origin, //
+    ](
         out self,
         ptr: UnsafePointer[Float64, origin],
         size: Int,

@@ -965,6 +965,7 @@ def bessel_Jnu_asympx(nu: Float64, x: Float64) -> SFSResult:
 # ===----------------------------------------------------------------------=== #
 # TODO: Consider making `n` a compile time parameter.
 
+
 def bessel_Yn(n: Int, x: Float64) -> SFSResult:
     """Bessel function of the second kind, integer order n."""
     var result = SFSResult()
@@ -990,7 +991,11 @@ def bessel_Yn(n: Int, x: Float64) -> SFSResult:
 
     for k in range(1, n):
         Ykp1.val = (2.0 * Float64(k) / x) * Yk.val - Ykm1.val
-        Ykp1.err = (2.0 * Float64(k) / x) * Yk.err + Ykm1.err + MSL_DBL_EPSILON * abs(Ykp1.val)
+        Ykp1.err = (
+            (2.0 * Float64(k) / x) * Yk.err
+            + Ykm1.err
+            + MSL_DBL_EPSILON * abs(Ykp1.val)
+        )
         Ykm1 = Yk
         Yk = Ykp1
 
@@ -1054,7 +1059,9 @@ def bessel_In(n: Int, x: Float64) -> SFSResult:
         norm = b1.val / I1_norm
 
     result.val = sign * target_val * norm
-    result.err = abs(norm) * 1.0e-190 + MSL_DBL_EPSILON * abs(result.val) * Float64(nn)
+    result.err = abs(norm) * 1.0e-190 + MSL_DBL_EPSILON * abs(
+        result.val
+    ) * Float64(nn)
     return result^
 
 
@@ -1083,7 +1090,11 @@ def bessel_Kn(n: Int, x: Float64) -> SFSResult:
 
     for k in range(1, nn):
         Kkp1.val = Kkm1.val + (2.0 * Float64(k) / x) * Kk.val
-        Kkp1.err = Kkm1.err + (2.0 * Float64(k) / x) * Kk.err + MSL_DBL_EPSILON * abs(Kkp1.val)
+        Kkp1.err = (
+            Kkm1.err
+            + (2.0 * Float64(k) / x) * Kk.err
+            + MSL_DBL_EPSILON * abs(Kkp1.val)
+        )
         Kkm1 = Kk
         Kk = Kkp1
 

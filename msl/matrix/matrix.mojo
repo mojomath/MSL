@@ -63,7 +63,9 @@ struct Matrix(Copyable, Movable):
             memset_zero(self.data, n1 * n2)
         self.owner = 1
 
-    def __init__[origin: Origin, //](
+    def __init__[
+        origin: Origin, //
+    ](
         out self,
         ptr: UnsafePointer[Float64, origin],
         n1: Int,

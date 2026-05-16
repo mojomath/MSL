@@ -187,7 +187,9 @@ def blas_gemv(
     var m = a.s1
     var n = a.s2
     gemv[DType.float64](
-        t, m, n,
+        t,
+        m,
+        n,
         alpha,
         a.ptr_read(),
         a.tda,
@@ -230,8 +232,11 @@ def blas_gemm(
     var k = a.s2 if not trans_a else a.s1
     var n = b.s2 if not trans_b else b.s1
     gemm[DType.float64](
-        ta, tb,
-        m, n, k,
+        ta,
+        tb,
+        m,
+        n,
+        k,
         alpha,
         a.ptr_read(),
         a.tda,

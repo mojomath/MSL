@@ -113,7 +113,7 @@ def _alloc(n: Int) -> UnsafePointer[Float64, MutExt]:
 
 
 def ode_rk4[
-    origin_y: MutOrigin, 
+    origin_y: MutOrigin,
     //,
     rhs: def[origin_fn_y: MutOrigin, origin_fn_dydt: MutOrigin, //](
         Float64,
@@ -198,7 +198,9 @@ def ode_rk4[
     ytmp.free()
 
     if nsteps >= max_steps and t < t1 - MSL_DBL_EPSILON * abs(t1):
-        return OdeResult(t=t, nsteps=nsteps, nfev=nfev, success=False, errno=MSL_EMAXITER)
+        return OdeResult(
+            t=t, nsteps=nsteps, nfev=nfev, success=False, errno=MSL_EMAXITER
+        )
 
     return OdeResult(t=t, nsteps=nsteps, nfev=nfev, success=True)
 
@@ -209,33 +211,54 @@ def ode_rk4[
 
 # Butcher tableau for RKF45
 comptime _AH: InlineArray[Float64, 5] = [
-    1.0/4.0, 3.0/8.0, 12.0/13.0, 1.0, 1.0/2.0,
+    1.0 / 4.0,
+    3.0 / 8.0,
+    12.0 / 13.0,
+    1.0,
+    1.0 / 2.0,
 ]
-comptime _B3: InlineArray[Float64, 2] = [3.0/32.0, 9.0/32.0]
+comptime _B3: InlineArray[Float64, 2] = [3.0 / 32.0, 9.0 / 32.0]
 comptime _B4: InlineArray[Float64, 3] = [
-    1932.0/2197.0, -7200.0/2197.0, 7296.0/2197.0,
+    1932.0 / 2197.0,
+    -7200.0 / 2197.0,
+    7296.0 / 2197.0,
 ]
 comptime _B5: InlineArray[Float64, 4] = [
-    8341.0/4104.0, -32832.0/4104.0, 29440.0/4104.0, -845.0/4104.0,
+    8341.0 / 4104.0,
+    -32832.0 / 4104.0,
+    29440.0 / 4104.0,
+    -845.0 / 4104.0,
 ]
 comptime _B6: InlineArray[Float64, 5] = [
-    -6080.0/20520.0, 41040.0/20520.0, -28352.0/20520.0,
-     9295.0/20520.0, -5643.0/20520.0,
+    -6080.0 / 20520.0,
+    41040.0 / 20520.0,
+    -28352.0 / 20520.0,
+    9295.0 / 20520.0,
+    -5643.0 / 20520.0,
 ]
 # 5th-order output weights (indices 0,2 are zero)
 comptime _C: InlineArray[Float64, 6] = [
-    902880.0/7618050.0, 0.0, 3953664.0/7618050.0,
-    3855735.0/7618050.0, -1371249.0/7618050.0, 277020.0/7618050.0,
+    902880.0 / 7618050.0,
+    0.0,
+    3953664.0 / 7618050.0,
+    3855735.0 / 7618050.0,
+    -1371249.0 / 7618050.0,
+    277020.0 / 7618050.0,
 ]
 # Error coefficients (difference 5th - 4th order)
 comptime _EC: InlineArray[Float64, 7] = [
-    0.0, 1.0/360.0, 0.0, -128.0/4275.0,
-    -2197.0/75240.0, 1.0/50.0, 2.0/55.0,
+    0.0,
+    1.0 / 360.0,
+    0.0,
+    -128.0 / 4275.0,
+    -2197.0 / 75240.0,
+    1.0 / 50.0,
+    2.0 / 55.0,
 ]
 
 
 def ode_rkf45[
-    origin_y: MutOrigin, 
+    origin_y: MutOrigin,
     //,
     rhs: def[origin_fn_y: MutOrigin, origin_fn_dydt: MutOrigin, //](
         Float64,
@@ -319,14 +342,19 @@ def ode_rkf45[
 
         # k4
         for i in range(dim):
-            ytmp[i] = y[i] + h * (_B4[0] * k1[i] + _B4[1] * k2[i] + _B4[2] * k3[i])
+            ytmp[i] = y[i] + h * (
+                _B4[0] * k1[i] + _B4[1] * k2[i] + _B4[2] * k3[i]
+            )
         rhs(t + _AH[2] * h, ytmp, k4)
         nfev += 1
 
         # k5
         for i in range(dim):
             ytmp[i] = y[i] + h * (
-                _B5[0] * k1[i] + _B5[1] * k2[i] + _B5[2] * k3[i] + _B5[3] * k4[i]
+                _B5[0] * k1[i]
+                + _B5[1] * k2[i]
+                + _B5[2] * k3[i]
+                + _B5[3] * k4[i]
             )
         rhs(t + _AH[3] * h, ytmp, k5)
         nfev += 1
@@ -334,8 +362,11 @@ def ode_rkf45[
         # k6
         for i in range(dim):
             ytmp[i] = y[i] + h * (
-                _B6[0] * k1[i] + _B6[1] * k2[i] + _B6[2] * k3[i]
-                + _B6[3] * k4[i] + _B6[4] * k5[i]
+                _B6[0] * k1[i]
+                + _B6[1] * k2[i]
+                + _B6[2] * k3[i]
+                + _B6[3] * k4[i]
+                + _B6[4] * k5[i]
             )
         rhs(t + _AH[4] * h, ytmp, k6)
         nfev += 1
@@ -343,8 +374,11 @@ def ode_rkf45[
         # Error estimate
         for i in range(dim):
             yerr[i] = h * (
-                _EC[1] * k1[i] + _EC[3] * k3[i] + _EC[4] * k4[i]
-                + _EC[5] * k5[i] + _EC[6] * k6[i]
+                _EC[1] * k1[i]
+                + _EC[3] * k3[i]
+                + _EC[4] * k4[i]
+                + _EC[5] * k5[i]
+                + _EC[6] * k6[i]
             )
 
         # Step control: find max(|yerr[i]| / D0[i])
@@ -359,16 +393,19 @@ def ode_rkf45[
             # Accept step - update y with 5th-order estimate
             for i in range(dim):
                 y[i] += h * (
-                    _C[0] * k1[i] + _C[2] * k3[i] + _C[3] * k4[i]
-                    + _C[4] * k5[i] + _C[5] * k6[i]
+                    _C[0] * k1[i]
+                    + _C[2] * k3[i]
+                    + _C[3] * k4[i]
+                    + _C[4] * k5[i]
+                    + _C[5] * k6[i]
                 )
             t += h
             nsteps += 1
 
         # Adjust step size (GSL safety factor S=0.9, order=5)
         var h_new = 0.9 * h * pow(1.0 / rmax, 0.2)
-        h_new = min(h_new, 5.0 * h)   # cap growth
-        h_new = max(h_new, 0.2 * h)   # cap shrinkage
+        h_new = min(h_new, 5.0 * h)  # cap growth
+        h_new = max(h_new, 0.2 * h)  # cap shrinkage
         h_new = min(h_new, h_max)
         if h_min > 0.0:
             h_new = max(h_new, h_min)
@@ -384,6 +421,8 @@ def ode_rkf45[
     yerr.free()
 
     if nsteps >= max_steps and t < t1 - MSL_DBL_EPSILON * abs(t1):
-        return OdeResult(t=t, nsteps=nsteps, nfev=nfev, success=False, errno=MSL_EMAXITER)
+        return OdeResult(
+            t=t, nsteps=nsteps, nfev=nfev, success=False, errno=MSL_EMAXITER
+        )
 
     return OdeResult(t=t, nsteps=nsteps, nfev=nfev, success=True)

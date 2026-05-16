@@ -163,8 +163,15 @@ from msl.deriv import DerivResult, deriv_central, deriv_forward, deriv_backward
 
 # BLAS (backed by mojoBLAS)
 from msl.blas import (
-    blas_dot, blas_nrm2, blas_asum, blas_axpy, blas_scal,
-    blas_copy, blas_swap, blas_gemv, blas_gemm,
+    blas_dot,
+    blas_nrm2,
+    blas_asum,
+    blas_axpy,
+    blas_scal,
+    blas_copy,
+    blas_swap,
+    blas_gemv,
+    blas_gemm,
 )
 
 # Linear algebra primitives
