@@ -20,15 +20,12 @@ name = "msl"
 
 [package.host-dependencies]
 mojo = "==1.0.0b1"
-gsl = ">=2.8,<3"
 
 [package.build-dependencies]
 mojo = "==1.0.0b1"
-gsl = ">=2.8,<3"
 
 [package.run-dependencies]
 mojo = "==1.0.0b1"
-gsl = ">=2.8,<3"
 
 [tasks]
 format = "mojo format ./msl"
