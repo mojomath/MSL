@@ -65,7 +65,7 @@ def test_qag_rule_selection() raises:
 
 
 def test_qag_captures_closure() raises:
-    var alpha: Float64 = 3.0
+    comptime alpha: Float64 = 3.0
 
     def integrand(x: Float64) capturing -> Float64:
         return x ** alpha
@@ -135,7 +135,7 @@ def test_qags_sqrt_singularity() raises:
 
 
 def test_qags_captures_closure() raises:
-    var omega: Float64 = 10.0
+    comptime omega: Float64 = 10.0
 
     def integrand(x: Float64) capturing -> Float64:
         return sin(omega * x)
