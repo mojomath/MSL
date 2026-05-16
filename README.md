@@ -1,5 +1,9 @@
 # MSL - Mojo Scientific Library <!-- omit from toc -->
 
+<p align="center">
+  <img src="assets/msl.png" alt="MSL logo" width="200"/>
+</p>
+
 A pure-Mojo scientific computing library derived from the [GNU Scientific Library (GSL)](https://www.gnu.org/software/gsl/), providing scalar numerics, special functions, probability distributions, linear algebra, interpolation, numerical differentiation, integration, root-finding, minimization, and ODE solving. Install it with `pixi add msl`.
 
 [![Version](https://img.shields.io/badge/version-v0.1.0-blue)](https://github.com/shivasankarka/MSL)
@@ -48,7 +52,27 @@ I don't plan to port every single function from GSL - perhaps if I get time in t
 
 MSL requires [pixi](https://pixi.sh) and Mojo 1.0.0b1.
 
-### From Git (until it lands in a package channel)
+### With pixi (recommended)
+
+Add the modular-community (`https://repo.prefix.dev/modular-community`) channel and install:
+
+```bash
+pixi add msl
+```
+
+Or add it directly to your `pixi.toml`:
+
+```toml
+[workspace]
+channels = ["https://conda.modular.com/max/", "https://repo.prefix.dev/modular-community", "conda-forge"]
+
+[dependencies]
+msl = ">=0.1.0"
+```
+
+Then run `pixi install`.
+
+### From Git
 
 Add to your `pixi.toml`:
 
@@ -59,13 +83,13 @@ preview = ["pixi-build"]
 
 [package]
 name = "your_project"
-version = "0.1.0"
+version = "x.y.z"
 
 [package.build]
 backend = {name = "pixi-build-mojo", version = "0.*"}
 
 [dependencies]
-msl = { git = "https://github.com/shivasankarka/MSL.git", branch = "main" }
+msl = { git = "https://github.com/shivasankarka/msl.git", branch = "main" }
 ```
 
 Then run `pixi install`.
@@ -133,12 +157,12 @@ def main():
 from msl.integration import qags, qag, qng_integrate, MSL_INTEG_GAUSS21
 
 def main() raises:
-    # Adaptive integration with Wynn epsilon extrapolation (recommended)
+    # Adaptive integration
     def integrand(x: Float64) capturing -> Float64:
         return x * x
 
     var r = qags[integrand](0.0, 1.0, 1e-10, 1e-10)
-    print(r.val, r.err)   # ≈ 0.333333..., tiny error
+    print(r.val, r.err)   # ≈ 0.333333
 
     # General adaptive QAG with rule selection
     var r2 = qag[integrand](0.0, 1.0, 1e-10, 1e-10, key=MSL_INTEG_GAUSS21)
@@ -193,7 +217,7 @@ def main():
         return sin(x)
 
     var r = root_brent[fn_](3.0, 4.0)
-    print(r.root, r.nit)   # ≈ 3.14159..., few iterations
+    print(r.root, r.nit)   # ≈ 3.14159...
 
     # Brent minimization: -(cos(x)) in [-1, 1]
     def neg_cos(x: Float64) capturing -> Float64:
@@ -229,7 +253,7 @@ def main() raises:
     var r = ode_rk4[rhs](0.0, 1.0, 0.01, y, 2)
     print(y[0], cos(1.0))   # ≈ cos(1)
 
-    # Adaptive RKF45 (fewer steps, same accuracy)
+    # Adaptive RKF45
     y[0] = 1.0; y[1] = 0.0
     var r2 = ode_rkf45[rhs](0.0, 1.0, 0.1, y, 2, epsabs=1e-8, epsrel=1e-8)
     print(r2.nsteps, "steps")
@@ -338,9 +362,9 @@ struct MyRNG(RNGAlgorithm):
 
 MSL follows the GSL design philosophy:
 
-- **Scalar-first**: all functions operate on `Float64` scalars; array operations belong in SciJo
+- **Scalar-first**: all functions operate on `Float64` scalars; array operations belong in SciJo.
 - **Error propagation**: every special function returns `SFSResult` with `.val`, `.err`, `.errno`
-- **Zero ownership surprises**: `Vector` and `Matrix` support non-owning views via `Vector(ptr, n)` / `Matrix(ptr, rows, cols)` for zero-copy interop with NuMojo NDArrays
+- **Zero ownership surprises**: `Vector` and `Matrix` support non-owning views via `Vector(ptr, n)` / `Matrix(ptr, rows, cols)` for zero-copy interop with NuMojo NDArray! 
 - **Extensible RNG**: the `RNGAlgorithm` trait lets you plug in any generator; distributions are parametric over `T: RNGAlgorithm`
 - **BLAS-backed linalg**: `msl.blas` wraps mojoBLAS - same pattern as GSL wrapping CBLAS
 
