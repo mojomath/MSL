@@ -7,19 +7,19 @@ Provides type-safe BLAS operations on MSL's `Vector` and `Matrix` structs
 by unwrapping their raw pointers and delegating to mojoBLAS.
 
 Level 1 (vector-vector):
-  blas_dot    — dot product: x · y
-  blas_nrm2   — Euclidean norm: ||x||_2
-  blas_asum   — sum of absolute values: sum|x_i|
-  blas_axpy   — AXPY: y += alpha * x
-  blas_scal   — scale: x *= alpha
-  blas_copy   — copy: y = x
-  blas_swap   — swap: x ↔ y
+  blas_dot    - dot product: x · y
+  blas_nrm2   - Euclidean norm: ||x||_2
+  blas_asum   - sum of absolute values: sum|x_i|
+  blas_axpy   - AXPY: y += alpha * x
+  blas_scal   - scale: x *= alpha
+  blas_copy   - copy: y = x
+  blas_swap   - swap: x ↔ y
 
 Level 2 (matrix-vector):
-  blas_gemv   — general matrix-vector: y = alpha*A*x + beta*y
+  blas_gemv   - general matrix-vector: y = alpha*A*x + beta*y
 
 Level 3 (matrix-matrix):
-  blas_gemm   — general matrix-matrix: C = alpha*A*B + beta*C
+  blas_gemm   - general matrix-matrix: C = alpha*A*B + beta*C
 """
 
 from mojoBLAS.level1 import dot, nrm2, asum, axpy, scal, copy, vswap
@@ -32,7 +32,7 @@ from msl.core.errno import MSL_SUCCESS, MSL_EINVAL
 
 
 # ===----------------------------------------------------------------------=== #
-# Level 1 — vector-vector
+# Level 1 - vector-vector
 # ===----------------------------------------------------------------------=== #
 
 
@@ -161,7 +161,7 @@ def blas_swap(mut x: Vector, mut y: Vector):
 
 
 # ===----------------------------------------------------------------------=== #
-# Level 2 — matrix-vector
+# Level 2 - matrix-vector
 # ===----------------------------------------------------------------------=== #
 
 
@@ -200,7 +200,7 @@ def blas_gemv(
 
 
 # ===----------------------------------------------------------------------=== #
-# Level 3 — matrix-matrix
+# Level 3 - matrix-matrix
 # ===----------------------------------------------------------------------=== #
 
 

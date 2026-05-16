@@ -26,7 +26,7 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 # ===----------------------------------------------------------------------=== #
 """
-QNG — Non-adaptive Gauss-Kronrod integration.
+QNG - Non-adaptive Gauss-Kronrod integration.
 
 Attempts integration using progressively higher-order rules until tolerance
 is met:

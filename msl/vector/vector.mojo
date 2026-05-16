@@ -37,7 +37,6 @@ from std.algorithm.functional import vectorize
 from std.sys.info import simd_width_of
 from std.math import sqrt
 
-from msl.core import Block
 from msl.core.const import MSL_DBL_EPSILON
 
 
@@ -52,27 +51,22 @@ struct Vector(Copyable, Movable):
     var size: Int
     var stride: Int
     var data: UnsafePointer[Float64, MutExt]
-    var block: Optional[UnsafePointer[Block, MutExt]]
     var owner: Int
 
     def __init__(out self, size: Int, *, initialize: Bool = False):
         self.size = size
         self.stride = 1
-        var blk = Block(size, initialize=initialize)
-        self.data = blk.data
-        var bptr = alloc[Block](1)
-        bptr.init_pointee_move(blk^)
-        self.block = bptr
+        self.data = alloc[Float64](size)
+        if initialize:
+            memset_zero(self.data, size)
         self.owner = 1
 
     def __init__(out self, size: Int, stride: Int, *, initialize: Bool = False):
         self.size = size
         self.stride = stride
-        var blk = Block(size * stride, initialize=initialize)
-        self.data = blk.data
-        var bptr = alloc[Block](1)
-        bptr.init_pointee_move(blk^)
-        self.block = bptr
+        self.data = alloc[Float64](size * stride)
+        if initialize:
+            memset_zero(self.data, size * stride)
         self.owner = 1
 
     def __init__[origin: Origin, //](
@@ -93,14 +87,12 @@ struct Vector(Copyable, Movable):
         """
         self.size = size
         self.stride = stride
-        self.data = rebind[UnsafePointer[Float64, MutExt]](ptr) # NOTE: idk if this is a safe operations to do. 
-        self.block = None
+        self.data = rebind[UnsafePointer[Float64, MutExt]](ptr)
         self.owner = 0
 
     def __del__(deinit self):
-        if self.owner == 1 and self.block:
-            self.block.value().destroy_pointee()
-            self.block.value().free()
+        if self.owner == 1:
+            self.data.free()
 
     def get_size(self) -> Int:
         """Return the size of the vector."""

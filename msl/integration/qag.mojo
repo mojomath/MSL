@@ -26,7 +26,7 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 # ===----------------------------------------------------------------------=== #
 """
-QAG — General adaptive Gauss-Kronrod integration.
+QAG - General adaptive Gauss-Kronrod integration.
 
 Bisects the interval with the largest error estimate until the global
 error is within tolerance, or the subinterval limit is reached.

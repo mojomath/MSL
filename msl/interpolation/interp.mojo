@@ -24,10 +24,10 @@
 
 Provides four scalar interpolation types:
 
-  LinearInterp    — piecewise linear, O(1) eval
-  CubicSpline     — natural cubic spline, O(n) init, O(log n) eval
-  AkimaSpline     — Akima cubic spline (local, handles outliers), O(n) init
-  BiCubicInterp   — 2-D bicubic built on Akima derivatives
+  LinearInterp    - piecewise linear, O(1) eval
+  CubicSpline     - natural cubic spline, O(n) init, O(log n) eval
+  AkimaSpline     - Akima cubic spline (local, handles outliers), O(n) init
+  BiCubicInterp   - 2-D bicubic built on Akima derivatives
 
 All 1-D types expose: eval, deriv, deriv2, integral.
 """

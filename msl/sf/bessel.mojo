@@ -961,7 +961,7 @@ def bessel_Jnu_asympx(nu: Float64, x: Float64) -> SFSResult:
 
 
 # ===----------------------------------------------------------------------=== #
-# Bessel Y_n — upward recurrence Y_{n+1} = (2n/x)*Y_n - Y_{n-1}
+# Bessel Y_n - upward recurrence Y_{n+1} = (2n/x)*Y_n - Y_{n-1}
 # ===----------------------------------------------------------------------=== #
 # TODO: Consider making `n` a compile time parameter.
 
@@ -1000,7 +1000,7 @@ def bessel_Yn(n: Int, x: Float64) -> SFSResult:
 
 
 # ===----------------------------------------------------------------------=== #
-# Modified Bessel I_n — backward recurrence (Miller's algorithm)
+# Modified Bessel I_n - backward recurrence (Miller's algorithm)
 # I_{n-1} = I_{n+1} + (2n/x)*I_n
 # ===----------------------------------------------------------------------=== #
 
@@ -1059,7 +1059,7 @@ def bessel_In(n: Int, x: Float64) -> SFSResult:
 
 
 # ===----------------------------------------------------------------------=== #
-# Modified Bessel K_n — upward recurrence K_{n+1} = K_{n-1} + (2n/x)*K_n
+# Modified Bessel K_n - upward recurrence K_{n+1} = K_{n-1} + (2n/x)*K_n
 # ===----------------------------------------------------------------------=== #
 
 

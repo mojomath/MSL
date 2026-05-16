@@ -30,11 +30,11 @@ Numerical differentiation.
 
 Three routines are:
 
-  deriv_central  — 5-point symmetric rule + 3-point embedded for error,
+  deriv_central  - 5-point symmetric rule + 3-point embedded for error,
                    with optional adaptive step refinement.
-  deriv_forward  — 4-point forward rule at x+h/4..x+h, with adaptive
+  deriv_forward  - 4-point forward rule at x+h/4..x+h, with adaptive
                    step refinement.
-  deriv_backward — forward rule evaluated at -h (same stencil, mirrored).
+  deriv_backward - forward rule evaluated at -h (same stencil, mirrored).
 
 All three separate truncation error from rounding error and optionally
 refine h to minimise the total.
@@ -230,7 +230,7 @@ def deriv_backward[
 ](x: Float64, h: Float64 = 1e-4) -> DerivResult:
     """First derivative via backward differences.
 
-    Equivalent to deriv_forward evaluated at -h — the same 4-point
+    Equivalent to deriv_forward evaluated at -h - the same 4-point
     stencil mirrored. Suitable for right-boundary points.
 
     Parameters:

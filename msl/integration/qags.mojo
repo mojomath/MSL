@@ -26,7 +26,7 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 # ===----------------------------------------------------------------------=== #
 """
-QAGS — Adaptive integration with Wynn epsilon extrapolation.
+QAGS - Adaptive integration with Wynn epsilon extrapolation.
 
 Like QAG but applies the Wynn epsilon algorithm to accelerate convergence
 for smooth but slowly-converging integrands, and handles singularities

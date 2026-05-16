@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright (C) 2026 Shivasankar K.A.
 """
-MSL (Mojo Scientific Library) — public API.
+MSL (Mojo Scientific Library) - public API.
 
 Re-exports the full public surface of all MSL submodules.
 """

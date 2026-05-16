@@ -35,7 +35,6 @@ from std.memory import UnsafePointer, memset_zero
 from std.algorithm.functional import vectorize
 from std.sys.info import simd_width_of
 
-from msl.core import Block
 from msl.core.const import MSL_DBL_EPSILON
 
 
@@ -53,18 +52,15 @@ struct Matrix(Copyable, Movable):
     """Number of columns."""
     var tda: Int
     var data: UnsafePointer[Float64, MutExt]
-    var block: Optional[UnsafePointer[Block, MutExt]]
     var owner: Int
 
     def __init__(out self, n1: Int, n2: Int, *, initialize: Bool = False):
         self.s1 = n1
         self.s2 = n2
         self.tda = n2
-        var blk = Block(n1 * n2, initialize=initialize)
-        self.data = blk.data
-        var bptr = alloc[Block](1)
-        bptr.init_pointee_move(blk^)
-        self.block = bptr
+        self.data = alloc[Float64](n1 * n2)
+        if initialize:
+            memset_zero(self.data, n1 * n2)
         self.owner = 1
 
     def __init__[origin: Origin, //](
@@ -88,14 +84,12 @@ struct Matrix(Copyable, Movable):
         self.s1 = n1
         self.s2 = n2
         self.tda = tda if tda > 0 else n2
-        self.data = rebind[UnsafePointer[Float64, MutExt]](ptr) # NOTE: idk if this is a safe operations to do. 
-        self.block = None
+        self.data = rebind[UnsafePointer[Float64, MutExt]](ptr)
         self.owner = 0
 
     def __del__(deinit self):
-        if self.owner == 1 and self.block:
-            self.block.value().destroy_pointee()
-            self.block.value().free()
+        if self.owner == 1:
+            self.data.free()
 
     def size1(self) -> Int:
         """Return number of rows."""
