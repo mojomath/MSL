@@ -80,8 +80,6 @@ struct Vector(Copyable, Movable):
         ptr: UnsafePointer[Float64, MutExt],
         size: Int,
         stride: Int = 1,
-        *,
-        borrow: Bool,
     ):
         """Create a non-owning view over an externally managed buffer.
 
@@ -92,7 +90,6 @@ struct Vector(Copyable, Movable):
             ptr: Pointer to the first element of the buffer.
             size: Number of logical elements.
             stride: Element stride (default 1 = contiguous).
-            borrow: Must be True — keyword sentinel to distinguish from owning init.
         """
         self.size = size
         self.stride = stride
