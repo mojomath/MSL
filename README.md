@@ -4,9 +4,9 @@
   <img src="assets/msl.png" alt="MSL logo" width="200"/>
 </p>
 
-A pure-Mojo scientific computing library derived from the [GNU Scientific Library (GSL)](https://www.gnu.org/software/gsl/), providing scalar numerics, special functions, probability distributions, linear algebra, interpolation, numerical differentiation, integration, root-finding, minimization, and ODE solving. Install it with `pixi add msl`.
+Mojo Scientific Library (MSL) is a comprehensive collection of scientific computation routines derived from the [GNU Scientific Library (GSL)](https://www.gnu.org/software/gsl/) written in pure Mojo, providing special functions, probability distributions, linear algebra, interpolation, numerical differentiation, integration, root-finding, minimization, and ODE solving. Install it with `pixi add msl`.
 
-[![Version](https://img.shields.io/badge/version-v0.1.0-blue)](https://github.com/shivasankarka/MSL)
+[![Version](https://img.shields.io/badge/version-v0.1.0-blue)](https://github.com/mojomath/MSL)
 [![Mojo](https://img.shields.io/badge/mojo-1.0.0b1-orange)](https://docs.modular.com/mojo/manual/)
 
 MSL is designed as the **low-level scalar backend** for [SciJo](https://github.com/mojomath/SciJo) - the same relationship GSL has with SciPy.
@@ -97,7 +97,7 @@ Then run `pixi install`.
 ### Local build
 
 ```bash
-git clone https://github.com/shivasankarka/MSL.git
+git clone https://github.com/mojomath/MSL.git
 cd MSL
 pixi run package   # produces msl.mojopkg
 ```
