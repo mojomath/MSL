@@ -22,9 +22,9 @@ Level 3 (matrix-matrix):
   blas_gemm   - general matrix-matrix: C = alpha*A*B + beta*C
 """
 
-from mojoBLAS.level1 import dot, nrm2, asum, axpy, scal, copy, vswap
-from mojoBLAS.level2 import gemv
-from mojoBLAS.level3 import gemm
+from mojoblas.level1 import dot, nrm2, asum, axpy, scal, copy, vswap
+from mojoblas.level2 import gemv
+from mojoblas.level3 import gemm
 
 from msl.vector import Vector
 from msl.matrix import Matrix
