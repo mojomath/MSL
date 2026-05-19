@@ -334,3 +334,154 @@ def root_secant[
     return RootResult(
         root=xb, nit=max_iter, nfev=nfev, success=False, errno=MSL_EMAXITER
     )
+
+
+# ===----------------------------------------------------------------------=== #
+# False position (Regula Falsi)
+# ===----------------------------------------------------------------------=== #
+
+
+def root_falsepos[
+    fn_: def(Float64) capturing -> Float64
+](
+    a: Float64,
+    b: Float64,
+    epsabs: Float64 = 1e-10,
+    epsrel: Float64 = 1e-10,
+    max_iter: Int = 100,
+) -> RootResult:
+    """Find a root in [a, b] via false position with bisection safeguard."""
+    var x_lower = a
+    var x_upper = b
+    var f_lower = fn_(x_lower)
+    var f_upper = fn_(x_upper)
+    var nfev: Int = 2
+    var root = 0.5 * (x_lower + x_upper)
+
+    if f_lower * f_upper > 0.0:
+        return RootResult(errno=MSL_EDOM)
+
+    for i in range(max_iter):
+        if f_lower == 0.0:
+            return RootResult(
+                root=x_lower, nit=i, nfev=nfev, success=True, errno=MSL_SUCCESS
+            )
+        if f_upper == 0.0:
+            return RootResult(
+                root=x_upper, nit=i, nfev=nfev, success=True, errno=MSL_SUCCESS
+            )
+
+        var x_left = x_lower
+        var x_right = x_upper
+        var width = x_right - x_left
+
+        var x_linear = x_right - (f_upper * (x_left - x_right) / (f_lower - f_upper))
+        var f_linear = fn_(x_linear)
+        nfev += 1
+
+        if f_linear == 0.0:
+            return RootResult(
+                root=x_linear,
+                nit=i + 1,
+                nfev=nfev,
+                success=True,
+                errno=MSL_SUCCESS,
+            )
+
+        var w: Float64
+        if (f_lower > 0.0 and f_linear < 0.0) or (f_lower < 0.0 and f_linear > 0.0):
+            root = x_linear
+            x_upper = x_linear
+            f_upper = f_linear
+            w = x_linear - x_left
+        else:
+            root = x_linear
+            x_lower = x_linear
+            f_lower = f_linear
+            w = x_right - x_linear
+
+        # If interpolation makes poor progress, take one bisection step.
+        if w >= 0.5 * width:
+            var x_bisect = 0.5 * (x_left + x_right)
+            var f_bisect = fn_(x_bisect)
+            nfev += 1
+
+            if (f_lower > 0.0 and f_bisect < 0.0) or (f_lower < 0.0 and f_bisect > 0.0):
+                x_upper = x_bisect
+                f_upper = f_bisect
+                if root > x_bisect:
+                    root = 0.5 * (x_left + x_bisect)
+            else:
+                x_lower = x_bisect
+                f_lower = f_bisect
+                if root < x_bisect:
+                    root = 0.5 * (x_bisect + x_right)
+
+        var half_width = 0.5 * abs(x_upper - x_lower)
+        var tol = epsabs + epsrel * abs(root)
+        if half_width <= tol:
+            return RootResult(root=root, nit=i + 1, nfev=nfev, success=True)
+
+    return RootResult(
+        root=root,
+        nit=max_iter,
+        nfev=nfev,
+        success=False,
+        errno=MSL_EMAXITER,
+    )
+
+
+# ===----------------------------------------------------------------------=== #
+# Steffenson-accelerated Newton
+# ===----------------------------------------------------------------------=== #
+
+
+def root_steffenson[
+    fn_: def(Float64) capturing -> Float64,
+    dfn_: def(Float64) capturing -> Float64,
+](
+    x0: Float64,
+    epsabs: Float64 = 1e-10,
+    epsrel: Float64 = 1e-10,
+    max_iter: Int = 100,
+) -> RootResult:
+    """Find a root via Newton iteration with Aitken delta-squared acceleration."""
+    var x = x0
+    var f = fn_(x)
+    var df = dfn_(x)
+    var nfev: Int = 2
+
+    var x_1: Float64 = 0.0
+    var count: Int = 1
+    var root = x
+
+    for i in range(max_iter):
+        if df == 0.0:
+            return RootResult(
+                root=root, nit=i, nfev=nfev, success=False, errno=MSL_EZERODIV
+            )
+
+        var x_new = x - (f / df)
+        var f_new = fn_(x_new)
+        var df_new = dfn_(x_new)
+        nfev += 2
+
+        if count < 3:
+            root = x_new
+            count += 1
+        else:
+            var u = x - x_1
+            var v = x_new - 2.0 * x + x_1
+            root = x_new if v == 0.0 else (x_1 - u * u / v)
+
+        if abs(f_new) <= epsabs or abs(x_new - x) <= epsabs + epsrel * abs(x_new):
+            return RootResult(root=root, nit=i + 1, nfev=nfev, success=True)
+
+        x_1 = x
+        x = x_new
+        f = f_new
+        df = df_new
+
+    return RootResult(
+        root=root, nit=max_iter, nfev=nfev, success=False, errno=MSL_EMAXITER
+    )
