@@ -20,12 +20,15 @@ name = "msl"
 
 [package.host-dependencies]
 mojo = "==1.0.0b1"
+mojoblas = {git = "https://github.com/shivasankarka/mojoBLAS.git", branch = "main"}
 
 [package.build-dependencies]
 mojo = "==1.0.0b1"
+mojoblas = {git = "https://github.com/shivasankarka/mojoBLAS.git", branch = "main"}
 
 [package.run-dependencies]
 mojo = "==1.0.0b1"
+mojoblas = {git = "https://github.com/shivasankarka/mojoBLAS.git", branch = "main"}
 
 [tasks]
 format = "mojo format ./msl"
