@@ -4,6 +4,18 @@ from std.testing import TestSuite
 from std.math import abs, sqrt
 
 from msl.statistics import (
+    stats_max,
+    stats_min,
+    stats_minmax,
+    stats_max_index,
+    stats_min_index,
+    stats_minmax_index,
+    stats_select,
+    stats_median_from_sorted_data,
+    stats_median,
+    stats_quantile_from_sorted_data,
+    stats_trmean_from_sorted_data,
+    stats_gastwirth_from_sorted_data,
     stats_mean,
     stats_variance,
     stats_sd,
@@ -34,6 +46,8 @@ from msl.statistics import (
     stats_wkurtosis,
     stats_wvariance_m,
     stats_wsd_m,
+    stats_pvariance,
+    stats_ttest,
 )
 
 
@@ -214,6 +228,213 @@ def test_weighted_skew_kurtosis_symmetric() raises:
     w.free()
     data.free()
     print("test_weighted_skew_kurtosis_symmetric: PASSED")
+
+
+def test_minmax_and_indices() raises:
+    # GSL rawa: max=0.1331 at index 4, min=0.0242 at index 3
+    comptime n = 14
+    var data = alloc[Float64](n)
+    data[0]  = 0.0421
+    data[1]  = 0.0941
+    data[2]  = 0.1064
+    data[3]  = 0.0242
+    data[4]  = 0.1331
+    data[5]  = 0.0773
+    data[6]  = 0.0243
+    data[7]  = 0.0815
+    data[8]  = 0.1186
+    data[9]  = 0.0356
+    data[10] = 0.0728
+    data[11] = 0.0999
+    data[12] = 0.0614
+    data[13] = 0.0479
+
+    assert stats_max(data, 1, n) == 0.1331
+    assert stats_min(data, 1, n) == 0.0242
+    assert stats_max_index(data, 1, n) == 4
+    assert stats_min_index(data, 1, n) == 3
+
+    var mm = stats_minmax(data, 1, n)
+    assert mm[0] == 0.0242
+    assert mm[1] == 0.1331
+
+    var mmi = stats_minmax_index(data, 1, n)
+    assert mmi[0] == 3
+    assert mmi[1] == 4
+
+    data.free()
+    print("test_minmax_and_indices: PASSED")
+
+
+def test_median_and_select() raises:
+    # GSL rawa unsorted, n=14 -> even median = 0.07505, n=13 -> odd median = 0.0728
+    comptime n = 14
+    var data = alloc[Float64](n)
+    data[0]  = 0.0421
+    data[1]  = 0.0941
+    data[2]  = 0.1064
+    data[3]  = 0.0242
+    data[4]  = 0.1331
+    data[5]  = 0.0773
+    data[6]  = 0.0243
+    data[7]  = 0.0815
+    data[8]  = 0.1186
+    data[9]  = 0.0356
+    data[10] = 0.0728
+    data[11] = 0.0999
+    data[12] = 0.0614
+    data[13] = 0.0479
+
+    assert tol(stats_median(data, 1, n), 0.07505, 1e-10)
+
+    # reload for odd case (median mutates)
+    data[0]  = 0.0421
+    data[1]  = 0.0941
+    data[2]  = 0.1064
+    data[3]  = 0.0242
+    data[4]  = 0.1331
+    data[5]  = 0.0773
+    data[6]  = 0.0243
+    data[7]  = 0.0815
+    data[8]  = 0.1186
+    data[9]  = 0.0356
+    data[10] = 0.0728
+    data[11] = 0.0999
+    data[12] = 0.0614
+
+    assert tol(stats_median(data, 1, n - 1), 0.0728, 1e-10)
+
+    data.free()
+    print("test_median_and_select: PASSED")
+
+
+def test_median_from_sorted_data() raises:
+    # GSL rawa sorted (ascending)
+    comptime n = 14
+    var sorted = alloc[Float64](n)
+    sorted[0]  = 0.0242
+    sorted[1]  = 0.0243
+    sorted[2]  = 0.0356
+    sorted[3]  = 0.0421
+    sorted[4]  = 0.0479
+    sorted[5]  = 0.0614
+    sorted[6]  = 0.0728
+    sorted[7]  = 0.0773
+    sorted[8]  = 0.0815
+    sorted[9]  = 0.0941
+    sorted[10] = 0.0999
+    sorted[11] = 0.1064
+    sorted[12] = 0.1186
+    sorted[13] = 0.1331
+
+    # even: (sorted[6] + sorted[7]) / 2 = (0.0728 + 0.0773) / 2 = 0.07505
+    assert tol(stats_median_from_sorted_data(sorted, 1, n), 0.07505, 1e-10)
+    # odd: sorted[6] = 0.0728
+    assert tol(stats_median_from_sorted_data(sorted, 1, n - 1), 0.0728, 1e-10)
+
+    sorted.free()
+    print("test_median_from_sorted_data: PASSED")
+
+
+def test_quantile_from_sorted_data() raises:
+    comptime n = 14
+    var sorted = alloc[Float64](n)
+    sorted[0]  = 0.0242
+    sorted[1]  = 0.0243
+    sorted[2]  = 0.0356
+    sorted[3]  = 0.0421
+    sorted[4]  = 0.0479
+    sorted[5]  = 0.0614
+    sorted[6]  = 0.0728
+    sorted[7]  = 0.0773
+    sorted[8]  = 0.0815
+    sorted[9]  = 0.0941
+    sorted[10] = 0.0999
+    sorted[11] = 0.1064
+    sorted[12] = 0.1186
+    sorted[13] = 0.1331
+
+    assert tol(stats_quantile_from_sorted_data(sorted, 1, n, 0.0), 0.0242, 1e-10)
+    assert tol(stats_quantile_from_sorted_data(sorted, 1, n, 1.0), 0.1331, 1e-10)
+    assert tol(stats_quantile_from_sorted_data(sorted, 1, n, 0.5), 0.07505, 1e-10)
+
+    sorted.free()
+    print("test_quantile_from_sorted_data: PASSED")
+
+
+def test_trmean_and_gastwirth() raises:
+    comptime n = 14
+    var sorted = alloc[Float64](n)
+    sorted[0]  = 0.0242
+    sorted[1]  = 0.0243
+    sorted[2]  = 0.0356
+    sorted[3]  = 0.0421
+    sorted[4]  = 0.0479
+    sorted[5]  = 0.0614
+    sorted[6]  = 0.0728
+    sorted[7]  = 0.0773
+    sorted[8]  = 0.0815
+    sorted[9]  = 0.0941
+    sorted[10] = 0.0999
+    sorted[11] = 0.1064
+    sorted[12] = 0.1186
+    sorted[13] = 0.1331
+
+    # trim=0.2, even n=14
+    assert tol(stats_trmean_from_sorted_data(0.2, sorted, 1, n), 0.0719, 1e-4)
+    # trim=0.2, odd n=13
+    assert tol(stats_trmean_from_sorted_data(0.2, sorted, 1, n - 1), 0.06806666666666666, 1e-10)
+
+    # gastwirth even n=14
+    assert tol(stats_gastwirth_from_sorted_data(sorted, 1, n), 0.07271, 1e-4)
+    # gastwirth odd n=13
+    assert tol(stats_gastwirth_from_sorted_data(sorted, 1, n - 1), 0.06794, 1e-4)
+
+    sorted.free()
+    print("test_trmean_and_gastwirth: PASSED")
+
+
+def test_pvariance_and_ttest() raises:
+    # GSL test datasets (test_float_source.c rawa / rawb, n=14 each)
+    comptime na = 14
+    comptime nb = 14
+    var a = alloc[Float64](na)
+    var b = alloc[Float64](nb)
+    a[0]  = 0.0421
+    a[1]  = 0.0941
+    a[2]  = 0.1064
+    a[3]  = 0.0242
+    a[4]  = 0.1331
+    a[5]  = 0.0773
+    a[6]  = 0.0243
+    a[7]  = 0.0815
+    a[8]  = 0.1186
+    a[9]  = 0.0356
+    a[10] = 0.0728
+    a[11] = 0.0999
+    a[12] = 0.0614
+    a[13] = 0.0479
+    b[0]  = 0.1081
+    b[1]  = 0.0986
+    b[2]  = 0.1566
+    b[3]  = 0.1961
+    b[4]  = 0.1125
+    b[5]  = 0.1942
+    b[6]  = 0.1079
+    b[7]  = 0.1021
+    b[8]  = 0.1583
+    b[9]  = 0.1673
+    b[10] = 0.1675
+    b[11] = 0.1856
+    b[12] = 0.1688
+    b[13] = 0.1512
+
+    assert tol(stats_pvariance(a, 1, na, b, 1, nb), 0.00123775384615385, 1e-10)
+    assert tol(stats_ttest(a, 1, na, b, 1, nb), -5.67026326985851, 1e-8)
+
+    a.free()
+    b.free()
+    print("test_pvariance_and_ttest: PASSED")
 
 
 def main() raises:
