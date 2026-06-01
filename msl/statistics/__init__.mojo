@@ -27,6 +27,23 @@ from .moments import (
     stats_sd_m,
 )
 
+from .order import (
+    stats_max,
+    stats_min,
+    stats_minmax,
+    stats_max_index,
+    stats_min_index,
+    stats_minmax_index,
+    stats_select,
+    stats_median_from_sorted_data,
+    stats_median,
+    stats_quantile_from_sorted_data,
+    stats_trmean_from_sorted_data,
+    stats_gastwirth_from_sorted_data,
+)
+
+from .two_sample import stats_pvariance, stats_ttest
+
 from .weighted import (
     stats_wmean,
     stats_wvariance,
