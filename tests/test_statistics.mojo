@@ -4,6 +4,13 @@ from std.testing import TestSuite
 from std.math import abs, sqrt
 
 from msl.statistics import (
+    stats_spearman,
+    stats_mad0,
+    stats_mad,
+    stats_Sn0_from_sorted_data,
+    stats_Sn_from_sorted_data,
+    stats_Qn0_from_sorted_data,
+    stats_Qn_from_sorted_data,
     stats_max,
     stats_min,
     stats_minmax,
@@ -228,6 +235,157 @@ def test_weighted_skew_kurtosis_symmetric() raises:
     w.free()
     data.free()
     print("test_weighted_skew_kurtosis_symmetric: PASSED")
+
+
+def test_spearman() raises:
+    # GSL rawa / rawb (n=14 each) -> spearman = -0.1604395604395604396
+    comptime n = 14
+    var a = alloc[Float64](n)
+    var b = alloc[Float64](n)
+    a[0]  = 0.0421
+    a[1]  = 0.0941
+    a[2]  = 0.1064
+    a[3]  = 0.0242
+    a[4]  = 0.1331
+    a[5]  = 0.0773
+    a[6]  = 0.0243
+    a[7]  = 0.0815
+    a[8]  = 0.1186
+    a[9]  = 0.0356
+    a[10] = 0.0728
+    a[11] = 0.0999
+    a[12] = 0.0614
+    a[13] = 0.0479
+    b[0]  = 0.1081
+    b[1]  = 0.0986
+    b[2]  = 0.1566
+    b[3]  = 0.1961
+    b[4]  = 0.1125
+    b[5]  = 0.1942
+    b[6]  = 0.1079
+    b[7]  = 0.1021
+    b[8]  = 0.1583
+    b[9]  = 0.1673
+    b[10] = 0.1675
+    b[11] = 0.1856
+    b[12] = 0.1688
+    b[13] = 0.1512
+
+    var r1 = alloc[Float64](n)
+    var r2 = alloc[Float64](n)
+    assert tol(stats_spearman(a, 1, b, 1, n, r1, r2), -0.1604395604395604396, 1e-10)
+
+    # perfectly increasing -> rho = 1
+    var x = alloc[Float64](5)
+    var y = alloc[Float64](5)
+    var wx = alloc[Float64](5)
+    var wy = alloc[Float64](5)
+    for i in range(5):
+        x[i] = Float64(i)
+        y[i] = Float64(i)
+    assert tol(stats_spearman(x, 1, y, 1, 5, wx, wy), 1.0, 1e-12)
+
+    # perfectly decreasing -> rho = -1
+    for i in range(5):
+        y[i] = Float64(4 - i)
+    assert tol(stats_spearman(x, 1, y, 1, 5, wx, wy), -1.0, 1e-12)
+
+    wy.free()
+    wx.free()
+    y.free()
+    x.free()
+    r2.free()
+    r1.free()
+    b.free()
+    a.free()
+    print("test_spearman: PASSED")
+
+
+def test_mad() raises:
+    # GSL rawa unsorted, n=14 -> mad0=0.02925, n=13 -> mad0=0.02910
+    comptime n = 14
+    var data = alloc[Float64](n)
+    data[0]  = 0.0421
+    data[1]  = 0.0941
+    data[2]  = 0.1064
+    data[3]  = 0.0242
+    data[4]  = 0.1331
+    data[5]  = 0.0773
+    data[6]  = 0.0243
+    data[7]  = 0.0815
+    data[8]  = 0.1186
+    data[9]  = 0.0356
+    data[10] = 0.0728
+    data[11] = 0.0999
+    data[12] = 0.0614
+    data[13] = 0.0479
+
+    var work = alloc[Float64](n)
+    assert tol(stats_mad0(data, 1, n, work), 0.02925, 1e-4)
+    assert tol(stats_mad0(data, 1, n - 1, work), 0.02910, 1e-4)
+    assert tol(stats_mad(data, 1, n, work), 1.482602218505602 * 0.02925, 1e-4)
+
+    work.free()
+    data.free()
+    print("test_mad: PASSED")
+
+
+def test_Sn() raises:
+    # GSL rawa sorted, n=14 -> Sn=0.04007136, n=13 -> Sn=0.03728599834710744
+    comptime n = 14
+    var sorted = alloc[Float64](n)
+    sorted[0]  = 0.0242
+    sorted[1]  = 0.0243
+    sorted[2]  = 0.0356
+    sorted[3]  = 0.0421
+    sorted[4]  = 0.0479
+    sorted[5]  = 0.0614
+    sorted[6]  = 0.0728
+    sorted[7]  = 0.0773
+    sorted[8]  = 0.0815
+    sorted[9]  = 0.0941
+    sorted[10] = 0.0999
+    sorted[11] = 0.1064
+    sorted[12] = 0.1186
+    sorted[13] = 0.1331
+
+    var work = alloc[Float64](n)
+    assert tol(stats_Sn_from_sorted_data(sorted, 1, n, work), 0.04007136, 1e-6)
+    assert tol(stats_Sn_from_sorted_data(sorted, 1, n - 1, work), 0.03728599834710744, 1e-8)
+
+    work.free()
+    sorted.free()
+    print("test_Sn: PASSED")
+
+
+def test_Qn() raises:
+    # GSL rawa sorted, n=14 -> Qn=0.04113672759664409, n=13 -> Qn=0.03684305546303433
+    comptime n = 14
+    var sorted = alloc[Float64](n)
+    sorted[0]  = 0.0242
+    sorted[1]  = 0.0243
+    sorted[2]  = 0.0356
+    sorted[3]  = 0.0421
+    sorted[4]  = 0.0479
+    sorted[5]  = 0.0614
+    sorted[6]  = 0.0728
+    sorted[7]  = 0.0773
+    sorted[8]  = 0.0815
+    sorted[9]  = 0.0941
+    sorted[10] = 0.0999
+    sorted[11] = 0.1064
+    sorted[12] = 0.1186
+    sorted[13] = 0.1331
+
+    var work = alloc[Float64](3 * n)
+    var work_int = alloc[Int](5 * n)
+    assert tol(stats_Qn_from_sorted_data(sorted, 1, n, work, work_int), 0.04113672759664409, 1e-8)
+    assert tol(stats_Qn_from_sorted_data(sorted, 1, n - 1, work, work_int), 0.03684305546303433, 1e-8)
+
+    work_int.free()
+    work.free()
+    sorted.free()
+    print("test_Qn: PASSED")
 
 
 def test_minmax_and_indices() raises:

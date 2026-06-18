@@ -1,6 +1,7 @@
 from std.testing import TestSuite
 from std.math import abs, sin, cos, sqrt, exp
 
+from msl.optimizer import RootFSolver, RootFDFSolver, MinFSolver
 from msl.optimizer import (
     root_bisect,
     root_brent,
@@ -331,6 +332,110 @@ def test_min_find_bracket_parabola() raises:
     assert br.x_lower < br.x_minimum and br.x_minimum < br.x_upper
     assert br.f_minimum <= br.f_lower and br.f_minimum <= br.f_upper
     print("test_min_find_bracket_parabola: PASSED")
+
+
+def test_root_fsolver_brent() raises:
+    def fn_(x: Float64) capturing -> Float64:
+        return x * x - 2.0
+
+    var s = RootFSolver[fn_, "brent"]()
+    var r = s.solve(1.0, 2.0)
+    assert r.success and tol(r.root, sqrt(2.0), 1e-8)
+    print("test_root_fsolver_brent: PASSED")
+
+
+def test_root_fsolver_bisect() raises:
+    def fn_(x: Float64) capturing -> Float64:
+        return sin(x)
+
+    var s = RootFSolver[fn_, "bisect"]()
+    var r = s.solve(3.0, 4.0)
+    assert r.success and tol(r.root, 3.141592653589793, 1e-8)
+    print("test_root_fsolver_bisect: PASSED")
+
+
+def test_root_fsolver_falsepos() raises:
+    def fn_(x: Float64) capturing -> Float64:
+        return x * x * x - x - 1.0
+
+    var s = RootFSolver[fn_, "falsepos"]()
+    var r = s.solve(1.0, 2.0)
+    assert r.success and tol(r.root, 1.3247179572447458, 1e-8)
+    print("test_root_fsolver_falsepos: PASSED")
+
+
+def test_root_fdfsolver_newton() raises:
+    def fn_(x: Float64) capturing -> Float64:
+        return x * x - 2.0
+
+    def dfn_(x: Float64) capturing -> Float64:
+        return 2.0 * x
+
+    var s = RootFDFSolver[fn_, dfn_, "newton"]()
+    var r = s.solve(1.5)
+    assert r.success and tol(r.root, sqrt(2.0), 1e-10)
+    print("test_root_fdfsolver_newton: PASSED")
+
+
+def test_root_fdfsolver_secant() raises:
+    def fn_(x: Float64) capturing -> Float64:
+        return x * x - 2.0
+
+    def dfn_(x: Float64) capturing -> Float64:
+        return 2.0 * x
+
+    var s = RootFDFSolver[fn_, dfn_, "secant"]()
+    var r = s.solve(1.5)
+    assert r.success and tol(r.root, sqrt(2.0), 1e-8)
+    print("test_root_fdfsolver_secant: PASSED")
+
+
+def test_root_fdfsolver_steffenson() raises:
+    def fn_(x: Float64) capturing -> Float64:
+        return x * x - 2.0
+
+    def dfn_(x: Float64) capturing -> Float64:
+        return 2.0 * x
+
+    var s = RootFDFSolver[fn_, dfn_, "steffenson"]()
+    var r = s.solve(1.5)
+    assert r.success and tol(r.root, sqrt(2.0), 1e-8)
+    print("test_root_fdfsolver_steffenson: PASSED")
+
+
+def test_min_fsolver_brent() raises:
+    def fn_(x: Float64) capturing -> Float64:
+        return (x - 1.5) * (x - 1.5) + 0.5
+
+    var s = MinFSolver[fn_, "brent"]()
+    var r = s.solve(1.0, 0.0, 3.0)
+    assert r.success and tol(r.x, 1.5, 1e-8) and tol(r.fun, 0.5, 1e-8)
+    print("test_min_fsolver_brent: PASSED")
+
+
+def test_min_fsolver_golden() raises:
+    def fn_(x: Float64) capturing -> Float64:
+        return (x - 2.0) * (x - 2.0)
+
+    var s = MinFSolver[fn_, "golden"]()
+    var r = s.solve(1.5, 0.0, 4.0)
+    assert r.success and tol(r.x, 2.0, 1e-6)
+    print("test_min_fsolver_golden: PASSED")
+
+
+def test_min_fsolver_manual_loop() raises:
+    # exercise the step-by-step API directly
+    def fn_(x: Float64) capturing -> Float64:
+        return x * x - 4.0 * x + 5.0  # minimum at x=2, f=1
+
+    var s = MinFSolver[fn_, "brent"]()
+    assert s.set(1.5, 0.0, 4.0) == MSL_SUCCESS
+    for _ in range(100):
+        _ = s.iterate()
+        if min_test_interval(s.x_lower(), s.x_upper(), 1e-10, 0.0) == MSL_SUCCESS:
+            break
+    assert tol(s.x_minimum(), 2.0, 1e-8) and tol(s.f_minimum(), 1.0, 1e-8)
+    print("test_min_fsolver_manual_loop: PASSED")
 
 
 def main() raises:

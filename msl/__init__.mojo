@@ -153,6 +153,9 @@ from msl.optimizer import (
     root_test_delta,
     min_test_interval,
     min_find_bracket,
+    RootFSolver,
+    RootFDFSolver,
+    MinFSolver,
 )
 
 # Interpolation
@@ -271,4 +274,11 @@ from msl.statistics import (
     stats_quantile_from_sorted_data,
     stats_trmean_from_sorted_data,
     stats_gastwirth_from_sorted_data,
+    stats_mad0,
+    stats_mad,
+    stats_Sn0_from_sorted_data,
+    stats_Sn_from_sorted_data,
+    stats_Qn0_from_sorted_data,
+    stats_Qn_from_sorted_data,
+    stats_spearman,
 )

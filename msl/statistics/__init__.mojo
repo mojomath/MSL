@@ -27,6 +27,17 @@ from .moments import (
     stats_sd_m,
 )
 
+from .spearman import stats_spearman
+
+from .robust import (
+    stats_mad0,
+    stats_mad,
+    stats_Sn0_from_sorted_data,
+    stats_Sn_from_sorted_data,
+    stats_Qn0_from_sorted_data,
+    stats_Qn_from_sorted_data,
+)
+
 from .order import (
     stats_max,
     stats_min,

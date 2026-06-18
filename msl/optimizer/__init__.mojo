@@ -23,3 +23,5 @@ from .root_scalar import (
     root_steffenson,
 )
 from .min_scalar import min_brent, min_golden
+from .root_iter import RootFSolver, RootFDFSolver
+from .min_iter import MinFSolver
