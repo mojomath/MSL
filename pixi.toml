@@ -11,30 +11,31 @@ name = "msl"
 version = "0.1.0"
 
 [package.build]
-backend = {name = "pixi-build-mojo", version = "0.*", channels = [
-  "https://prefix.dev/pixi-build-backends",
+backend = {name = "pixi-build-python", version = "1.*", channels = [
   "https://prefix.dev/conda-forge",
+  "https://prefix.dev/pixi-build-backends",
 ]}
+
 [package.build.config.pkg]
 name = "msl"
 
 [package.host-dependencies]
-mojo = "==1.0.0b1"
+mojo = "==1.0.0b2"
 mojoblas = {git = "https://github.com/shivasankarka/mojoBLAS.git", branch = "main"}
 
 [package.build-dependencies]
-mojo = "==1.0.0b1"
+mojo = "==1.0.0b2"
 mojoblas = {git = "https://github.com/shivasankarka/mojoBLAS.git", branch = "main"}
 
 [package.run-dependencies]
-mojo = "==1.0.0b1"
+mojo = "==1.0.0b2"
 mojoblas = {git = "https://github.com/shivasankarka/mojoBLAS.git", branch = "main"}
 
 [tasks]
 format = "mojo format ./msl"
-package = "mojo package msl"
+package = "mojo precompile msl"
 tests = "bash tests/tests.sh"
 
 [dependencies]
 mojoblas = {git = "https://github.com/shivasankarka/mojoBLAS.git", branch = "main"}
-mojo = ">=1.0.0b1,<2"
+mojo = ">=1.0.0b2,<2"
