@@ -33,7 +33,7 @@ from std.memory import UnsafePointer, memset_zero
 
 from msl.core.const import MSL_DBL_MAX
 
-comptime MutExt = MutExternalOrigin
+comptime MutExt = MutUntrackedOrigin
 
 comptime MSL_KRONROD_15: Int = 1
 comptime MSL_KRONROD_21: Int = 2

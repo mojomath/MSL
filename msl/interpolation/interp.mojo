@@ -83,7 +83,7 @@ def _bsearch[
     return lo
 
 
-def _alloc_f64(n: Int) -> UnsafePointer[Float64, MutExternalOrigin]:
+def _alloc_f64(n: Int) -> UnsafePointer[Float64, MutUntrackedOrigin]:
     var p = alloc[Float64](n)
     memset_zero(p, n)
     return p
@@ -176,7 +176,7 @@ struct CubicSpline[mut: Bool, origin: Origin[mut=mut], //](Movable):
     Coefficients b, c, d stored per interval; c[i] = second derivative / 2.
     """
 
-    comptime MutExt = MutExternalOrigin
+    comptime MutExt = MutUntrackedOrigin
 
     var _xa: UnsafePointer[Float64, Self.origin]
     var _ya: UnsafePointer[Float64, Self.origin]
@@ -320,7 +320,7 @@ struct AkimaSpline[mut: Bool, origin: Origin[mut=mut], //](Movable):
     More robust than cubic spline for data with outliers.
     """
 
-    comptime MutExt = MutExternalOrigin
+    comptime MutExt = MutUntrackedOrigin
 
     var _xa: UnsafePointer[Float64, Self.origin]
     var _ya: UnsafePointer[Float64, Self.origin]
