@@ -36,7 +36,11 @@ from .order import stats_median
 # internal helpers
 # ---------------------------------------------------------------------------
 
-def _sort_inplace[o: MutOrigin, //,](a: UnsafePointer[Float64, o], n: Int):
+
+def _sort_inplace[
+    o: MutOrigin,
+    //,
+](a: UnsafePointer[Float64, o], n: Int):
     """Insertion sort for work arrays."""
     for i in range(1, n):
         var key = a[i]
@@ -50,6 +54,7 @@ def _sort_inplace[o: MutOrigin, //,](a: UnsafePointer[Float64, o], n: Int):
 # ---------------------------------------------------------------------------
 # MAD
 # ---------------------------------------------------------------------------
+
 
 def stats_mad0[
     origin: Origin,
@@ -90,6 +95,7 @@ def stats_mad[
 # Sn (Rousseeuw & Croux 1993)
 # ---------------------------------------------------------------------------
 
+
 def stats_Sn0_from_sorted_data[
     origin: Origin,
     work_origin: MutOrigin,
@@ -100,7 +106,8 @@ def stats_Sn0_from_sorted_data[
     n: Int,
     work: UnsafePointer[Float64, work_origin],
 ) -> Float64:
-    """Sn scale estimator (unscaled) from pre-sorted data. work must be length n."""
+    """Sn scale estimator (unscaled) from pre-sorted data. work must be length n.
+    """
     var np1_2 = (n + 1) // 2
 
     work[0] = sorted_data[(n // 2) * stride] - sorted_data[0]
@@ -127,8 +134,14 @@ def stats_Sn0_from_sorted_data[
                 rightA = tryA
                 leftB = tryB + even
             else:
-                var medA = sorted_data[(i - 1) * stride] - sorted_data[(i - tryA + Amin - 2) * stride]
-                var medB = sorted_data[(tryB + i - 1) * stride] - sorted_data[(i - 1) * stride]
+                var medA = (
+                    sorted_data[(i - 1) * stride]
+                    - sorted_data[(i - tryA + Amin - 2) * stride]
+                )
+                var medB = (
+                    sorted_data[(tryB + i - 1) * stride]
+                    - sorted_data[(i - 1) * stride]
+                )
                 if medA >= medB:
                     rightA = tryA
                     leftB = tryB + even
@@ -136,10 +149,19 @@ def stats_Sn0_from_sorted_data[
                     leftA = tryA + even
 
         if leftA > Amax:
-            work[i - 1] = sorted_data[(leftB + i - 1) * stride] - sorted_data[(i - 1) * stride]
+            work[i - 1] = (
+                sorted_data[(leftB + i - 1) * stride]
+                - sorted_data[(i - 1) * stride]
+            )
         else:
-            var medA = sorted_data[(i - 1) * stride] - sorted_data[(i - leftA + Amin - 2) * stride]
-            var medB = sorted_data[(leftB + i - 1) * stride] - sorted_data[(i - 1) * stride]
+            var medA = (
+                sorted_data[(i - 1) * stride]
+                - sorted_data[(i - leftA + Amin - 2) * stride]
+            )
+            var medB = (
+                sorted_data[(leftB + i - 1) * stride]
+                - sorted_data[(i - 1) * stride]
+            )
             work[i - 1] = medA if medA < medB else medB
 
     for i in range(np1_2 + 1, n):
@@ -164,8 +186,14 @@ def stats_Sn0_from_sorted_data[
                 rightA = tryA
                 leftB = tryB + even
             else:
-                var medA = sorted_data[(i + tryA - Amin) * stride] - sorted_data[(i - 1) * stride]
-                var medB = sorted_data[(i - 1) * stride] - sorted_data[(i - tryB - 1) * stride]
+                var medA = (
+                    sorted_data[(i + tryA - Amin) * stride]
+                    - sorted_data[(i - 1) * stride]
+                )
+                var medB = (
+                    sorted_data[(i - 1) * stride]
+                    - sorted_data[(i - tryB - 1) * stride]
+                )
                 if medA >= medB:
                     rightA = tryA
                     leftB = tryB + even
@@ -173,13 +201,24 @@ def stats_Sn0_from_sorted_data[
                     leftA = tryA + even
 
         if leftA > Amax:
-            work[i - 1] = sorted_data[(i - 1) * stride] - sorted_data[(i - leftB - 1) * stride]
+            work[i - 1] = (
+                sorted_data[(i - 1) * stride]
+                - sorted_data[(i - leftB - 1) * stride]
+            )
         else:
-            var medA = sorted_data[(i + leftA - Amin) * stride] - sorted_data[(i - 1) * stride]
-            var medB = sorted_data[(i - 1) * stride] - sorted_data[(i - leftB - 1) * stride]
+            var medA = (
+                sorted_data[(i + leftA - Amin) * stride]
+                - sorted_data[(i - 1) * stride]
+            )
+            var medB = (
+                sorted_data[(i - 1) * stride]
+                - sorted_data[(i - leftB - 1) * stride]
+            )
             work[i - 1] = medA if medA < medB else medB
 
-    work[n - 1] = sorted_data[(n - 1) * stride] - sorted_data[(np1_2 - 1) * stride]
+    work[n - 1] = (
+        sorted_data[(n - 1) * stride] - sorted_data[(np1_2 - 1) * stride]
+    )
 
     _sort_inplace(work, n)
     return work[np1_2 - 1]
@@ -195,7 +234,8 @@ def stats_Sn_from_sorted_data[
     n: Int,
     work: UnsafePointer[Float64, work_origin],
 ) -> Float64:
-    """Sn scale estimator (sigma-consistent) from pre-sorted data. work must be length n."""
+    """Sn scale estimator (sigma-consistent) from pre-sorted data. work must be length n.
+    """
     var scale: Float64 = 1.1926
     var Sn0 = stats_Sn0_from_sorted_data(sorted_data, stride, n, work)
     var cn: Float64 = 1.0
@@ -224,6 +264,7 @@ def stats_Sn_from_sorted_data[
 # ---------------------------------------------------------------------------
 # Qn (Rousseeuw & Croux 1993)
 # ---------------------------------------------------------------------------
+
 
 def stats_Qn0_from_sorted_data[
     origin: Origin,
@@ -271,7 +312,9 @@ def stats_Qn0_from_sorted_data[
             if left[i] <= right[i]:
                 weight[j] = right[i] - left[i] + 1
                 var jh = left[i] + weight[j] // 2
-                work[j] = sorted_data[i * stride] - sorted_data[(ni - jh) * stride]
+                work[j] = (
+                    sorted_data[i * stride] - sorted_data[(ni - jh) * stride]
+                )
                 j += 1
 
         # inline weighted high median (whimed) of work[0..j-1] with weights weight[0..j-1]
@@ -318,13 +361,20 @@ def stats_Qn0_from_sorted_data[
 
         j = 0
         for i in range(ni - 1, -1, -1):
-            while j < ni and sorted_data[i * stride] - sorted_data[(ni - j - 1) * stride] < trial:
+            while (
+                j < ni
+                and sorted_data[i * stride] - sorted_data[(ni - j - 1) * stride]
+                < trial
+            ):
                 j += 1
             p[i] = j
 
         j = ni + 1
         for i in range(ni):
-            while sorted_data[i * stride] - sorted_data[(ni - j + 1) * stride] > trial:
+            while (
+                sorted_data[i * stride] - sorted_data[(ni - j + 1) * stride]
+                > trial
+            ):
                 j -= 1
             q[i] = j
 
@@ -405,6 +455,8 @@ def stats_Qn_from_sorted_data[
         if n % 2 == 1:
             dn = 1.60188 + (-2.1284 - 5.172 / Float64(n)) / Float64(n)
         else:
-            dn = 3.67561 + (1.9654 + (6.987 - 77.0 / Float64(n)) / Float64(n)) / Float64(n)
+            dn = 3.67561 + (
+                1.9654 + (6.987 - 77.0 / Float64(n)) / Float64(n)
+            ) / Float64(n)
         dn = 1.0 / (dn / Float64(n) + 1.0)
     return scale * dn * Qn0

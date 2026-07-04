@@ -126,7 +126,9 @@ def stats_wsd_with_fixed_mean[
     wmean: Float64,
 ) -> Float64:
     """Weighted sd around provided mean."""
-    return sqrt(stats_wvariance_with_fixed_mean(w, wstride, data, stride, n, wmean))
+    return sqrt(
+        stats_wvariance_with_fixed_mean(w, wstride, data, stride, n, wmean)
+    )
 
 
 def stats_wvariance_m[

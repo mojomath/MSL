@@ -21,15 +21,18 @@
 # (at your option) any later version.
 # ===----------------------------------------------------------------------=== #
 """
-Stateful iterative root-finding solvers (R4)
+Stateful iterative root-finding solvers (R4).
 
   RootFSolver   - bracketing solver (bisect, brent, falsepos)
   RootFDFSolver - derivative-based solver (newton, secant, steffenson)
 
 Usage example::
+    ```mojo
+    from msl.core import MSL_SUCCESS
+    from msl.optimizer import RootFDFSolver, root_test_residual
 
-    fn f(x: Float64) -> Float64: return x * x - 2.0
-    fn df(x: Float64) -> Float64: return 2.0 * x
+    def f(x: Float64) -> Float64: return x * x - 2.0
+    def df(x: Float64) -> Float64: return 2.0 * x
 
     var s = RootFDFSolver[f, df]()
     s.set(1.0)
@@ -38,6 +41,7 @@ Usage example::
         if root_test_residual(s.f(), 1e-10) == MSL_SUCCESS:
             break
     print(s.root())
+    ```
 """
 
 from std.math import abs
@@ -56,6 +60,7 @@ from .utility import RootResult, root_test_interval, root_test_residual
 # ===----------------------------------------------------------------------=== #
 # RootFSolver  (bracketing: bisect / brent / falsepos)
 # ===----------------------------------------------------------------------=== #
+
 
 struct RootFSolver[
     fn_: def(Float64) capturing -> Float64,
@@ -150,7 +155,10 @@ struct RootFSolver[
         var denom = self._f_upper - self._f_lower
         if denom == 0.0:
             return MSL_EDOM
-        var x_new = self._x_upper - self._f_upper * (self._x_lower - self._x_upper) / denom
+        var x_new = (
+            self._x_upper
+            - self._f_upper * (self._x_lower - self._x_upper) / denom
+        )
         var f_new = Self.fn_(x_new)
         if self._f_lower * f_new <= 0.0:
             self._x_upper = x_new
@@ -215,8 +223,6 @@ struct RootFSolver[
             d = m
             e = m
 
-        x_a = x_b
-        fa = fb
         x_new = x_b + (d if abs(d) > tol else (tol if m > 0.0 else -tol))
         var f_new = Self.fn_(x_new)
 
@@ -251,10 +257,10 @@ struct RootFSolver[
         return self._x_upper
 
     def f(self) -> Float64:
-        """f evaluated at current root estimate."""
+        """Function evaluated at current root estimate."""
         return Self.fn_(self._root)
 
-    def name(self) -> StringLiteral:
+    def name(self) -> String:
         """Algorithm name."""
         return Self.method
 
@@ -272,16 +278,26 @@ struct RootFSolver[
             return RootResult(errno=status)
         for i in range(max_iter):
             _ = self.iterate()
-            if root_test_interval(self._x_lower, self._x_upper, epsabs, epsrel) == MSL_SUCCESS:
-                return RootResult(root=self._root, nit=i + 1, nfev=self._nit, success=True)
+            if (
+                root_test_interval(self._x_lower, self._x_upper, epsabs, epsrel)
+                == MSL_SUCCESS
+            ):
+                return RootResult(
+                    root=self._root, nit=i + 1, nfev=self._nit, success=True
+                )
         return RootResult(
-            root=self._root, nit=max_iter, nfev=self._nit, success=False, errno=MSL_EMAXITER
+            root=self._root,
+            nit=max_iter,
+            nfev=self._nit,
+            success=False,
+            errno=MSL_EMAXITER,
         )
 
 
 # ===----------------------------------------------------------------------=== #
 # RootFDFSolver  (derivative-based: newton / secant / steffenson)
 # ===----------------------------------------------------------------------=== #
+
 
 struct RootFDFSolver[
     fn_: def(Float64) capturing -> Float64,
@@ -334,7 +350,8 @@ struct RootFDFSolver[
         self._nit = 0
 
     def iterate(mut self) -> Int:
-        """Perform one iteration. Returns MSL_SUCCESS, MSL_EDOM, or MSL_EZERODIV."""
+        """Perform one iteration. Returns MSL_SUCCESS, MSL_EDOM, or MSL_EZERODIV.
+        """
         self._nit += 1
 
         comptime if Self.method == "secant":
@@ -393,14 +410,14 @@ struct RootFDFSolver[
         return self._root
 
     def f(self) -> Float64:
-        """f at current root estimate."""
+        """Function value at current root estimate."""
         return self._f
 
     def df(self) -> Float64:
-        """f' at current root estimate."""
+        """Function derivative value at current root estimate."""
         return self._df
 
-    def name(self) -> StringLiteral:
+    def name(self) -> String:
         """Algorithm name."""
         return Self.method
 
@@ -416,9 +433,21 @@ struct RootFDFSolver[
         for i in range(max_iter):
             var status = self.iterate()
             if status != MSL_SUCCESS:
-                return RootResult(root=self._root, nit=i, nfev=self._nit, success=False, errno=status)
+                return RootResult(
+                    root=self._root,
+                    nit=i,
+                    nfev=self._nit,
+                    success=False,
+                    errno=status,
+                )
             if root_test_residual(self._f, epsabs) == MSL_SUCCESS:
-                return RootResult(root=self._root, nit=i + 1, nfev=self._nit, success=True)
+                return RootResult(
+                    root=self._root, nit=i + 1, nfev=self._nit, success=True
+                )
         return RootResult(
-            root=self._root, nit=max_iter, nfev=self._nit, success=False, errno=MSL_EMAXITER
+            root=self._root,
+            nit=max_iter,
+            nfev=self._nit,
+            success=False,
+            errno=MSL_EMAXITER,
         )

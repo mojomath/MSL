@@ -42,7 +42,9 @@ def stats_pvariance[
     """Pooled variance of two independent samples."""
     var var1 = stats_variance(data1, stride1, n1)
     var var2 = stats_variance(data2, stride2, n2)
-    return (Float64(n1 - 1) * var1 + Float64(n2 - 1) * var2) / Float64(n1 + n2 - 2)
+    return (Float64(n1 - 1) * var1 + Float64(n2 - 1) * var2) / Float64(
+        n1 + n2 - 2
+    )
 
 
 def stats_ttest[

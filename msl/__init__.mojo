@@ -6,7 +6,7 @@ MSL (Mojo Scientific Library) - public API.
 Re-exports the full public surface of all MSL submodules.
 """
 
-comptime MutExt = MutExternalOrigin
+comptime MutExt = MutUntrackedOrigin
 """Alias for mutable external origin, used for pointers to external data."""
 
 comptime f64: DType = DType.float64

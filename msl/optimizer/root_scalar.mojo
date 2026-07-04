@@ -375,7 +375,9 @@ def root_falsepos[
         var x_right = x_upper
         var width = x_right - x_left
 
-        var x_linear = x_right - (f_upper * (x_left - x_right) / (f_lower - f_upper))
+        var x_linear = x_right - (
+            f_upper * (x_left - x_right) / (f_lower - f_upper)
+        )
         var f_linear = fn_(x_linear)
         nfev += 1
 
@@ -389,7 +391,9 @@ def root_falsepos[
             )
 
         var w: Float64
-        if (f_lower > 0.0 and f_linear < 0.0) or (f_lower < 0.0 and f_linear > 0.0):
+        if (f_lower > 0.0 and f_linear < 0.0) or (
+            f_lower < 0.0 and f_linear > 0.0
+        ):
             root = x_linear
             x_upper = x_linear
             f_upper = f_linear
@@ -406,7 +410,9 @@ def root_falsepos[
             var f_bisect = fn_(x_bisect)
             nfev += 1
 
-            if (f_lower > 0.0 and f_bisect < 0.0) or (f_lower < 0.0 and f_bisect > 0.0):
+            if (f_lower > 0.0 and f_bisect < 0.0) or (
+                f_lower < 0.0 and f_bisect > 0.0
+            ):
                 x_upper = x_bisect
                 f_upper = f_bisect
                 if root > x_bisect:
@@ -445,7 +451,8 @@ def root_steffenson[
     epsrel: Float64 = 1e-10,
     max_iter: Int = 100,
 ) -> RootResult:
-    """Find a root via Newton iteration with Aitken delta-squared acceleration."""
+    """Find a root via Newton iteration with Aitken delta-squared acceleration.
+    """
     var x = x0
     var f = fn_(x)
     var df = dfn_(x)
@@ -474,7 +481,9 @@ def root_steffenson[
             var v = x_new - 2.0 * x + x_1
             root = x_new if v == 0.0 else (x_1 - u * u / v)
 
-        if abs(f_new) <= epsabs or abs(x_new - x) <= epsabs + epsrel * abs(x_new):
+        if abs(f_new) <= epsabs or abs(x_new - x) <= epsabs + epsrel * abs(
+            x_new
+        ):
             return RootResult(root=root, nit=i + 1, nfev=nfev, success=True)
 
         x_1 = x

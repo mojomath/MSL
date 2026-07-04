@@ -116,7 +116,9 @@ def stats_variance_m[
     """Sample variance about provided mean (divides by n-1)."""
     if n <= 1:
         return 0.0
-    return _compute_variance(data, stride, n, mean) * (Float64(n) / Float64(n - 1))
+    return _compute_variance(data, stride, n, mean) * (
+        Float64(n) / Float64(n - 1)
+    )
 
 
 def stats_sd_m[

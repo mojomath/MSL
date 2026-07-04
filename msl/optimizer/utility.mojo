@@ -186,7 +186,9 @@ def root_test_interval(
     return MSL_CONTINUE
 
 
-def root_test_delta(x1: Float64, x0: Float64, epsabs: Float64, epsrel: Float64) -> Int:
+def root_test_delta(
+    x1: Float64, x0: Float64, epsabs: Float64, epsrel: Float64
+) -> Int:
     """Convergence test for step-size changes in root solvers."""
     if epsrel < 0.0 or epsabs < 0.0:
         return MSL_EBADTOL
@@ -259,9 +261,12 @@ def min_find_bracket[
         f_right = fn_(x_right)
         nfev += 1
 
-    while nfev < eval_max and (
-        x_right - x_left
-    ) > MSL_SQRT_DBL_EPSILON * ((x_right + x_left) * 0.5) + MSL_SQRT_DBL_EPSILON:
+    while (
+        nfev < eval_max
+        and (x_right - x_left)
+        > MSL_SQRT_DBL_EPSILON * ((x_right + x_left) * 0.5)
+        + MSL_SQRT_DBL_EPSILON
+    ):
         if f_center < f_left:
             if f_center < f_right:
                 return MinBracketResult(

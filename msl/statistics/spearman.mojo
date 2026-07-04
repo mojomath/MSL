@@ -28,11 +28,11 @@ from std.memory import UnsafePointer
 from .moments import stats_correlation
 
 
-def _cosort[ox: MutOrigin, oy: MutOrigin, //,](
-    x: UnsafePointer[Float64, ox],
-    y: UnsafePointer[Float64, oy],
-    n: Int,
-):
+def _cosort[
+    ox: MutOrigin,
+    oy: MutOrigin,
+    //,
+](x: UnsafePointer[Float64, ox], y: UnsafePointer[Float64, oy], n: Int,):
     """Sort x ascending, dragging y along (insertion sort)."""
     for i in range(1, n):
         var kx = x[i]
@@ -46,7 +46,10 @@ def _cosort[ox: MutOrigin, oy: MutOrigin, //,](
         y[j + 1] = ky
 
 
-def _compute_rank[o: MutOrigin, //,](v: UnsafePointer[Float64, o], n: Int):
+def _compute_rank[
+    o: MutOrigin,
+    //,
+](v: UnsafePointer[Float64, o], n: Int):
     """Replace sorted v with average ranks (ties get averaged rank)."""
     var i = 0
     while i < n - 1:
