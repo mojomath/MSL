@@ -20,21 +20,7 @@
 # (at your option) any later version.
 # ===----------------------------------------------------------------------=== #
 """
-Stateful iterative minimizer (M2)
-
-  MinFSolver - bracketing minimizer (brent or golden)
-
-Usage example::
-
-    fn f(x: Float64) -> Float64: return (x - 1.5) * (x - 1.5)
-
-    var s = MinFSolver[f]()
-    s.set(1.0, 0.0, 3.0)
-    for _ in range(100):
-        s.iterate()
-        if min_test_interval(s.x_lower(), s.x_upper(), 1e-10, 0.0) == MSL_SUCCESS:
-            break
-    print(s.x_minimum())
+MinFSolver - bracketing minimizer (brent or golden).
 """
 
 from std.math import abs, sqrt
@@ -57,6 +43,22 @@ struct MinFSolver[
     Parameters:
         fn_: Function to minimise.
         method: "brent" or "golden" (default "brent").
+
+    Example:
+        ```mojo
+        from msl.core import MSL_SUCCESS
+        from msl.optimizer import MinFSolver, min_test_interval
+
+        def func(x: Float64) capturing -> Float64: return (x - 1.5) * (x - 1.5)
+
+        var s = MinFSolver[func]()
+        s.set(1.0, 0.0, 3.0)
+        for _ in range(100):
+            s.iterate()
+            if min_test_interval(s.x_lower(), s.x_upper(), 1e-10, 0.0) == MSL_SUCCESS:
+                break
+        print(s.x_minimum())
+        ```
 
     Call `set(x_minimum, x_lower, x_upper)` to initialise, then call
     `iterate()` in a loop and check convergence with `min_test_interval`.
@@ -206,7 +208,11 @@ struct MinFSolver[
                 q2 = -q2
             r = e
             e = d
-            if abs(p) < abs(0.5 * q2 * r) and p > q2 * (x_l - x_m) and p < q2 * (x_u - x_m):
+            if (
+                abs(p) < abs(0.5 * q2 * r)
+                and p > q2 * (x_l - x_m)
+                and p < q2 * (x_u - x_m)
+            ):
                 d = p / q2
                 x_new = x_m + d
                 if (x_new - x_l) < 2.0 * tol or (x_u - x_new) < 2.0 * tol:
@@ -271,18 +277,18 @@ struct MinFSolver[
         return self._x_upper
 
     def f_minimum(self) -> Float64:
-        """f at current minimum estimate."""
+        """Function value at current minimum estimate."""
         return self._f_minimum
 
     def f_lower(self) -> Float64:
-        """f at lower bracket bound."""
+        """Function value at lower bracket bound."""
         return self._f_lower
 
     def f_upper(self) -> Float64:
-        """f at upper bracket bound."""
+        """Function value at upper bracket bound."""
         return self._f_upper
 
-    def name(self) -> StringLiteral:
+    def name(self) -> String:
         """Algorithm name."""
         return Self.method
 
@@ -301,7 +307,10 @@ struct MinFSolver[
             return MinResult(errno=status)
         for i in range(max_iter):
             _ = self.iterate()
-            if min_test_interval(self._x_lower, self._x_upper, epsabs, epsrel) == MSL_SUCCESS:
+            if (
+                min_test_interval(self._x_lower, self._x_upper, epsabs, epsrel)
+                == MSL_SUCCESS
+            ):
                 return MinResult(
                     x=self._x_minimum,
                     fun=self._f_minimum,
