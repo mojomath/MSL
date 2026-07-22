@@ -158,6 +158,19 @@ from msl.optimizer import (
     MinFSolver,
 )
 
+# Polynomials
+from msl.poly import (
+    QuadraticRoots,
+    CubicRoots,
+    poly_eval,
+    poly_eval_derivs,
+    poly_dd_init,
+    poly_dd_eval,
+    poly_dd_taylor,
+    poly_solve_quadratic,
+    poly_solve_cubic,
+)
+
 # Interpolation
 from msl.interpolation import (
     InterpResult,
