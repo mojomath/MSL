@@ -236,6 +236,23 @@ from msl.permutation import (
     permutation_next,
 )
 
+# Dense linear algebra: LU, Cholesky, QR, symmetric eigensolver
+from msl.linalg import (
+    lu_decomp,
+    lu_svx,
+    lu_solve,
+    lu_det,
+    lu_lndet,
+    lu_invert,
+    cholesky_decomp,
+    cholesky_svx,
+    cholesky_solve,
+    qr_decomp,
+    qr_svx,
+    qr_solve,
+    eigen_jacobi,
+)
+
 # Statistics
 from msl.statistics import (
     stats_mean,
