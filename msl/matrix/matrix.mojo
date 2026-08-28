@@ -40,6 +40,9 @@ from std.memory import (
     unsafe_memset_zero,
 )
 from std.sys.info import simd_width_of
+from std.memory.alloc import unsafe_alloc
+
+from msl import MutExt
 
 
 # ===----------------------------------------------------------------------=== #
@@ -87,7 +90,7 @@ struct Matrix(Copyable, Movable):
         self.data = rebind[Pointer[Float64, MutExt]](ptr)
         self.owner = False
 
-    def __del__(deinit self):
+    def __deinit__(deinit self):
         if self.owner:
             self.data.unsafe_free()
 
