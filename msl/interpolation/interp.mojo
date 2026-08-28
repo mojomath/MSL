@@ -93,7 +93,7 @@ def _bsearch[
     var hi: Int = n - 1
     while hi - lo > 1:
         var mid = (lo + hi) // 2
-        if xa[mid] <= x:
+        if xa[unsafe_offset=mid] <= x:
             lo = mid
         else:
             hi = mid
@@ -135,49 +135,49 @@ struct LinearInterp[mut: Bool, origin: Origin[mut=mut], //](Movable):
 
     def eval(self, x: Float64) -> InterpResult:
         """Evaluate interpolant at x."""
-        if x < self._xa[0] or x > self._xa[self._n - 1]:
+        if x < self._xa[unsafe_offset=0] or x > self._xa[unsafe_offset=self._n - 1]:
             return InterpResult(errno=MSL_EDOM)
         var i = _bsearch(self._xa, self._n, x)
-        var x_lo = self._xa[i]
-        var x_hi = self._xa[i + 1]
-        var y_lo = self._ya[i]
-        var y_hi = self._ya[i + 1]
+        var x_lo = self._xa[unsafe_offset=i]
+        var x_hi = self._xa[unsafe_offset=i + 1]
+        var y_lo = self._ya[unsafe_offset=i]
+        var y_hi = self._ya[unsafe_offset=i + 1]
         var dx = x_hi - x_lo
         return InterpResult((y_lo * (x_hi - x) + y_hi * (x - x_lo)) / dx)
 
     def deriv(self, x: Float64) -> InterpResult:
         """First derivative (piecewise constant)."""
-        if x < self._xa[0] or x > self._xa[self._n - 1]:
+        if x < self._xa[unsafe_offset=0] or x > self._xa[unsafe_offset=self._n - 1]:
             return InterpResult(errno=MSL_EDOM)
         var i = _bsearch(self._xa, self._n, x)
-        var dx = self._xa[i + 1] - self._xa[i]
-        return InterpResult((self._ya[i + 1] - self._ya[i]) / dx)
+        var dx = self._xa[unsafe_offset=i + 1] - self._xa[unsafe_offset=i]
+        return InterpResult((self._ya[unsafe_offset=i + 1] - self._ya[unsafe_offset=i]) / dx)
 
     def deriv2(self, x: Float64) -> InterpResult:
         """Second derivative (zero everywhere for linear)."""
-        if x < self._xa[0] or x > self._xa[self._n - 1]:
+        if x < self._xa[unsafe_offset=0] or x > self._xa[unsafe_offset=self._n - 1]:
             return InterpResult(errno=MSL_EDOM)
         return InterpResult(0.0)
 
     def integral(self, a: Float64, b: Float64) -> InterpResult:
         """Definite integral from a to b via trapezoid rule."""
-        if a < self._xa[0] or b > self._xa[self._n - 1]:
+        if a < self._xa[unsafe_offset=0] or b > self._xa[unsafe_offset=self._n - 1]:
             return InterpResult(errno=MSL_EDOM)
         var sum: Float64 = 0.0
         var i_a = _bsearch(self._xa, self._n, a)
         var i_b = _bsearch(self._xa, self._n, b)
 
         var r_a = self.eval(a)
-        var r_mid_a = self.eval(self._xa[i_a + 1])
-        sum += 0.5 * (r_a.val + r_mid_a.val) * (self._xa[i_a + 1] - a)
+        var r_mid_a = self.eval(self._xa[unsafe_offset=i_a + 1])
+        sum += 0.5 * (r_a.val + r_mid_a.val) * (self._xa[unsafe_offset=i_a + 1] - a)
 
         for i in range(i_a + 1, i_b):
-            var h = self._xa[i + 1] - self._xa[i]
-            sum += 0.5 * (self._ya[i] + self._ya[i + 1]) * h
+            var h = self._xa[unsafe_offset=i + 1] - self._xa[unsafe_offset=i]
+            sum += 0.5 * (self._ya[unsafe_offset=i] + self._ya[unsafe_offset=i + 1]) * h
 
         if i_b > i_a:
             var r_b = self.eval(b)
-            sum += 0.5 * (self._ya[i_b] + r_b.val) * (b - self._xa[i_b])
+            sum += 0.5 * (self._ya[unsafe_offset=i_b] + r_b.val) * (b - self._xa[unsafe_offset=i_b])
         return InterpResult(sum)
 
 
@@ -211,9 +211,9 @@ struct CubicSpline[mut: Bool, origin: Origin[mut=mut], //](Movable):
         self._xa = xa
         self._ya = ya
         self._n = n
-        self._b = _alloc_DType.float64(n)
-        self._c = _alloc_DType.float64(n)
-        self._d = _alloc_DType.float64(n)
+        self._b = _alloc_f64(n)
+        self._c = _alloc_f64(n)
+        self._d = _alloc_f64(n)
         self._build()
 
     def __init__(out self, *, deinit move: Self):
@@ -224,7 +224,7 @@ struct CubicSpline[mut: Bool, origin: Origin[mut=mut], //](Movable):
         self._c = move._c
         self._d = move._d
 
-    def __del__(deinit self):
+    def __deinit__(deinit self):
         self._b.unsafe_free()
         self._c.unsafe_free()
         self._d.unsafe_free()
@@ -232,43 +232,43 @@ struct CubicSpline[mut: Bool, origin: Origin[mut=mut], //](Movable):
     def _build(mut self):
         """Solve tridiagonal system for second derivatives."""
         var n = self._n
-        var g = _alloc_DType.float64(n)
-        var diag = _alloc_DType.float64(n)
-        var offdiag = _alloc_DType.float64(n)
+        var g = _alloc_f64(n)
+        var diag = _alloc_f64(n)
+        var offdiag = _alloc_f64(n)
 
         # Build RHS and diag/offdiag
         for i in range(1, n - 1):
-            var h_i = self._xa[i] - self._xa[i - 1]
-            var h_ip1 = self._xa[i + 1] - self._xa[i]
-            var dy_i = (self._ya[i] - self._ya[i - 1]) / h_i
-            var dy_ip1 = (self._ya[i + 1] - self._ya[i]) / h_ip1
-            offdiag[i] = h_ip1
-            diag[i] = 2.0 * (h_i + h_ip1)
-            g[i] = 3.0 * (dy_ip1 - dy_i)
+            var h_i = self._xa[unsafe_offset=i] - self._xa[unsafe_offset=i - 1]
+            var h_ip1 = self._xa[unsafe_offset=i + 1] - self._xa[unsafe_offset=i]
+            var dy_i = (self._ya[unsafe_offset=i] - self._ya[unsafe_offset=i - 1]) / h_i
+            var dy_ip1 = (self._ya[unsafe_offset=i + 1] - self._ya[unsafe_offset=i]) / h_ip1
+            offdiag[unsafe_offset=i] = h_ip1
+            diag[unsafe_offset=i] = 2.0 * (h_i + h_ip1)
+            g[unsafe_offset=i] = 3.0 * (dy_ip1 - dy_i)
 
-        self._c[0] = 0.0
-        self._c[n - 1] = 0.0
+        self._c[unsafe_offset=0] = 0.0
+        self._c[unsafe_offset=n - 1] = 0.0
 
         # Thomas algorithm
         for i in range(1, n - 1):
-            var h_i = self._xa[i] - self._xa[i - 1]
+            var h_i = self._xa[unsafe_offset=i] - self._xa[unsafe_offset=i - 1]
             if i > 1:
-                var factor = h_i / diag[i - 1]
-                diag[i] -= factor * offdiag[i - 1]
-                g[i] -= factor * g[i - 1]
+                var factor = h_i / diag[unsafe_offset=i - 1]
+                diag[unsafe_offset=i] -= factor * offdiag[unsafe_offset=i - 1]
+                g[unsafe_offset=i] -= factor * g[unsafe_offset=i - 1]
 
         # Back substitution
         if n > 2:
-            self._c[n - 2] = g[n - 2] / diag[n - 2]
+            self._c[unsafe_offset=n - 2] = g[unsafe_offset=n - 2] / diag[unsafe_offset=n - 2]
         for i in range(n - 3, 0, -1):
-            var h_ip1 = self._xa[i + 1] - self._xa[i]
-            self._c[i] = (g[i] - h_ip1 * self._c[i + 1]) / diag[i]
+            var h_ip1 = self._xa[unsafe_offset=i + 1] - self._xa[unsafe_offset=i]
+            self._c[unsafe_offset=i] = (g[unsafe_offset=i] - h_ip1 * self._c[unsafe_offset=i + 1]) / diag[unsafe_offset=i]
 
         for i in range(n - 1):
-            var h = self._xa[i + 1] - self._xa[i]
-            var dy = (self._ya[i + 1] - self._ya[i]) / h
-            self._b[i] = dy - h * (self._c[i + 1] + 2.0 * self._c[i]) / 3.0
-            self._d[i] = (self._c[i + 1] - self._c[i]) / (3.0 * h)
+            var h = self._xa[unsafe_offset=i + 1] - self._xa[unsafe_offset=i]
+            var dy = (self._ya[unsafe_offset=i + 1] - self._ya[unsafe_offset=i]) / h
+            self._b[unsafe_offset=i] = dy - h * (self._c[unsafe_offset=i + 1] + 2.0 * self._c[unsafe_offset=i]) / 3.0
+            self._d[unsafe_offset=i] = (self._c[unsafe_offset=i + 1] - self._c[unsafe_offset=i]) / (3.0 * h)
 
         g.unsafe_free()
         diag.unsafe_free()
@@ -276,51 +276,51 @@ struct CubicSpline[mut: Bool, origin: Origin[mut=mut], //](Movable):
 
     def eval(self, x: Float64) -> InterpResult:
         """Evaluate spline at x."""
-        if x < self._xa[0] or x > self._xa[self._n - 1]:
+        if x < self._xa[unsafe_offset=0] or x > self._xa[unsafe_offset=self._n - 1]:
             return InterpResult(errno=MSL_EDOM)
         var i = _bsearch(self._xa, self._n, x)
-        var dx = x - self._xa[i]
-        var val = self._ya[i] + dx * (
-            self._b[i] + dx * (self._c[i] + dx * self._d[i])
+        var dx = x - self._xa[unsafe_offset=i]
+        var val = self._ya[unsafe_offset=i] + dx * (
+            self._b[unsafe_offset=i] + dx * (self._c[unsafe_offset=i] + dx * self._d[unsafe_offset=i])
         )
         return InterpResult(val)
 
     def deriv(self, x: Float64) -> InterpResult:
         """First derivative at x."""
-        if x < self._xa[0] or x > self._xa[self._n - 1]:
+        if x < self._xa[unsafe_offset=0] or x > self._xa[unsafe_offset=self._n - 1]:
             return InterpResult(errno=MSL_EDOM)
         var i = _bsearch(self._xa, self._n, x)
-        var dx = x - self._xa[i]
-        var val = self._b[i] + dx * (2.0 * self._c[i] + 3.0 * self._d[i] * dx)
+        var dx = x - self._xa[unsafe_offset=i]
+        var val = self._b[unsafe_offset=i] + dx * (2.0 * self._c[unsafe_offset=i] + 3.0 * self._d[unsafe_offset=i] * dx)
         return InterpResult(val)
 
     def deriv2(self, x: Float64) -> InterpResult:
         """Second derivative at x."""
-        if x < self._xa[0] or x > self._xa[self._n - 1]:
+        if x < self._xa[unsafe_offset=0] or x > self._xa[unsafe_offset=self._n - 1]:
             return InterpResult(errno=MSL_EDOM)
         var i = _bsearch(self._xa, self._n, x)
-        var dx = x - self._xa[i]
-        var val = 2.0 * self._c[i] + 6.0 * self._d[i] * dx
+        var dx = x - self._xa[unsafe_offset=i]
+        var val = 2.0 * self._c[unsafe_offset=i] + 6.0 * self._d[unsafe_offset=i] * dx
         return InterpResult(val)
 
     def integral(self, a: Float64, b: Float64) -> InterpResult:
         """Definite integral from a to b."""
-        if a < self._xa[0] or b > self._xa[self._n - 1]:
+        if a < self._xa[unsafe_offset=0] or b > self._xa[unsafe_offset=self._n - 1]:
             return InterpResult(errno=MSL_EDOM)
         var sum: Float64 = 0.0
         var i_a = _bsearch(self._xa, self._n, a)
         var i_b = _bsearch(self._xa, self._n, b)
 
         for i in range(i_a, i_b + 1):
-            var x_lo = a if i == i_a else self._xa[i]
-            var x_hi = b if i == i_b else self._xa[i + 1]
-            var da = x_lo - self._xa[i]
-            var db = x_hi - self._xa[i]
+            var x_lo = a if i == i_a else self._xa[unsafe_offset=i]
+            var x_hi = b if i == i_b else self._xa[unsafe_offset=i + 1]
+            var da = x_lo - self._xa[unsafe_offset=i]
+            var db = x_hi - self._xa[unsafe_offset=i]
             sum += (
-                self._ya[i] * (db - da)
-                + self._b[i] * (db * db - da * da) * 0.5
-                + self._c[i] * (db * db * db - da * da * da) / 3.0
-                + self._d[i] * (db * db * db * db - da * da * da * da) * 0.25
+                self._ya[unsafe_offset=i] * (db - da)
+                + self._b[unsafe_offset=i] * (db * db - da * da) * 0.5
+                + self._c[unsafe_offset=i] * (db * db * db - da * da * da) / 3.0
+                + self._d[unsafe_offset=i] * (db * db * db * db - da * da * da * da) * 0.25
             )
         return InterpResult(sum)
 
@@ -355,9 +355,9 @@ struct AkimaSpline[mut: Bool, origin: Origin[mut=mut], //](Movable):
         self._xa = xa
         self._ya = ya
         self._n = n
-        self._b = _alloc_DType.float64(n)
-        self._c = _alloc_DType.float64(n)
-        self._d = _alloc_DType.float64(n)
+        self._b = _alloc_f64(n)
+        self._c = _alloc_f64(n)
+        self._d = _alloc_f64(n)
         self._build()
 
     def __init__(out self, *, deinit move: Self):
@@ -368,7 +368,7 @@ struct AkimaSpline[mut: Bool, origin: Origin[mut=mut], //](Movable):
         self._c = move._c
         self._d = move._d
 
-    def __del__(deinit self):
+    def __deinit__(deinit self):
         self._b.unsafe_free()
         self._c.unsafe_free()
         self._d.unsafe_free()
@@ -379,26 +379,26 @@ struct AkimaSpline[mut: Bool, origin: Origin[mut=mut], //](Movable):
         # m[i] = finite difference slope for interval i, with offset +2 for phantom points
         # total = n-1 intervals + 4 phantom = n+3 slopes, stored at offset 2
         var m_size = n + 3
-        var m = _alloc_DType.float64(m_size)
+        var m = _alloc_f64(m_size)
 
         # Interior slopes: m[i+2] = (y[i+1]-y[i])/(x[i+1]-x[i])
         for i in range(n - 1):
-            m[i + 2] = (self._ya[i + 1] - self._ya[i]) / (
-                self._xa[i + 1] - self._xa[i]
+            m[unsafe_offset=i + 2] = (self._ya[unsafe_offset=i + 1] - self._ya[unsafe_offset=i]) / (
+                self._xa[unsafe_offset=i + 1] - self._xa[unsafe_offset=i]
             )
 
-        m[1] = 2.0 * m[2] - m[3]
-        m[0] = 2.0 * m[1] - m[2]
-        m[n + 1] = 2.0 * m[n] - m[n - 1]
-        m[n + 2] = 2.0 * m[n + 1] - m[n]
+        m[unsafe_offset=1] = 2.0 * m[unsafe_offset=2] - m[unsafe_offset=3]
+        m[unsafe_offset=0] = 2.0 * m[unsafe_offset=1] - m[unsafe_offset=2]
+        m[unsafe_offset=n + 1] = 2.0 * m[unsafe_offset=n] - m[unsafe_offset=n - 1]
+        m[unsafe_offset=n + 2] = 2.0 * m[unsafe_offset=n + 1] - m[unsafe_offset=n]
 
         for i in range(n - 1):
-            var h = self._xa[i + 1] - self._xa[i]
-            var m0 = m[i]
-            var m1 = m[i + 1]
-            var m2 = m[i + 2]
-            var m3 = m[i + 3]
-            var m4 = m[i + 4] if i + 4 < m_size else m[m_size - 1]
+            var h = self._xa[unsafe_offset=i + 1] - self._xa[unsafe_offset=i]
+            var m0 = m[unsafe_offset=i]
+            var m1 = m[unsafe_offset=i + 1]
+            var m2 = m[unsafe_offset=i + 2]
+            var m3 = m[unsafe_offset=i + 3]
+            var m4 = m[unsafe_offset=i + 4] if i + 4 < m_size else m[unsafe_offset=m_size - 1]
 
             # Left slope at node i
             var ne_l = abs(m3 - m2) + abs(m1 - m0)
@@ -416,58 +416,58 @@ struct AkimaSpline[mut: Bool, origin: Origin[mut=mut], //](Movable):
             else:
                 t_r = (abs(m4 - m3) * m2 + abs(m2 - m1) * m3) / ne_r
 
-            self._b[i] = t_l
-            self._c[i] = (3.0 * m2 - 2.0 * t_l - t_r) / h
-            self._d[i] = (t_l + t_r - 2.0 * m2) / (h * h)
+            self._b[unsafe_offset=i] = t_l
+            self._c[unsafe_offset=i] = (3.0 * m2 - 2.0 * t_l - t_r) / h
+            self._d[unsafe_offset=i] = (t_l + t_r - 2.0 * m2) / (h * h)
 
         m.unsafe_free()
 
     def eval(self, x: Float64) -> InterpResult:
         """Evaluate spline at x."""
-        if x < self._xa[0] or x > self._xa[self._n - 1]:
+        if x < self._xa[unsafe_offset=0] or x > self._xa[unsafe_offset=self._n - 1]:
             return InterpResult(errno=MSL_EDOM)
         var i = _bsearch(self._xa, self._n, x)
-        var dx = x - self._xa[i]
-        var val = self._ya[i] + dx * (
-            self._b[i] + dx * (self._c[i] + dx * self._d[i])
+        var dx = x - self._xa[unsafe_offset=i]
+        var val = self._ya[unsafe_offset=i] + dx * (
+            self._b[unsafe_offset=i] + dx * (self._c[unsafe_offset=i] + dx * self._d[unsafe_offset=i])
         )
         return InterpResult(val)
 
     def deriv(self, x: Float64) -> InterpResult:
         """First derivative at x."""
-        if x < self._xa[0] or x > self._xa[self._n - 1]:
+        if x < self._xa[unsafe_offset=0] or x > self._xa[unsafe_offset=self._n - 1]:
             return InterpResult(errno=MSL_EDOM)
         var i = _bsearch(self._xa, self._n, x)
-        var dx = x - self._xa[i]
-        var val = self._b[i] + dx * (2.0 * self._c[i] + 3.0 * self._d[i] * dx)
+        var dx = x - self._xa[unsafe_offset=i]
+        var val = self._b[unsafe_offset=i] + dx * (2.0 * self._c[unsafe_offset=i] + 3.0 * self._d[unsafe_offset=i] * dx)
         return InterpResult(val)
 
     def deriv2(self, x: Float64) -> InterpResult:
         """Second derivative at x."""
-        if x < self._xa[0] or x > self._xa[self._n - 1]:
+        if x < self._xa[unsafe_offset=0] or x > self._xa[unsafe_offset=self._n - 1]:
             return InterpResult(errno=MSL_EDOM)
         var i = _bsearch(self._xa, self._n, x)
-        var dx = x - self._xa[i]
-        var val = 2.0 * self._c[i] + 6.0 * self._d[i] * dx
+        var dx = x - self._xa[unsafe_offset=i]
+        var val = 2.0 * self._c[unsafe_offset=i] + 6.0 * self._d[unsafe_offset=i] * dx
         return InterpResult(val)
 
     def integral(self, a: Float64, b: Float64) -> InterpResult:
         """Definite integral from a to b."""
-        if a < self._xa[0] or b > self._xa[self._n - 1]:
+        if a < self._xa[unsafe_offset=0] or b > self._xa[unsafe_offset=self._n - 1]:
             return InterpResult(errno=MSL_EDOM)
         var sum: Float64 = 0.0
         var i_a = _bsearch(self._xa, self._n, a)
         var i_b = _bsearch(self._xa, self._n, b)
 
         for i in range(i_a, i_b + 1):
-            var x_lo = a if i == i_a else self._xa[i]
-            var x_hi = b if i == i_b else self._xa[i + 1]
-            var da = x_lo - self._xa[i]
-            var db = x_hi - self._xa[i]
+            var x_lo = a if i == i_a else self._xa[unsafe_offset=i]
+            var x_hi = b if i == i_b else self._xa[unsafe_offset=i + 1]
+            var da = x_lo - self._xa[unsafe_offset=i]
+            var db = x_hi - self._xa[unsafe_offset=i]
             sum += (
-                self._ya[i] * (db - da)
-                + self._b[i] * (db * db - da * da) * 0.5
-                + self._c[i] * (db * db * db - da * da * da) / 3.0
-                + self._d[i] * (db * db * db * db - da * da * da * da) * 0.25
+                self._ya[unsafe_offset=i] * (db - da)
+                + self._b[unsafe_offset=i] * (db * db - da * da) * 0.5
+                + self._c[unsafe_offset=i] * (db * db * db - da * da * da) / 3.0
+                + self._d[unsafe_offset=i] * (db * db * db * db - da * da * da * da) * 0.25
             )
         return InterpResult(sum)
