@@ -30,11 +30,33 @@ Random distributions.
 Pure Mojo implementation of common probability distributions.
 """
 
-from std.math import exp, log, log1p, sqrt, cos, sin, abs, tan
+# ===----------------------------------------------------------------------=== #
+# Stdlib
+# ===----------------------------------------------------------------------=== #
+from std.math import (
+    abs,
+    cos,
+    exp,
+    log,
+    log1p,
+    sin,
+    sqrt,
+    tan,
+)
 
-from msl.core.const import MSL_PI, MSL_FLT_EPSILON
-from msl.rng import RNG, RNGAlgorithm, MT19937
+# ===----------------------------------------------------------------------=== #
+# MSL
+# ===----------------------------------------------------------------------=== #
+from msl.core.const import (
+    MSL_FLT_EPSILON,
+    MSL_PI,
+)
+from msl.rng import (
+    RNG,
+    RNGAlgorithm,
+)
 from msl.sf.gamma import lngamma_lanczos
+
 
 # ===----------------------------------------------------------------------=== #
 # Gaussian

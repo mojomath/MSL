@@ -31,10 +31,25 @@ Gamma functions.
 
 """
 
-from std.math import sqrt, exp, log, cos, sin, abs, floor
+# ===----------------------------------------------------------------------=== #
+# Stdlib
+# ===----------------------------------------------------------------------=== #
 from std.collections import InlineArray
+from std.math import (
+    abs,
+    exp,
+    floor,
+    log,
+    sin,
+)
 
-from msl.core.const import MSL_DBL_EPSILON, MSL_SQRT_DBL_EPSILON, MSL_PI
+# ===----------------------------------------------------------------------=== #
+# MSL
+# ===----------------------------------------------------------------------=== #
+from msl.core.const import (
+    MSL_DBL_EPSILON,
+    MSL_PI,
+)
 from msl.core.errno import MSL_EDOM
 from msl.sf.result import SFSResult
 

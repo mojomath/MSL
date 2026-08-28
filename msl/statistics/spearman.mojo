@@ -31,9 +31,15 @@
 Spearman rank correlation coefficient (Float64).
 """
 
+# ===----------------------------------------------------------------------=== #
+# Stdlib
+# ===----------------------------------------------------------------------=== #
 from std.memory import Pointer
 
-from .moments import stats_correlation
+# ===----------------------------------------------------------------------=== #
+# MSL
+# ===----------------------------------------------------------------------=== #
+from msl.statistics.moments import stats_correlation
 
 
 def _cosort[

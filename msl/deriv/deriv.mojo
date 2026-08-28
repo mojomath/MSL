@@ -40,8 +40,17 @@ All three separate truncation error from rounding error and optionally
 refine h to minimise the total.
 """
 
-from std.math import abs, pow
+# ===----------------------------------------------------------------------=== #
+# Stdlib
+# ===----------------------------------------------------------------------=== #
+from std.math import (
+    abs,
+    pow,
+)
 
+# ===----------------------------------------------------------------------=== #
+# MSL
+# ===----------------------------------------------------------------------=== #
 from msl.core.const import MSL_DBL_EPSILON
 
 

@@ -22,8 +22,28 @@
 Core types, error codes, and math utilities.
 """
 
-from .block import Block, block_alloc, block_calloc, block_size, block_data
-from .errno import MSL_SUCCESS, MSL_FAILURE, MSL_ENOMEM, MSL_EINVAL
-from .minmax import min, max
-from .nan import msl_isnan, msl_isinf
-from .pow_int import msl_pow_int
+# ===----------------------------------------------------------------------=== #
+# MSL
+# ===----------------------------------------------------------------------=== #
+from msl.core.block import (
+    Block,
+    block_alloc,
+    block_calloc,
+    block_data,
+    block_size,
+)
+from msl.core.errno import (
+    MSL_EINVAL,
+    MSL_ENOMEM,
+    MSL_FAILURE,
+    MSL_SUCCESS,
+)
+from msl.core.minmax import (
+    max,
+    min,
+)
+from msl.core.nan import (
+    msl_isinf,
+    msl_isnan,
+)
+from msl.core.pow_int import msl_pow_int

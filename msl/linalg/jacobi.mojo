@@ -41,9 +41,21 @@ leading dimension evec_lda), which is set to the identity before
 rotating.
 """
 
-from std.math import abs, hypot
+# ===----------------------------------------------------------------------=== #
+# Stdlib
+# ===----------------------------------------------------------------------=== #
+from std.math import (
+    abs,
+    hypot,
+)
 
-from msl.core.errno import MSL_SUCCESS, MSL_EMAXITER
+# ===----------------------------------------------------------------------=== #
+# MSL
+# ===----------------------------------------------------------------------=== #
+from msl.core.errno import (
+    MSL_EMAXITER,
+    MSL_SUCCESS,
+)
 
 
 def _symschur2[

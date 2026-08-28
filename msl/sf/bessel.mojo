@@ -33,17 +33,30 @@ Bessel functions.
 
 # TODO: Cross check this with CEPHES library implementations for accuracy.
 
+# ===----------------------------------------------------------------------=== #
+# Stdlib
+# ===----------------------------------------------------------------------=== #
+from std.collections import InlineArray
+from std.math import (
+    abs,
+    cos,
+    exp,
+    log,
+    sin,
+    sqrt,
+)
+
+# ===----------------------------------------------------------------------=== #
+# MSL
+# ===----------------------------------------------------------------------=== #
 from msl.core.const import (
     MSL_DBL_EPSILON,
-    MSL_SQRT_DBL_EPSILON,
     MSL_PI,
-    MSL_PI_2,
     MSL_PI_4,
+    MSL_SQRT_DBL_EPSILON,
 )
-from msl.sf.result import SFSResult
 from msl.core.errno import MSL_EDOM
-from std.math import sqrt, exp, cos, sin, abs, log
-from std.collections import InlineArray
+from msl.sf.result import SFSResult
 
 
 comptime SFPrecisionDouble: Int = 0

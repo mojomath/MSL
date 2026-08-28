@@ -22,4 +22,11 @@
 ODE initial value problem solvers (RK4 fixed-step, RKF45 adaptive).
 """
 
-from .ode import OdeResult, ode_rk4, ode_rkf45
+# ===----------------------------------------------------------------------=== #
+# MSL
+# ===----------------------------------------------------------------------=== #
+from msl.ode.ode import (
+    ode_rk4,
+    ode_rkf45,
+    OdeResult,
+)

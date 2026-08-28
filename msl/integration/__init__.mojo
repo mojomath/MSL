@@ -29,32 +29,34 @@
 Numerical integration routines.
 """
 
-from .workspace import (
-    IntegrationResult,
-    QKResult,
-    MSL_KRONROD_15,
-    MSL_KRONROD_21,
-    MSL_KRONROD_31,
-    MSL_KRONROD_41,
-    MSL_KRONROD_51,
-    MSL_KRONROD_61,
-)
-
-from .qk15 import qk15
-from .qk21 import qk21
-from .qk31 import qk31
-from .qk41 import qk41
-from .qk51 import qk51
-from .qk61 import qk61
-from .qng import qng_integrate
-from .workspace import IntegrationWorkspace
-from .qag import (
-    qag,
+# ===----------------------------------------------------------------------=== #
+# MSL
+# ===----------------------------------------------------------------------=== #
+from msl.integration.qag import (
     MSL_INTEG_GAUSS15,
     MSL_INTEG_GAUSS21,
     MSL_INTEG_GAUSS31,
     MSL_INTEG_GAUSS41,
     MSL_INTEG_GAUSS51,
     MSL_INTEG_GAUSS61,
+    qag,
 )
-from .qags import qags
+from msl.integration.qags import qags
+from msl.integration.qk15 import qk15
+from msl.integration.qk21 import qk21
+from msl.integration.qk31 import qk31
+from msl.integration.qk41 import qk41
+from msl.integration.qk51 import qk51
+from msl.integration.qk61 import qk61
+from msl.integration.qng import qng_integrate
+from msl.integration.workspace import (
+    IntegrationResult,
+    IntegrationWorkspace,
+    MSL_KRONROD_15,
+    MSL_KRONROD_21,
+    MSL_KRONROD_31,
+    MSL_KRONROD_41,
+    MSL_KRONROD_51,
+    MSL_KRONROD_61,
+    QKResult,
+)

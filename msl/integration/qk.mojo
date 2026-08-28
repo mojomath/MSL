@@ -29,10 +29,22 @@
 Generic n-point Gauss-Kronrod quadrature and error rescaling.
 """
 
-from msl.core.const import MSL_DBL_EPSILON, MSL_DBL_MIN
-from std.math import abs, pow
+# ===----------------------------------------------------------------------=== #
+# Stdlib
+# ===----------------------------------------------------------------------=== #
+from std.math import (
+    abs,
+    pow,
+)
 
-from .workspace import QKResult
+# ===----------------------------------------------------------------------=== #
+# MSL
+# ===----------------------------------------------------------------------=== #
+from msl.core.const import (
+    MSL_DBL_EPSILON,
+    MSL_DBL_MIN,
+)
+from msl.integration.workspace import QKResult
 
 
 def _rescale_error(

@@ -33,12 +33,25 @@ for smooth but slowly-converging integrands, and handles singularities
 better via extrapolation.
 """
 
-from std.math import abs
+# ===----------------------------------------------------------------------=== #
+# Stdlib
+# ===----------------------------------------------------------------------=== #
 from std.collections import InlineArray
+from std.math import abs
 
-from msl.core.const import MSL_DBL_EPSILON, MSL_DBL_MIN, MSL_DBL_MAX
-from .workspace import IntegrationWorkspace, IntegrationResult, QKResult
-from .qk21 import qk21
+# ===----------------------------------------------------------------------=== #
+# MSL
+# ===----------------------------------------------------------------------=== #
+from msl.core.const import (
+    MSL_DBL_EPSILON,
+    MSL_DBL_MAX,
+    MSL_DBL_MIN,
+)
+from msl.integration.qk21 import qk21
+from msl.integration.workspace import (
+    IntegrationResult,
+    IntegrationWorkspace,
+)
 
 
 def _subinterval_too_small(a1: Float64, a2: Float64, b2: Float64) -> Bool:

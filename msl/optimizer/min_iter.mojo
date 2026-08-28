@@ -31,11 +31,23 @@
 MinFSolver - bracketing minimizer (brent or golden).
 """
 
-from std.math import abs, sqrt
+# ===----------------------------------------------------------------------=== #
+# Stdlib
+# ===----------------------------------------------------------------------=== #
+from std.math import abs
 
-from msl.core.const import MSL_DBL_EPSILON
-from msl.core.errno import MSL_SUCCESS, MSL_EMAXITER, MSL_EDOM
-from .utility import MinResult, min_test_interval
+# ===----------------------------------------------------------------------=== #
+# MSL
+# ===----------------------------------------------------------------------=== #
+from msl.core.errno import (
+    MSL_EDOM,
+    MSL_EMAXITER,
+    MSL_SUCCESS,
+)
+from msl.optimizer.utility import (
+    min_test_interval,
+    MinResult,
+)
 
 
 comptime _GOLDEN_MIN: Float64 = 0.3819660112501051

@@ -34,7 +34,13 @@
 Weighted descriptive statistics (Float64), ported from GSL statistics.
 """
 
-from std.math import abs, sqrt
+# ===----------------------------------------------------------------------=== #
+# Stdlib
+# ===----------------------------------------------------------------------=== #
+from std.math import (
+    abs,
+    sqrt,
+)
 from std.memory import Pointer
 
 

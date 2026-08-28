@@ -37,10 +37,22 @@ is met:
 Function evaluations are reused across levels.
 """
 
-from msl.core.const import MSL_DBL_EPSILON, MSL_DBL_MIN
-from std.math import abs, sqrt, pow
+# ===----------------------------------------------------------------------=== #
+# Stdlib
+# ===----------------------------------------------------------------------=== #
+from std.math import (
+    abs,
+    pow,
+)
 
-from .workspace import IntegrationResult
+# ===----------------------------------------------------------------------=== #
+# MSL
+# ===----------------------------------------------------------------------=== #
+from msl.core.const import (
+    MSL_DBL_EPSILON,
+    MSL_DBL_MIN,
+)
+from msl.integration.workspace import IntegrationResult
 
 
 # ===----------------------------------------------------------------------=== #

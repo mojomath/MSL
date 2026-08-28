@@ -40,11 +40,19 @@ Provides four scalar interpolation types:
 All 1-D types expose: eval, deriv, deriv2, integral.
 """
 
-from std.memory import Pointer, unsafe_memset_zero
-from std.memory.alloc import unsafe_alloc
+# ===----------------------------------------------------------------------=== #
+# Stdlib
+# ===----------------------------------------------------------------------=== #
 from std.math import abs
+from std.memory import (
+    Pointer,
+    unsafe_memset_zero,
+)
+from std.memory.alloc import unsafe_alloc
 
-from msl.core.const import MSL_DBL_EPSILON
+# ===----------------------------------------------------------------------=== #
+# MSL
+# ===----------------------------------------------------------------------=== #
 from msl.core.errno import MSL_EDOM
 
 

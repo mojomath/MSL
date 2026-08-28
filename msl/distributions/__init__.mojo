@@ -22,31 +22,34 @@
 Probability distributions - samplers and PDFs.
 """
 
-from .dist import (
-    gaussian,
-    gaussian_pdf,
-    uniform,
-    uniform_pdf,
+# ===----------------------------------------------------------------------=== #
+# MSL
+# ===----------------------------------------------------------------------=== #
+from msl.distributions.dist import (
+    beta,
+    binomial,
+    binomial_pdf,
+    cauchy,
+    cauchy_pdf,
+    chisq,
     exponential,
     exponential_pdf,
     gamma,
     gamma_pdf,
-    beta,
-    chisq,
+    gaussian,
+    gaussian_pdf,
+    laplace,
+    laplace_pdf,
+    lognormal,
+    lognormal_pdf,
+    negative_binomial,
+    negative_binomial_pdf,
     poisson,
     poisson_pdf,
     tdist,
     tdist_pdf,
-    lognormal,
-    lognormal_pdf,
+    uniform,
+    uniform_pdf,
     weibull,
     weibull_pdf,
-    binomial,
-    binomial_pdf,
-    negative_binomial,
-    negative_binomial_pdf,
-    cauchy,
-    cauchy_pdf,
-    laplace,
-    laplace_pdf,
 )

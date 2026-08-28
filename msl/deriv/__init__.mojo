@@ -22,4 +22,12 @@
 Numerical differentiation (central, forward, backward finite differences).
 """
 
-from .deriv import DerivResult, deriv_central, deriv_forward, deriv_backward
+# ===----------------------------------------------------------------------=== #
+# MSL
+# ===----------------------------------------------------------------------=== #
+from msl.deriv.deriv import (
+    deriv_backward,
+    deriv_central,
+    deriv_forward,
+    DerivResult,
+)

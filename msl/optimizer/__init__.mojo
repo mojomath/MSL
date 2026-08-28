@@ -22,24 +22,33 @@
 Scalar root-finding and minimization algorithms.
 """
 
-from .utility import (
-    RootResult,
-    MinResult,
-    MinBracketResult,
-    root_test_interval,
-    root_test_residual,
-    root_test_delta,
-    min_test_interval,
-    min_find_bracket,
+# ===----------------------------------------------------------------------=== #
+# MSL
+# ===----------------------------------------------------------------------=== #
+from msl.optimizer.min_iter import MinFSolver
+from msl.optimizer.min_scalar import (
+    min_brent,
+    min_golden,
 )
-from .root_scalar import (
+from msl.optimizer.root_iter import (
+    RootFDFSolver,
+    RootFSolver,
+)
+from msl.optimizer.root_scalar import (
     root_bisect,
     root_brent,
+    root_falsepos,
     root_newton,
     root_secant,
-    root_falsepos,
     root_steffenson,
 )
-from .min_scalar import min_brent, min_golden
-from .root_iter import RootFSolver, RootFDFSolver
-from .min_iter import MinFSolver
+from msl.optimizer.utility import (
+    min_find_bracket,
+    min_test_interval,
+    MinBracketResult,
+    MinResult,
+    root_test_delta,
+    root_test_interval,
+    root_test_residual,
+    RootResult,
+)

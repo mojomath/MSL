@@ -32,12 +32,31 @@ Regularized incomplete gamma functions P(a,x) and Q(a,x).
   Q(a,x) = 1 - P(a,x)
 """
 
-from std.math import exp, log, sqrt, abs, erfc, log1p
+# ===----------------------------------------------------------------------=== #
+# Stdlib
+# ===----------------------------------------------------------------------=== #
+from std.math import (
+    abs,
+    erfc,
+    exp,
+    log,
+    log1p,
+    sqrt,
+)
 
-from msl.core.const import MSL_DBL_EPSILON, MSL_PI
+# ===----------------------------------------------------------------------=== #
+# MSL
+# ===----------------------------------------------------------------------=== #
+from msl.core.const import (
+    MSL_DBL_EPSILON,
+    MSL_PI,
+)
 from msl.core.errno import MSL_EDOM
+from msl.sf.gamma import (
+    _gammastar,
+    lngamma_lanczos,
+)
 from msl.sf.result import SFSResult
-from msl.sf.gamma import lngamma_lanczos, _gammastar
 
 
 # ===----------------------------------------------------------------------=== #

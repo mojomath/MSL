@@ -31,10 +31,26 @@ Airy functions Ai(x) and Bi(x) and their derivatives.
 
 """
 
-from msl.core.const import MSL_DBL_EPSILON, MSL_PI_4
-from msl.sf.result import SFSResult
-from std.math import sqrt, exp, cos, sin, abs
+# ===----------------------------------------------------------------------=== #
+# Stdlib
+# ===----------------------------------------------------------------------=== #
 from std.collections import InlineArray
+from std.math import (
+    abs,
+    cos,
+    exp,
+    sin,
+    sqrt,
+)
+
+# ===----------------------------------------------------------------------=== #
+# MSL
+# ===----------------------------------------------------------------------=== #
+from msl.core.const import (
+    MSL_DBL_EPSILON,
+    MSL_PI_4,
+)
+from msl.sf.result import SFSResult
 
 
 comptime SFPrecisionDouble: Int = 0

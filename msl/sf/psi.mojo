@@ -31,13 +31,23 @@ Digamma (psi) function.
 psi(x) = d/dx ln(Gamma(x))
 """
 
-from std.math import log, sqrt, abs, floor
+# ===----------------------------------------------------------------------=== #
+# Stdlib
+# ===----------------------------------------------------------------------=== #
 from std.collections import InlineArray
+from std.math import (
+    abs,
+    log,
+)
 
-from msl.core.const import MSL_DBL_EPSILON, MSL_PI
+# ===----------------------------------------------------------------------=== #
+# MSL
+# ===----------------------------------------------------------------------=== #
+from msl.core.const import MSL_DBL_EPSILON
 from msl.core.errno import MSL_EDOM
-from msl.sf.result import SFSResult
 from msl.sf.gamma import cheb_eval
+from msl.sf.result import SFSResult
+
 
 # Euler-Mascheroni constant
 comptime MSL_EULER: Float64 = 0.5772156649015328606065120900824024

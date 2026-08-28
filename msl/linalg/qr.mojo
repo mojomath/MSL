@@ -44,7 +44,13 @@ of each Householder vector is implicitly 1 and not stored); tau[i]
 holds the corresponding Householder coefficients.
 """
 
-from std.math import hypot, sqrt
+# ===----------------------------------------------------------------------=== #
+# Stdlib
+# ===----------------------------------------------------------------------=== #
+from std.math import (
+    hypot,
+    sqrt,
+)
 
 
 def _sign(x: Float64) -> Float64:

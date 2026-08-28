@@ -22,18 +22,21 @@
 1D vector with stride and linear algebra operations.
 """
 
-from .vector import (
+# ===----------------------------------------------------------------------=== #
+# MSL
+# ===----------------------------------------------------------------------=== #
+from msl.vector.vector import (
     Vector,
-    vector_alloc,
-    vector_calloc,
-    vector_size,
-    vector_stride,
-    vector_set_zero,
-    vector_set_all,
     vector_add,
-    vector_sub,
-    vector_scale,
+    vector_alloc,
     vector_axpy,
+    vector_calloc,
     vector_dot,
     vector_norm,
+    vector_scale,
+    vector_set_all,
+    vector_set_zero,
+    vector_size,
+    vector_stride,
+    vector_sub,
 )

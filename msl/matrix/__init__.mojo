@@ -22,18 +22,21 @@
 Dense 2D matrix and linear algebra operations.
 """
 
-from .matrix import (
+# ===----------------------------------------------------------------------=== #
+# MSL
+# ===----------------------------------------------------------------------=== #
+from msl.matrix.matrix import (
     Matrix,
+    matrix_add,
     matrix_alloc,
     matrix_calloc,
-    matrix_size1,
-    matrix_size2,
-    matrix_set_zero,
+    matrix_mul,
+    matrix_scale,
     matrix_set_all,
     matrix_set_identity,
-    matrix_add,
+    matrix_set_zero,
+    matrix_size1,
+    matrix_size2,
     matrix_sub,
-    matrix_scale,
     matrix_transpose,
-    matrix_mul,
 )

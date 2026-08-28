@@ -20,15 +20,21 @@
 # ===----------------------------------------------------------------------=== #
 """Result types and helper routines for scalar optimization."""
 
+# ===----------------------------------------------------------------------=== #
+# Stdlib
+# ===----------------------------------------------------------------------=== #
 from std.math import abs
 
+# ===----------------------------------------------------------------------=== #
+# MSL
+# ===----------------------------------------------------------------------=== #
 from msl.core.const import MSL_SQRT_DBL_EPSILON
-from msl.core.errno import MSL_SUCCESS
 from msl.core.errno import (
-    MSL_FAILURE,
     MSL_CONTINUE,
     MSL_EBADTOL,
     MSL_EINVAL,
+    MSL_FAILURE,
+    MSL_SUCCESS,
 )
 
 

@@ -29,11 +29,18 @@
 Beta function and log beta function.
 """
 
+# ===----------------------------------------------------------------------=== #
+# Stdlib
+# ===----------------------------------------------------------------------=== #
 from std.math import exp
 
-from msl.core.const import MSL_DBL_EPSILON, MSL_SQRT_DBL_EPSILON, MSL_PI
-from msl.sf.result import SFSResult
+# ===----------------------------------------------------------------------=== #
+# MSL
+# ===----------------------------------------------------------------------=== #
+from msl.core.const import MSL_DBL_EPSILON
 from msl.core.errno import MSL_EDOM
+from msl.sf.result import SFSResult
+
 
 # ===----------------------------------------------------------------------=== #
 # Beta function

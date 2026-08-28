@@ -34,7 +34,17 @@ Complex-root variants (`gsl_poly_complex_solve_quadratic/cubic`) are
 deferred until MSL has a Complex type.
 """
 
-from std.math import abs, acos, cos, pow, sqrt
+# ===----------------------------------------------------------------------=== #
+# Stdlib
+# ===----------------------------------------------------------------------=== #
+from std.math import (
+    abs,
+    acos,
+    cos,
+    pow,
+    sqrt,
+)
+
 
 comptime _M_PI: Float64 = 3.14159265358979323846
 

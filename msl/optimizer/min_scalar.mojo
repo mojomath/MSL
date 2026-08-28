@@ -34,11 +34,16 @@ Scalar minimization algorithms.
 Both require a bracket (a, x, b) with f(x) < f(a) and f(x) < f(b).
 """
 
-from std.math import abs, sqrt
+# ===----------------------------------------------------------------------=== #
+# Stdlib
+# ===----------------------------------------------------------------------=== #
+from std.math import abs
 
-from msl.core.const import MSL_DBL_EPSILON
-from msl.core.errno import MSL_SUCCESS, MSL_EMAXITER, MSL_EDOM
-from .utility import MinResult
+# ===----------------------------------------------------------------------=== #
+# MSL
+# ===----------------------------------------------------------------------=== #
+from msl.core.errno import MSL_EMAXITER
+from msl.optimizer.utility import MinResult
 
 
 comptime _GOLDEN: Float64 = 0.3819660112501051  # (3 - sqrt(5)) / 2

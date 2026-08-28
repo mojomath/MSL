@@ -41,11 +41,27 @@ The integrand signature is:
         dydt[1] = ...
 """
 
-from std.math import abs, pow, sqrt
-from std.memory import Pointer, unsafe_memset_zero
+# ===----------------------------------------------------------------------=== #
+# Stdlib
+# ===----------------------------------------------------------------------=== #
+from std.math import (
+    abs,
+    pow,
+)
+from std.memory import (
+    Pointer,
+    unsafe_memset_zero,
+)
 
-from msl.core.const import MSL_DBL_EPSILON, MSL_DBL_MAX
-from msl.core.errno import MSL_SUCCESS, MSL_EMAXITER, MSL_EINVAL
+# ===----------------------------------------------------------------------=== #
+# MSL
+# ===----------------------------------------------------------------------=== #
+from msl.core.const import MSL_DBL_EPSILON
+from msl.core.errno import (
+    MSL_EINVAL,
+    MSL_EMAXITER,
+    MSL_SUCCESS,
+)
 
 
 # ===----------------------------------------------------------------------=== #

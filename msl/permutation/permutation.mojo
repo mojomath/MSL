@@ -32,8 +32,15 @@ Pure Mojo implementation of permutation operations for reordering
 elements in vectors and matrices.
 """
 
+# ===----------------------------------------------------------------------=== #
+# Stdlib
+# ===----------------------------------------------------------------------=== #
 from std.memory import Pointer
 from std.memory.alloc import unsafe_alloc
+
+# ===----------------------------------------------------------------------=== #
+# MSL
+# ===----------------------------------------------------------------------=== #
 from msl import MutExt
 
 

@@ -22,7 +22,10 @@
 Permutation array operations.
 """
 
-from .permutation import (
+# ===----------------------------------------------------------------------=== #
+# MSL
+# ===----------------------------------------------------------------------=== #
+from msl.permutation.permutation import (
     Permutation,
     permutation_alloc,
     permutation_init,

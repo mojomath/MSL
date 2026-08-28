@@ -32,12 +32,16 @@ A vector is a 1D array with stride, the basic data structure for
 linear algebra operations.
 """
 
-from std.memory import Pointer, unsafe_memset_zero
+# ===----------------------------------------------------------------------=== #
+# Stdlib
+# ===----------------------------------------------------------------------=== #
 from std.algorithm.functional import vectorize
-from std.sys.info import simd_width_of
 from std.math import sqrt
-
-from msl.core.const import MSL_DBL_EPSILON
+from std.memory import (
+    Pointer,
+    unsafe_memset_zero,
+)
+from std.sys.info import simd_width_of
 
 
 # ===----------------------------------------------------------------------=== #

@@ -34,11 +34,21 @@ Scalar root-finding algorithms.
   root_secant  - Secant method (derivative-free, superlinear)
 """
 
+# ===----------------------------------------------------------------------=== #
+# Stdlib
+# ===----------------------------------------------------------------------=== #
 from std.math import abs
 
+# ===----------------------------------------------------------------------=== #
+# MSL
+# ===----------------------------------------------------------------------=== #
 from msl.core.const import MSL_DBL_EPSILON
-from msl.core.errno import MSL_SUCCESS, MSL_EMAXITER, MSL_EDOM
-from .utility import RootResult
+from msl.core.errno import (
+    MSL_EDOM,
+    MSL_EMAXITER,
+    MSL_SUCCESS,
+)
+from msl.optimizer.utility import RootResult
 
 
 # ===----------------------------------------------------------------------=== #

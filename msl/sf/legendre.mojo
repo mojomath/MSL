@@ -31,12 +31,25 @@ Legendre polynomials and functions.
 
 """
 
-from msl.core.const import MSL_DBL_EPSILON, MSL_SQRT_DBL_EPSILON, MSL_PI
+# ===----------------------------------------------------------------------=== #
+# Stdlib
+# ===----------------------------------------------------------------------=== #
+from std.math import (
+    abs,
+    acos,
+    sqrt,
+)
+
+# ===----------------------------------------------------------------------=== #
+# MSL
+# ===----------------------------------------------------------------------=== #
+from msl.core.const import (
+    MSL_DBL_EPSILON,
+    MSL_SQRT_DBL_EPSILON,
+)
 from msl.core.errno import MSL_EDOM
+from msl.sf.bessel import bessel_Jnu_asympx
 from msl.sf.result import SFSResult
-from msl.sf.gamma import lngamma
-from std.math import sqrt, log, cos, sin, acos, abs, floor
-from msl.sf.bessel import bessel_J0, bessel_Jn, bessel_Jnu_asympx
 
 
 def _legendre_P1(x: Float64) -> SFSResult:

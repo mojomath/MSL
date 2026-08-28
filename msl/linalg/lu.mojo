@@ -40,7 +40,13 @@ strict lower triangle and U (upper triangular) occupies the diagonal
 and upper triangle of the same buffer -- i.e. decomposition is in-place.
 """
 
-from std.math import abs, log
+# ===----------------------------------------------------------------------=== #
+# Stdlib
+# ===----------------------------------------------------------------------=== #
+from std.math import (
+    abs,
+    log,
+)
 
 
 def lu_decomp[

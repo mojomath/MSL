@@ -32,18 +32,30 @@ Bisects the interval with the largest error estimate until the global
 error is within tolerance, or the subinterval limit is reached.
 """
 
+# ===----------------------------------------------------------------------=== #
+# Stdlib
+# ===----------------------------------------------------------------------=== #
 from std.math import abs
 
-from msl.core.const import MSL_DBL_EPSILON, MSL_DBL_MIN
-from msl.core.errno import MSL_EDOM, MSL_EMAXITER, MSL_EROUND, MSL_ESING
-from msl.sf.result import SFSResult
-from .workspace import IntegrationWorkspace, IntegrationResult, QKResult
-from .qk15 import qk15
-from .qk21 import qk21
-from .qk31 import qk31
-from .qk41 import qk41
-from .qk51 import qk51
-from .qk61 import qk61
+# ===----------------------------------------------------------------------=== #
+# MSL
+# ===----------------------------------------------------------------------=== #
+from msl.core.const import (
+    MSL_DBL_EPSILON,
+    MSL_DBL_MIN,
+)
+from msl.integration.qk15 import qk15
+from msl.integration.qk21 import qk21
+from msl.integration.qk31 import qk31
+from msl.integration.qk41 import qk41
+from msl.integration.qk51 import qk51
+from msl.integration.qk61 import qk61
+from msl.integration.workspace import (
+    IntegrationResult,
+    IntegrationWorkspace,
+    QKResult,
+)
+
 
 comptime MSL_INTEG_GAUSS15: Int = 1
 comptime MSL_INTEG_GAUSS21: Int = 2

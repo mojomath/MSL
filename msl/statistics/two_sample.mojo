@@ -31,10 +31,19 @@
 Two-sample inferential statistics (Float64), ported from GSL statistics module.
 """
 
+# ===----------------------------------------------------------------------=== #
+# Stdlib
+# ===----------------------------------------------------------------------=== #
 from std.math import sqrt
 from std.memory import Pointer
 
-from .moments import stats_mean, stats_variance
+# ===----------------------------------------------------------------------=== #
+# MSL
+# ===----------------------------------------------------------------------=== #
+from msl.statistics.moments import (
+    stats_mean,
+    stats_variance,
+)
 
 
 def stats_pvariance[

@@ -23,25 +23,25 @@ Dense linear algebra: LU, Cholesky, QR decompositions and a symmetric
 eigenvalue solver.
 """
 
-from .lu import (
-    lu_decomp,
-    lu_svx,
-    lu_solve,
-    lu_det,
-    lu_lndet,
-    lu_invert,
-)
-
-from .cholesky import (
+# ===----------------------------------------------------------------------=== #
+# MSL
+# ===----------------------------------------------------------------------=== #
+from msl.linalg.cholesky import (
     cholesky_decomp,
-    cholesky_svx,
     cholesky_solve,
+    cholesky_svx,
 )
-
-from .qr import (
+from msl.linalg.jacobi import eigen_jacobi
+from msl.linalg.lu import (
+    lu_decomp,
+    lu_det,
+    lu_invert,
+    lu_lndet,
+    lu_solve,
+    lu_svx,
+)
+from msl.linalg.qr import (
     qr_decomp,
-    qr_svx,
     qr_solve,
+    qr_svx,
 )
-
-from .jacobi import eigen_jacobi

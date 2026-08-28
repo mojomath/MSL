@@ -31,10 +31,25 @@ Error functions.
 
 """
 
-from msl.core.const import MSL_DBL_EPSILON, MSL_SQRTPI, MSL_SQRT2
-from msl.sf.result import SFSResult
-from std.math import exp, log, sqrt, abs
+# ===----------------------------------------------------------------------=== #
+# Stdlib
+# ===----------------------------------------------------------------------=== #
 from std.collections import InlineArray
+from std.math import (
+    abs,
+    exp,
+    log,
+)
+
+# ===----------------------------------------------------------------------=== #
+# MSL
+# ===----------------------------------------------------------------------=== #
+from msl.core.const import (
+    MSL_DBL_EPSILON,
+    MSL_SQRT2,
+    MSL_SQRTPI,
+)
+from msl.sf.result import SFSResult
 
 
 # ===----------------------------------------------------------------------=== #

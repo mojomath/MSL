@@ -40,13 +40,26 @@ Level 3 (matrix-matrix):
   blas_gemm   - general matrix-matrix: C = alpha*A*B + beta*C
 """
 
-from mojoblas.level1 import dot, nrm2, asum, axpy, scal, copy, vswap
+# ===----------------------------------------------------------------------=== #
+# External
+# ===----------------------------------------------------------------------=== #
+from mojoblas.level1 import (
+    asum,
+    axpy,
+    copy,
+    dot,
+    nrm2,
+    scal,
+    vswap,
+)
 from mojoblas.level2 import gemv
 from mojoblas.level3 import gemm
 
-from msl.vector import Vector
+# ===----------------------------------------------------------------------=== #
+# MSL
+# ===----------------------------------------------------------------------=== #
 from msl.matrix import Matrix
-from msl.core.errno import MSL_SUCCESS, MSL_EINVAL
+from msl.vector import Vector
 
 
 # ===----------------------------------------------------------------------=== #

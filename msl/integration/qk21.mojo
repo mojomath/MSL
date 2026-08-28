@@ -31,8 +31,11 @@
 
 """
 
-from .qk import _qk_generic
-from .workspace import QKResult
+# ===----------------------------------------------------------------------=== #
+# MSL
+# ===----------------------------------------------------------------------=== #
+from msl.integration.qk import _qk_generic
+from msl.integration.workspace import QKResult
 
 
 comptime _xgk: InlineArray[Float64, 11] = [

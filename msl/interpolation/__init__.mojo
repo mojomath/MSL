@@ -22,4 +22,12 @@
 1-D interpolation: linear, cubic spline, Akima.
 """
 
-from .interp import InterpResult, LinearInterp, CubicSpline, AkimaSpline
+# ===----------------------------------------------------------------------=== #
+# MSL
+# ===----------------------------------------------------------------------=== #
+from msl.interpolation.interp import (
+    AkimaSpline,
+    CubicSpline,
+    InterpResult,
+    LinearInterp,
+)

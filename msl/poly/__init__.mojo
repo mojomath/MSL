@@ -22,17 +22,19 @@
 Polynomial evaluation, interpolation, and real-root solving.
 """
 
-from .poly import (
+# ===----------------------------------------------------------------------=== #
+# MSL
+# ===----------------------------------------------------------------------=== #
+from msl.poly.poly import (
+    poly_dd_eval,
+    poly_dd_init,
+    poly_dd_taylor,
     poly_eval,
     poly_eval_derivs,
-    poly_dd_init,
-    poly_dd_eval,
-    poly_dd_taylor,
 )
-
-from .solve import (
-    QuadraticRoots,
+from msl.poly.solve import (
     CubicRoots,
-    poly_solve_quadratic,
     poly_solve_cubic,
+    poly_solve_quadratic,
+    QuadraticRoots,
 )

@@ -29,10 +29,22 @@
 15-point Gauss-Kronrod quadrature rule.
 """
 
-from msl.core.const import MSL_DBL_EPSILON, MSL_DBL_MIN
-from std.math import abs, pow
+# ===----------------------------------------------------------------------=== #
+# Stdlib
+# ===----------------------------------------------------------------------=== #
+from std.math import (
+    abs,
+    pow,
+)
 
-from .workspace import QKResult
+# ===----------------------------------------------------------------------=== #
+# MSL
+# ===----------------------------------------------------------------------=== #
+from msl.core.const import (
+    MSL_DBL_EPSILON,
+    MSL_DBL_MIN,
+)
+from msl.integration.workspace import QKResult
 
 
 comptime _xgk: InlineArray[Float64, 8] = [

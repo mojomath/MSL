@@ -37,6 +37,9 @@ Order statistics, quantiles, and robust location estimators (Float64),
 ported from GSL statistics module.
 """
 
+# ===----------------------------------------------------------------------=== #
+# Stdlib
+# ===----------------------------------------------------------------------=== #
 from std.math import floor
 from std.memory import Pointer
 

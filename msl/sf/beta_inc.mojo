@@ -33,12 +33,23 @@ Regularized incomplete beta function I_x(a,b).
                     = integral_0^x t^(a-1) (1-t)^(b-1) dt / B(a,b)
 """
 
-from std.math import exp, log, log1p, abs
+# ===----------------------------------------------------------------------=== #
+# Stdlib
+# ===----------------------------------------------------------------------=== #
+from std.math import (
+    abs,
+    exp,
+    log,
+    log1p,
+)
 
+# ===----------------------------------------------------------------------=== #
+# MSL
+# ===----------------------------------------------------------------------=== #
 from msl.core.const import MSL_DBL_EPSILON
 from msl.core.errno import MSL_EDOM
-from msl.sf.result import SFSResult
 from msl.sf.gamma import lngamma_lanczos
+from msl.sf.result import SFSResult
 
 
 # ===----------------------------------------------------------------------=== #

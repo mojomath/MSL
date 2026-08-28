@@ -31,7 +31,15 @@ NaN, Infinity, and related values.
 Special floating point values.
 """
 
-from std.utils.numerics import nan, isnan, isinf, isfinite
+# ===----------------------------------------------------------------------=== #
+# Stdlib
+# ===----------------------------------------------------------------------=== #
+from std.utils.numerics import (
+    isfinite,
+    isinf,
+    isnan,
+    nan,
+)
 
 
 # ===----------------------------------------------------------------------=== #

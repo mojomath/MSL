@@ -31,11 +31,15 @@ Matrix for 2D arrays.
 A matrix is a 2D array, the basic data structure for linear algebra operations.
 """
 
-from std.memory import Pointer, unsafe_memset_zero
+# ===----------------------------------------------------------------------=== #
+# Stdlib
+# ===----------------------------------------------------------------------=== #
 from std.algorithm.functional import vectorize
+from std.memory import (
+    Pointer,
+    unsafe_memset_zero,
+)
 from std.sys.info import simd_width_of
-
-from msl.core.const import MSL_DBL_EPSILON
 
 
 # ===----------------------------------------------------------------------=== #

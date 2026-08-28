@@ -23,71 +23,73 @@
 This module implements special mathematical functions.
 """
 
-from .airy import (
+# ===----------------------------------------------------------------------=== #
+# MSL
+# ===----------------------------------------------------------------------=== #
+from msl.sf.airy import (
     airy_ai,
-    airy_bi,
-    airy_ai_scaled,
-    airy_bi_scaled,
     airy_ai_deriv,
-    airy_bi_deriv,
     airy_ai_deriv_scaled,
+    airy_ai_scaled,
+    airy_bi,
+    airy_bi_deriv,
     airy_bi_deriv_scaled,
+    airy_bi_scaled,
 )
-
-from .bessel import (
-    bessel_j0,
-    bessel_j1,
-    bessel_y0,
-    bessel_y1,
+from msl.sf.bessel import (
     bessel_i0_scaled,
     bessel_i1_scaled,
+    bessel_In,
+    bessel_j0,
+    bessel_j1,
+    bessel_Jn,
     bessel_k0_scaled,
     bessel_k1_scaled,
-    bessel_Jn,
-    bessel_Yn,
-    bessel_In,
     bessel_Kn,
+    bessel_y0,
+    bessel_y1,
+    bessel_Yn,
 )
-
-from .gamma import (
-    gamma,
-    lngamma,
-    gammastar,
-    gammainv,
-    factorial,
-    double_factorial,
-    ln_factorial,
-    ln_double_factorial,
-)
-
-from .beta import (
+from msl.sf.beta import (
     beta,
     lnbeta,
 )
-
-from .erf import (
+from msl.sf.beta_inc import beta_inc
+from msl.sf.erf import (
     erf,
-    erfc,
-    log_erfc,
-    erf_Z,
     erf_Q,
+    erf_Z,
+    erfc,
     hazard,
+    log_erfc,
 )
-
-from .legendre import (
+from msl.sf.gamma import (
+    double_factorial,
+    factorial,
+    gamma,
+    gammainv,
+    gammastar,
+    ln_double_factorial,
+    ln_factorial,
+    lngamma,
+)
+from msl.sf.gamma_inc import (
+    gamma_inc,
+    gamma_inc_P,
+    gamma_inc_Q,
+)
+from msl.sf.legendre import (
     legendre_P1,
     legendre_P2,
     legendre_P3,
     legendre_Pl,
 )
+from msl.sf.psi import (
+    psi,
+    psi_n,
+)
+from msl.sf.result import SFSResult
 
-from .result import SFSResult
-
-from .psi import psi, psi_n
-
-from .gamma_inc import gamma_inc, gamma_inc_P, gamma_inc_Q
-
-from .beta_inc import beta_inc
 
 comptime PrecisionDouble: Int = 0
 comptime PrecisionSingle: Int = 1

@@ -29,10 +29,6 @@
 Error codes and error handling.
 """
 
-from std.ffi import c_int
-from std.memory import Pointer
-
-
 # ===----------------------------------------------------------------------=== #
 # Error codes
 # ===----------------------------------------------------------------------=== #

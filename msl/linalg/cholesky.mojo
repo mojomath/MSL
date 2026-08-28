@@ -39,9 +39,18 @@ On output, the lower triangle (including diagonal) of the buffer holds
 L such that A = L L^T. The strict upper triangle is zeroed.
 """
 
+# ===----------------------------------------------------------------------=== #
+# Stdlib
+# ===----------------------------------------------------------------------=== #
 from std.math import sqrt
 
-from msl.core.errno import MSL_SUCCESS, MSL_EDOM
+# ===----------------------------------------------------------------------=== #
+# MSL
+# ===----------------------------------------------------------------------=== #
+from msl.core.errno import (
+    MSL_EDOM,
+    MSL_SUCCESS,
+)
 
 
 def cholesky_decomp[

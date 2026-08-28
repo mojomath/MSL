@@ -21,8 +21,10 @@
 # ===----------------------------------------------------------------------=== #
 """Special function result types."""
 
-from msl.core.const import MSL_DBL_EPSILON
-from msl.core.errno import MSL_SUCCESS, MSL_EDOM
+# ===----------------------------------------------------------------------=== #
+# MSL
+# ===----------------------------------------------------------------------=== #
+from msl.core.errno import MSL_SUCCESS
 
 
 struct SFSResult(ImplicitlyCopyable, Movable, Writable):

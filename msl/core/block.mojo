@@ -32,9 +32,14 @@ A block is a simple array wrapper that manages memory allocation
 for contiguous data storage. Vectors can be created from blocks.
 """
 
-from std.memory import Pointer, unsafe_memset_zero, unsafe_memcpy
-
-from msl.core.const import MSL_DBL_EPSILON
+# ===----------------------------------------------------------------------=== #
+# Stdlib
+# ===----------------------------------------------------------------------=== #
+from std.memory import (
+    Pointer,
+    unsafe_memcpy,
+    unsafe_memset_zero,
+)
 
 
 # ===----------------------------------------------------------------------=== #

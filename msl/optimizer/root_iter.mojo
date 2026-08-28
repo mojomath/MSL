@@ -52,17 +52,26 @@ Usage example::
     ```
 """
 
+# ===----------------------------------------------------------------------=== #
+# Stdlib
+# ===----------------------------------------------------------------------=== #
 from std.math import abs
 
+# ===----------------------------------------------------------------------=== #
+# MSL
+# ===----------------------------------------------------------------------=== #
 from msl.core.const import MSL_DBL_EPSILON
 from msl.core.errno import (
-    MSL_SUCCESS,
-    MSL_EMAXITER,
     MSL_EDOM,
+    MSL_EMAXITER,
     MSL_EZERODIV,
-    MSL_CONTINUE,
+    MSL_SUCCESS,
 )
-from .utility import RootResult, root_test_interval, root_test_residual
+from msl.optimizer.utility import (
+    root_test_interval,
+    root_test_residual,
+    RootResult,
+)
 
 
 # ===----------------------------------------------------------------------=== #

@@ -29,10 +29,15 @@
 Workspace and result types for numerical integration.
 """
 
-from std.memory import Pointer, unsafe_memset_zero
+# ===----------------------------------------------------------------------=== #
+# Stdlib
+# ===----------------------------------------------------------------------=== #
+from std.memory import (
+    Pointer,
+    unsafe_memset_zero,
+)
 from std.memory.alloc import unsafe_alloc
 
-from msl.core.const import MSL_DBL_MAX
 
 comptime MutExt = MutUntrackedOrigin
 
