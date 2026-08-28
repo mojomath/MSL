@@ -53,9 +53,9 @@ def stats_max[
     origin: Origin
 ](data: Pointer[Float64, origin], stride: Int, n: Int) -> Float64:
     """Largest element of the dataset."""
-    var result = data[0]
+    var result = data[unsafe_offset=0]
     for i in range(n):
-        var xi = data[i * stride]
+        var xi = data[unsafe_offset=i * stride]
         if xi > result:
             result = xi
     return result
@@ -65,9 +65,9 @@ def stats_min[
     origin: Origin
 ](data: Pointer[Float64, origin], stride: Int, n: Int) -> Float64:
     """Smallest element of the dataset."""
-    var result = data[0]
+    var result = data[unsafe_offset=0]
     for i in range(n):
-        var xi = data[i * stride]
+        var xi = data[unsafe_offset=i * stride]
         if xi < result:
             result = xi
     return result
@@ -79,10 +79,10 @@ def stats_minmax[
     Float64, Float64
 ]:
     """Returns (min, max) of the dataset."""
-    var mn = data[0]
-    var mx = data[0]
+    var mn = data[unsafe_offset=0]
+    var mx = data[unsafe_offset=0]
     for i in range(n):
-        var xi = data[i * stride]
+        var xi = data[unsafe_offset=i * stride]
         if xi < mn:
             mn = xi
         if xi > mx:
@@ -99,10 +99,10 @@ def stats_max_index[
     origin: Origin
 ](data: Pointer[Float64, origin], stride: Int, n: Int) -> Int:
     """Index of the largest element (first occurrence)."""
-    var mx = data[0]
+    var mx = data[unsafe_offset=0]
     var idx = 0
     for i in range(n):
-        var xi = data[i * stride]
+        var xi = data[unsafe_offset=i * stride]
         if xi > mx:
             mx = xi
             idx = i
@@ -113,10 +113,10 @@ def stats_min_index[
     origin: Origin
 ](data: Pointer[Float64, origin], stride: Int, n: Int) -> Int:
     """Index of the smallest element (first occurrence)."""
-    var mn = data[0]
+    var mn = data[unsafe_offset=0]
     var idx = 0
     for i in range(n):
-        var xi = data[i * stride]
+        var xi = data[unsafe_offset=i * stride]
         if xi < mn:
             mn = xi
             idx = i
@@ -127,12 +127,12 @@ def stats_minmax_index[
     origin: Origin
 ](data: Pointer[Float64, origin], stride: Int, n: Int) -> Tuple[Int, Int]:
     """Returns (min_index, max_index) of the dataset."""
-    var mn = data[0]
-    var mx = data[0]
+    var mn = data[unsafe_offset=0]
+    var mx = data[unsafe_offset=0]
     var min_idx = 0
     var max_idx = 0
     for i in range(n):
-        var xi = data[i * stride]
+        var xi = data[unsafe_offset=i * stride]
         if xi < mn:
             mn = xi
             min_idx = i
@@ -156,59 +156,59 @@ def stats_select[
 
     while True:
         if right <= left + 1:
-            if right == left + 1 and data[right * stride] < data[left * stride]:
-                var tmp = data[left * stride]
-                data[left * stride] = data[right * stride]
-                data[right * stride] = tmp
-            return data[k * stride]
+            if right == left + 1 and data[unsafe_offset=right * stride] < data[unsafe_offset=left * stride]:
+                var tmp = data[unsafe_offset=left * stride]
+                data[unsafe_offset=left * stride] = data[unsafe_offset=right * stride]
+                data[unsafe_offset=right * stride] = tmp
+            return data[unsafe_offset=k * stride]
 
         var mid = (left + right) >> 1
 
-        var tmp = data[mid * stride]
-        data[mid * stride] = data[(left + 1) * stride]
-        data[(left + 1) * stride] = tmp
+        var tmp = data[unsafe_offset=mid * stride]
+        data[unsafe_offset=mid * stride] = data[unsafe_offset=(left + 1) * stride]
+        data[unsafe_offset=(left + 1) * stride] = tmp
 
-        if data[left * stride] > data[right * stride]:
-            tmp = data[left * stride]
-            data[left * stride] = data[right * stride]
-            data[right * stride] = tmp
+        if data[unsafe_offset=left * stride] > data[unsafe_offset=right * stride]:
+            tmp = data[unsafe_offset=left * stride]
+            data[unsafe_offset=left * stride] = data[unsafe_offset=right * stride]
+            data[unsafe_offset=right * stride] = tmp
 
-        if data[(left + 1) * stride] > data[right * stride]:
-            tmp = data[(left + 1) * stride]
-            data[(left + 1) * stride] = data[right * stride]
-            data[right * stride] = tmp
+        if data[unsafe_offset=(left + 1) * stride] > data[unsafe_offset=right * stride]:
+            tmp = data[unsafe_offset=(left + 1) * stride]
+            data[unsafe_offset=(left + 1) * stride] = data[unsafe_offset=right * stride]
+            data[unsafe_offset=right * stride] = tmp
 
-        if data[left * stride] > data[(left + 1) * stride]:
-            tmp = data[left * stride]
-            data[left * stride] = data[(left + 1) * stride]
-            data[(left + 1) * stride] = tmp
+        if data[unsafe_offset=left * stride] > data[unsafe_offset=(left + 1) * stride]:
+            tmp = data[unsafe_offset=left * stride]
+            data[unsafe_offset=left * stride] = data[unsafe_offset=(left + 1) * stride]
+            data[unsafe_offset=(left + 1) * stride] = tmp
 
         var i = left + 1
         var j = right
-        var pivot = data[(left + 1) * stride]
+        var pivot = data[unsafe_offset=(left + 1) * stride]
 
         while True:
             i += 1
-            while data[i * stride] < pivot:
+            while data[unsafe_offset=i * stride] < pivot:
                 i += 1
             j -= 1
-            while data[j * stride] > pivot:
+            while data[unsafe_offset=j * stride] > pivot:
                 j -= 1
             if j < i:
                 break
-            tmp = data[i * stride]
-            data[i * stride] = data[j * stride]
-            data[j * stride] = tmp
+            tmp = data[unsafe_offset=i * stride]
+            data[unsafe_offset=i * stride] = data[unsafe_offset=j * stride]
+            data[unsafe_offset=j * stride] = tmp
 
-        data[(left + 1) * stride] = data[j * stride]
-        data[j * stride] = pivot
+        data[unsafe_offset=(left + 1) * stride] = data[unsafe_offset=j * stride]
+        data[unsafe_offset=j * stride] = pivot
 
         if j >= k:
             right = j - 1
         if j <= k:
             left = i
         if j == k:
-            return data[k * stride]
+            return data[unsafe_offset=k * stride]
 
 
 # ---------------------------------------------------------------------------
@@ -225,8 +225,8 @@ def stats_median_from_sorted_data[
     var lhs = (n - 1) // 2
     var rhs = n // 2
     if lhs == rhs:
-        return sorted_data[lhs * stride]
-    return (sorted_data[lhs * stride] + sorted_data[rhs * stride]) * 0.5
+        return sorted_data[unsafe_offset=lhs * stride]
+    return (sorted_data[unsafe_offset=lhs * stride] + sorted_data[unsafe_offset=rhs * stride]) * 0.5
 
 
 def stats_median[
@@ -263,8 +263,8 @@ def stats_quantile_from_sorted_data[
     var lhs = Int(index)
     var delta = index - Float64(lhs)
     if lhs == n - 1:
-        return sorted_data[lhs * stride]
-    return (1.0 - delta) * sorted_data[lhs * stride] + delta * sorted_data[
+        return sorted_data[unsafe_offset=lhs * stride]
+    return (1.0 - delta) * sorted_data[unsafe_offset=lhs * stride] + delta * sorted_data[unsafe_offset=
         (lhs + 1) * stride
     ]
 
@@ -290,7 +290,7 @@ def stats_trmean_from_sorted_data[
     var mean: Float64 = 0.0
     var k: Float64 = 0.0
     for i in range(ilow, ihigh + 1):
-        var delta = sorted_data[i * stride] - mean
+        var delta = sorted_data[unsafe_offset=i * stride] - mean
         k += 1.0
         mean += delta / k
     return mean

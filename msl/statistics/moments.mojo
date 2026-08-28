@@ -53,7 +53,7 @@ def _compute_variance[
 ) -> Float64:
     var variance: Float64 = 0.0
     for i in range(n):
-        var delta = data[i * stride] - mean
+        var delta = data[unsafe_offset=i * stride] - mean
         variance += (delta * delta - variance) / Float64(i + 1)
     return variance
 
@@ -65,7 +65,7 @@ def _compute_tss[
 ) -> Float64:
     var tss: Float64 = 0.0
     for i in range(n):
-        var delta = data[i * stride] - mean
+        var delta = data[unsafe_offset=i * stride] - mean
         tss += delta * delta
     return tss
 
@@ -83,8 +83,8 @@ def _compute_covariance[
 ) -> Float64:
     var covariance: Float64 = 0.0
     for i in range(n):
-        var delta1 = data1[i * stride1] - mean1
-        var delta2 = data2[i * stride2] - mean2
+        var delta1 = data1[unsafe_offset=i * stride1] - mean1
+        var delta2 = data2[unsafe_offset=i * stride2] - mean2
         covariance += (delta1 * delta2 - covariance) / Float64(i + 1)
     return covariance
 
@@ -98,7 +98,7 @@ def stats_mean[
 
     var mean: Float64 = 0.0
     for i in range(n):
-        mean += (data[i * stride] - mean) / Float64(i + 1)
+        mean += (data[unsafe_offset=i * stride] - mean) / Float64(i + 1)
     return mean
 
 
@@ -198,7 +198,7 @@ def stats_absdev_m[
 
     var sum: Float64 = 0.0
     for i in range(n):
-        sum += abs(data[i * stride] - mean)
+        sum += abs(data[unsafe_offset=i * stride] - mean)
     return sum / Float64(n)
 
 
@@ -226,7 +226,7 @@ def stats_skew_m_sd[
 
     var skew: Float64 = 0.0
     for i in range(n):
-        var x = (data[i * stride] - mean) / sd
+        var x = (data[unsafe_offset=i * stride] - mean) / sd
         skew += (x * x * x - skew) / Float64(i + 1)
     return skew
 
@@ -255,7 +255,7 @@ def stats_kurtosis_m_sd[
 
     var avg: Float64 = 0.0
     for i in range(n):
-        var x = (data[i * stride] - mean) / sd
+        var x = (data[unsafe_offset=i * stride] - mean) / sd
         avg += (x * x * x * x - avg) / Float64(i + 1)
     return avg - 3.0
 
@@ -278,12 +278,12 @@ def stats_lag1_autocorrelation_m[
         return 0.0
 
     var q: Float64 = 0.0
-    var d0 = data[0] - mean
+    var d0 = data[unsafe_offset=0] - mean
     var v: Float64 = d0 * d0
 
     for i in range(1, n):
-        var delta0 = data[(i - 1) * stride] - mean
-        var delta1 = data[i * stride] - mean
+        var delta0 = data[unsafe_offset=(i - 1) * stride] - mean
+        var delta1 = data[unsafe_offset=i * stride] - mean
         q += (delta0 * delta1 - q) / Float64(i + 1)
         v += (delta1 * delta1 - v) / Float64(i + 1)
 
@@ -342,13 +342,13 @@ def stats_correlation[
     var sum_ysq: Float64 = 0.0
     var sum_cross: Float64 = 0.0
 
-    var mean_x = data1[0]
-    var mean_y = data2[0]
+    var mean_x = data1[unsafe_offset=0]
+    var mean_y = data2[unsafe_offset=0]
 
     for i in range(1, n):
         var ratio = Float64(i) / Float64(i + 1)
-        var delta_x = data1[i * stride1] - mean_x
-        var delta_y = data2[i * stride2] - mean_y
+        var delta_x = data1[unsafe_offset=i * stride1] - mean_x
+        var delta_y = data2[unsafe_offset=i * stride2] - mean_y
         sum_xsq += delta_x * delta_x * ratio
         sum_ysq += delta_y * delta_y * ratio
         sum_cross += delta_x * delta_y * ratio

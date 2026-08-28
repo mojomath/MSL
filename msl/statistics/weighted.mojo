@@ -57,10 +57,10 @@ def stats_wmean[
     var wmean: Float64 = 0.0
     var W: Float64 = 0.0
     for i in range(n):
-        var wi = w[i * wstride]
+        var wi = w[unsafe_offset=i * wstride]
         if wi > 0.0:
             W += wi
-            wmean += (data[i * stride] - wmean) * (wi / W)
+            wmean += (data[unsafe_offset=i * stride] - wmean) * (wi / W)
     return wmean
 
 
@@ -77,9 +77,9 @@ def _compute_wvariance[
     var wvariance: Float64 = 0.0
     var W: Float64 = 0.0
     for i in range(n):
-        var wi = w[i * wstride]
+        var wi = w[unsafe_offset=i * wstride]
         if wi > 0.0:
-            var delta = data[i * stride] - wmean
+            var delta = data[unsafe_offset=i * stride] - wmean
             W += wi
             wvariance += (delta * delta - wvariance) * (wi / W)
     return wvariance
@@ -97,9 +97,9 @@ def _compute_wtss[
 ) -> Float64:
     var wtss: Float64 = 0.0
     for i in range(n):
-        var wi = w[i * wstride]
+        var wi = w[unsafe_offset=i * wstride]
         if wi > 0.0:
-            var delta = data[i * stride] - wmean
+            var delta = data[unsafe_offset=i * stride] - wmean
             wtss += wi * delta * delta
     return wtss
 
@@ -110,7 +110,7 @@ def _compute_weight_scale[
     var a: Float64 = 0.0
     var b: Float64 = 0.0
     for i in range(n):
-        var wi = w[i * wstride]
+        var wi = w[unsafe_offset=i * wstride]
         if wi > 0.0:
             a += wi
             b += wi * wi
@@ -246,9 +246,9 @@ def stats_wabsdev_m[
     var wabsdev: Float64 = 0.0
     var W: Float64 = 0.0
     for i in range(n):
-        var wi = w[i * wstride]
+        var wi = w[unsafe_offset=i * wstride]
         if wi > 0.0:
-            var delta = abs(data[i * stride] - wmean)
+            var delta = abs(data[unsafe_offset=i * stride] - wmean)
             W += wi
             wabsdev += (delta - wabsdev) * (wi / W)
     return wabsdev
@@ -285,9 +285,9 @@ def stats_wskew_m_sd[
     var wskew: Float64 = 0.0
     var W: Float64 = 0.0
     for i in range(n):
-        var wi = w[i * wstride]
+        var wi = w[unsafe_offset=i * wstride]
         if wi > 0.0:
-            var x = (data[i * stride] - wmean) / wsd
+            var x = (data[unsafe_offset=i * stride] - wmean) / wsd
             W += wi
             wskew += (x * x * x - wskew) * (wi / W)
     return wskew
@@ -325,9 +325,9 @@ def stats_wkurtosis_m_sd[
     var wavg: Float64 = 0.0
     var W: Float64 = 0.0
     for i in range(n):
-        var wi = w[i * wstride]
+        var wi = w[unsafe_offset=i * wstride]
         if wi > 0.0:
-            var x = (data[i * stride] - wmean) / wsd
+            var x = (data[unsafe_offset=i * stride] - wmean) / wsd
             W += wi
             wavg += (x * x * x * x - wavg) * (wi / W)
     return wavg - 3.0

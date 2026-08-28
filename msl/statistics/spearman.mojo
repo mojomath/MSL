@@ -49,15 +49,15 @@ def _cosort[
 ](x: Pointer[Float64, ox], y: Pointer[Float64, oy], n: Int,):
     """Sort x ascending, dragging y along (insertion sort)."""
     for i in range(1, n):
-        var kx = x[i]
-        var ky = y[i]
+        var kx = x[unsafe_offset=i]
+        var ky = y[unsafe_offset=i]
         var j = i - 1
-        while j >= 0 and x[j] > kx:
-            x[j + 1] = x[j]
-            y[j + 1] = y[j]
+        while j >= 0 and x[unsafe_offset=j] > kx:
+            x[unsafe_offset=j + 1] = x[unsafe_offset=j]
+            y[unsafe_offset=j + 1] = y[unsafe_offset=j]
             j -= 1
-        x[j + 1] = kx
-        y[j + 1] = ky
+        x[unsafe_offset=j + 1] = kx
+        y[unsafe_offset=j + 1] = ky
 
 
 def _compute_rank[
@@ -67,23 +67,23 @@ def _compute_rank[
     """Replace sorted v with average ranks (ties get averaged rank)."""
     var i = 0
     while i < n - 1:
-        var vi = v[i]
-        if vi == v[i + 1]:
+        var vi = v[unsafe_offset=i]
+        if vi == v[unsafe_offset=i + 1]:
             var j = i + 2
-            while j < n and vi == v[j]:
+            while j < n and vi == v[unsafe_offset=j]:
                 j += 1
             var rank: Float64 = 0.0
             for k in range(i, j):
                 rank += Float64(k + 1)
             rank /= Float64(j - i)
             for k in range(i, j):
-                v[k] = rank
+                v[unsafe_offset=k] = rank
             i = j
         else:
-            v[i] = Float64(i + 1)
+            v[unsafe_offset=i] = Float64(i + 1)
             i += 1
     if i == n - 1:
-        v[n - 1] = Float64(n)
+        v[unsafe_offset=n - 1] = Float64(n)
 
 
 def stats_spearman[
@@ -104,8 +104,8 @@ def stats_spearman[
     """Spearman rank correlation coefficient.
     ranks1 and ranks2 are scratch buffers of length n each."""
     for i in range(n):
-        ranks1[i] = data1[i * stride1]
-        ranks2[i] = data2[i * stride2]
+        ranks1[unsafe_offset=i] = data1[unsafe_offset=i * stride1]
+        ranks2[unsafe_offset=i] = data2[unsafe_offset=i * stride2]
 
     _cosort(ranks1, ranks2, n)
     _compute_rank(ranks1, n)

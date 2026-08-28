@@ -57,12 +57,12 @@ def _sort_inplace[
 ](a: Pointer[Float64, o], n: Int):
     """Insertion sort for work arrays."""
     for i in range(1, n):
-        var key = a[i]
+        var key = a[unsafe_offset=i]
         var j = i - 1
-        while j >= 0 and a[j] > key:
-            a[j + 1] = a[j]
+        while j >= 0 and a[unsafe_offset=j] > key:
+            a[unsafe_offset=j + 1] = a[unsafe_offset=j]
             j -= 1
-        a[j + 1] = key
+        a[unsafe_offset=j + 1] = key
 
 
 # ---------------------------------------------------------------------------
@@ -83,10 +83,10 @@ def stats_mad0[
     """Median absolute deviation (unscaled): median(|x_i - median(x)|).
     work must be length n."""
     for i in range(n):
-        work[i] = data[i * stride]
+        work[unsafe_offset=i] = data[unsafe_offset=i * stride]
     var median = stats_median(work, 1, n)
     for i in range(n):
-        work[i] = abs(data[i * stride] - median)
+        work[unsafe_offset=i] = abs(data[unsafe_offset=i * stride] - median)
     return stats_median(work, 1, n)
 
 
@@ -124,7 +124,7 @@ def stats_Sn0_from_sorted_data[
     """
     var np1_2 = (n + 1) // 2
 
-    work[0] = sorted_data[(n // 2) * stride] - sorted_data[0]
+    work[unsafe_offset=0] = sorted_data[unsafe_offset=(n // 2) * stride] - sorted_data[unsafe_offset=0]
 
     for i in range(2, np1_2 + 1):
         var nA = i - 1
@@ -149,12 +149,12 @@ def stats_Sn0_from_sorted_data[
                 leftB = tryB + even
             else:
                 var medA = (
-                    sorted_data[(i - 1) * stride]
-                    - sorted_data[(i - tryA + Amin - 2) * stride]
+                    sorted_data[unsafe_offset=(i - 1) * stride]
+                    - sorted_data[unsafe_offset=(i - tryA + Amin - 2) * stride]
                 )
                 var medB = (
-                    sorted_data[(tryB + i - 1) * stride]
-                    - sorted_data[(i - 1) * stride]
+                    sorted_data[unsafe_offset=(tryB + i - 1) * stride]
+                    - sorted_data[unsafe_offset=(i - 1) * stride]
                 )
                 if medA >= medB:
                     rightA = tryA
@@ -163,20 +163,20 @@ def stats_Sn0_from_sorted_data[
                     leftA = tryA + even
 
         if leftA > Amax:
-            work[i - 1] = (
-                sorted_data[(leftB + i - 1) * stride]
-                - sorted_data[(i - 1) * stride]
+            work[unsafe_offset=i - 1] = (
+                sorted_data[unsafe_offset=(leftB + i - 1) * stride]
+                - sorted_data[unsafe_offset=(i - 1) * stride]
             )
         else:
             var medA = (
-                sorted_data[(i - 1) * stride]
-                - sorted_data[(i - leftA + Amin - 2) * stride]
+                sorted_data[unsafe_offset=(i - 1) * stride]
+                - sorted_data[unsafe_offset=(i - leftA + Amin - 2) * stride]
             )
             var medB = (
-                sorted_data[(leftB + i - 1) * stride]
-                - sorted_data[(i - 1) * stride]
+                sorted_data[unsafe_offset=(leftB + i - 1) * stride]
+                - sorted_data[unsafe_offset=(i - 1) * stride]
             )
-            work[i - 1] = medA if medA < medB else medB
+            work[unsafe_offset=i - 1] = medA if medA < medB else medB
 
     for i in range(np1_2 + 1, n):
         var nA = n - i
@@ -201,12 +201,12 @@ def stats_Sn0_from_sorted_data[
                 leftB = tryB + even
             else:
                 var medA = (
-                    sorted_data[(i + tryA - Amin) * stride]
-                    - sorted_data[(i - 1) * stride]
+                    sorted_data[unsafe_offset=(i + tryA - Amin) * stride]
+                    - sorted_data[unsafe_offset=(i - 1) * stride]
                 )
                 var medB = (
-                    sorted_data[(i - 1) * stride]
-                    - sorted_data[(i - tryB - 1) * stride]
+                    sorted_data[unsafe_offset=(i - 1) * stride]
+                    - sorted_data[unsafe_offset=(i - tryB - 1) * stride]
                 )
                 if medA >= medB:
                     rightA = tryA
@@ -215,27 +215,27 @@ def stats_Sn0_from_sorted_data[
                     leftA = tryA + even
 
         if leftA > Amax:
-            work[i - 1] = (
-                sorted_data[(i - 1) * stride]
-                - sorted_data[(i - leftB - 1) * stride]
+            work[unsafe_offset=i - 1] = (
+                sorted_data[unsafe_offset=(i - 1) * stride]
+                - sorted_data[unsafe_offset=(i - leftB - 1) * stride]
             )
         else:
             var medA = (
-                sorted_data[(i + leftA - Amin) * stride]
-                - sorted_data[(i - 1) * stride]
+                sorted_data[unsafe_offset=(i + leftA - Amin) * stride]
+                - sorted_data[unsafe_offset=(i - 1) * stride]
             )
             var medB = (
-                sorted_data[(i - 1) * stride]
-                - sorted_data[(i - leftB - 1) * stride]
+                sorted_data[unsafe_offset=(i - 1) * stride]
+                - sorted_data[unsafe_offset=(i - leftB - 1) * stride]
             )
-            work[i - 1] = medA if medA < medB else medB
+            work[unsafe_offset=i - 1] = medA if medA < medB else medB
 
-    work[n - 1] = (
-        sorted_data[(n - 1) * stride] - sorted_data[(np1_2 - 1) * stride]
+    work[unsafe_offset=n - 1] = (
+        sorted_data[unsafe_offset=(n - 1) * stride] - sorted_data[unsafe_offset=(np1_2 - 1) * stride]
     )
 
     _sort_inplace(work, n)
-    return work[np1_2 - 1]
+    return work[unsafe_offset=np1_2 - 1]
 
 
 def stats_Sn_from_sorted_data[
@@ -298,20 +298,26 @@ def stats_Qn0_from_sorted_data[
         return 0.0
 
     var ni = n
-    var a_srt = work + n
-    var a_cand = work + 2 * n
+    # var a_srt = work + n
+    # var a_cand = work + 2 * n
+    var a_srt = work.unsafe_offset(n)
+    var a_cand = work.unsafe_offset(2 * n)
     var left = work_int
-    var right = work_int + n
-    var p = work_int + 2 * n
-    var q = work_int + 3 * n
-    var weight = work_int + 4 * n
+    # var right = work_int + n
+    var right = work_int.unsafe_offset(n)
+    # var p = work_int + 2 * n
+    # var q = work_int + 3 * n
+    # var weight = work_int + 4 * n
+    var p = work_int.unsafe_offset(2 * n)
+    var q = work_int.unsafe_offset(3 * n)
+    var weight = work_int.unsafe_offset(4 * n)
 
     var h = n // 2 + 1
     var k = h * (h - 1) // 2
 
     for i in range(ni):
-        left[i] = ni - i + 1
-        right[i] = ni if i <= h else ni - (i - h)
+        left[unsafe_offset=i] = ni - i + 1
+        right[unsafe_offset=i] = ni if i <= h else ni - (i - h)
 
     var nl = n * (n + 1) // 2
     var nr = n * n
@@ -323,45 +329,45 @@ def stats_Qn0_from_sorted_data[
     while not found and nr - nl > ni:
         var j = 0
         for i in range(1, ni):
-            if left[i] <= right[i]:
-                weight[j] = right[i] - left[i] + 1
-                var jh = left[i] + weight[j] // 2
-                work[j] = (
-                    sorted_data[i * stride] - sorted_data[(ni - jh) * stride]
+            if left[unsafe_offset=i] <= right[unsafe_offset=i]:
+                weight[unsafe_offset=j] = right[unsafe_offset=i] - left[unsafe_offset=i] + 1
+                var jh = left[unsafe_offset=i] + weight[unsafe_offset=j] // 2
+                work[unsafe_offset=j] = (
+                    sorted_data[unsafe_offset=i * stride] - sorted_data[unsafe_offset=(ni - jh) * stride]
                 )
                 j += 1
 
         # inline weighted high median (whimed) of work[0..j-1] with weights weight[0..j-1]
         var w_tot = 0
         for ii in range(j):
-            w_tot += weight[ii]
+            w_tot += weight[unsafe_offset=ii]
         var wrest = 0
         var cur_j = j
         var whimed_done = False
         while not whimed_done:
             for ii in range(cur_j):
-                a_srt[ii] = work[ii]
+                a_srt[unsafe_offset=ii] = work[unsafe_offset=ii]
             _sort_inplace(a_srt, cur_j)
-            var wh_trial = a_srt[cur_j // 2]
+            var wh_trial = a_srt[unsafe_offset=cur_j // 2]
             var wleft = 0
             var wmid = 0
             for ii in range(cur_j):
-                if work[ii] < wh_trial:
-                    wleft += weight[ii]
-                elif work[ii] == wh_trial:
-                    wmid += weight[ii]
+                if work[unsafe_offset=ii] < wh_trial:
+                    wleft += weight[unsafe_offset=ii]
+                elif work[unsafe_offset=ii] == wh_trial:
+                    wmid += weight[unsafe_offset=ii]
             var kcand = 0
             if 2 * (wrest + wleft) > w_tot:
                 for ii in range(cur_j):
-                    if work[ii] < wh_trial:
-                        a_cand[kcand] = work[ii]
-                        p[kcand] = weight[ii]
+                    if work[unsafe_offset=ii] < wh_trial:
+                        a_cand[unsafe_offset=kcand] = work[unsafe_offset=ii]
+                        p[unsafe_offset=kcand] = weight[unsafe_offset=ii]
                         kcand += 1
             elif 2 * (wrest + wleft + wmid) <= w_tot:
                 for ii in range(cur_j):
-                    if work[ii] > wh_trial:
-                        a_cand[kcand] = work[ii]
-                        p[kcand] = weight[ii]
+                    if work[unsafe_offset=ii] > wh_trial:
+                        a_cand[unsafe_offset=kcand] = work[unsafe_offset=ii]
+                        p[unsafe_offset=kcand] = weight[unsafe_offset=ii]
                         kcand += 1
                 wrest += wleft + wmid
             else:
@@ -370,41 +376,41 @@ def stats_Qn0_from_sorted_data[
             if not whimed_done:
                 cur_j = kcand
                 for ii in range(cur_j):
-                    work[ii] = a_cand[ii]
-                    weight[ii] = p[ii]
+                    work[unsafe_offset=ii] = a_cand[unsafe_offset=ii]
+                    weight[unsafe_offset=ii] = p[unsafe_offset=ii]
 
         j = 0
         for i in range(ni - 1, -1, -1):
             while (
                 j < ni
-                and sorted_data[i * stride] - sorted_data[(ni - j - 1) * stride]
+                and sorted_data[unsafe_offset=i * stride] - sorted_data[unsafe_offset=(ni - j - 1) * stride]
                 < trial
             ):
                 j += 1
-            p[i] = j
+            p[unsafe_offset=i] = j
 
         j = ni + 1
         for i in range(ni):
             while (
-                sorted_data[i * stride] - sorted_data[(ni - j + 1) * stride]
+                sorted_data[unsafe_offset=i * stride] - sorted_data[unsafe_offset=(ni - j + 1) * stride]
                 > trial
             ):
                 j -= 1
-            q[i] = j
+            q[unsafe_offset=i] = j
 
         var sump = 0
         var sumq = 0
         for i in range(ni):
-            sump += p[i]
-            sumq += q[i] - 1
+            sump += p[unsafe_offset=i]
+            sumq += q[unsafe_offset=i] - 1
 
         if knew <= sump:
             for i in range(ni):
-                right[i] = p[i]
+                right[unsafe_offset=i] = p[unsafe_offset=i]
             nr = sump
         elif knew > sumq:
             for i in range(ni):
-                left[i] = q[i]
+                left[unsafe_offset=i] = q[unsafe_offset=i]
             nl = sumq
         else:
             found = True
@@ -414,15 +420,15 @@ def stats_Qn0_from_sorted_data[
 
     var j = 0
     for i in range(1, ni):
-        var jj = left[i]
-        while jj <= right[i]:
-            work[j] = sorted_data[i * stride] - sorted_data[(ni - jj) * stride]
+        var jj = left[unsafe_offset=i]
+        while jj <= right[unsafe_offset=i]:
+            work[unsafe_offset=j] = sorted_data[unsafe_offset=i * stride] - sorted_data[unsafe_offset=(ni - jj) * stride]
             j += 1
             jj += 1
 
     knew -= nl + 1
     _sort_inplace(work, j)
-    return work[knew]
+    return work[unsafe_offset=knew]
 
 
 def stats_Qn_from_sorted_data[
