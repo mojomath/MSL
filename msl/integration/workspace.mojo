@@ -61,11 +61,11 @@ struct QKResult(Copyable, Movable):
         self.resabs = copy.resabs
         self.resasc = copy.resasc
 
-    def __init__(out self, *, deinit take: Self):
-        self.result = take.result
-        self.abserr = take.abserr
-        self.resabs = take.resabs
-        self.resasc = take.resasc
+    def __init__(out self, *, deinit move: Self):
+        self.result = move.result
+        self.abserr = move.abserr
+        self.resabs = move.resabs
+        self.resasc = move.resasc
 
 
 struct IntegrationResult(Copyable, Movable):
@@ -82,9 +82,9 @@ struct IntegrationResult(Copyable, Movable):
         self.val = copy.val
         self.err = copy.err
 
-    def __init__(out self, *, deinit take: Self):
-        self.val = take.val
-        self.err = take.err
+    def __init__(out self, *, deinit move: Self):
+        self.val = move.val
+        self.err = move.err
 
 
 struct IntegrationWorkspace(Movable):
@@ -124,18 +124,18 @@ struct IntegrationWorkspace(Movable):
         unsafe_memset_zero(self.order, limit)
         unsafe_memset_zero(self.level, limit)
 
-    def __init__(out self, *, deinit take: Self):
-        self.limit = take.limit
-        self.size = take.size
-        self.nrmax = take.nrmax
-        self.i = take.i
-        self.maximum_level = take.maximum_level
-        self.alist = take.alist
-        self.blist = take.blist
-        self.rlist = take.rlist
-        self.elist = take.elist
-        self.order = take.order
-        self.level = take.level
+    def __init__(out self, *, deinit move: Self):
+        self.limit = move.limit
+        self.size = move.size
+        self.nrmax = move.nrmax
+        self.i = move.i
+        self.maximum_level = move.maximum_level
+        self.alist = move.alist
+        self.blist = move.blist
+        self.rlist = move.rlist
+        self.elist = move.elist
+        self.order = move.order
+        self.level = move.level
 
     def __del__(deinit self):
         self.alist.free()

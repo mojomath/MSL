@@ -63,11 +63,11 @@ struct ExtrapolationTable(Movable):
         self.n = 0
         self.nres = 0
 
-    def __init__(out self, *, deinit take: Self):
-        self.rlist2 = take.rlist2
-        self.res3la = take.res3la
-        self.n = take.n
-        self.nres = take.nres
+    def __init__(out self, *, deinit move: Self):
+        self.rlist2 = move.rlist2
+        self.res3la = move.res3la
+        self.n = move.n
+        self.nres = move.nres
 
     def append(mut self, val: Float64):
         self.rlist2[self.n] = val

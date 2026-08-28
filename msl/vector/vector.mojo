@@ -118,11 +118,11 @@ struct Vector(Copyable, Movable):
 
     def get(self, i: Int) -> Float64:
         """Get element at index i."""
-        return self.data[i * self.stride]
+        return self.data[unsafe_offset=i * self.stride]
 
     def set(self, i: Int, value: Float64):
         """Set element at index i to value."""
-        self.data[i * self.stride] = value
+        self.data[unsafe_offset=i * self.stride] = value
 
     def __getitem__(self, i: Int) -> Float64:
         """Get element at index i."""
@@ -205,7 +205,7 @@ def vector_set_all(mut vec: Vector, x: Float64):
     comptime simd_width: Int = simd_width_of[DType.float64]()
 
     def closure[width: Int](i: Int) {mut vec, x}:
-        vec.data[i * vec.stride] = x
+        vec.data[unsafe_offset=i * vec.stride] = x
 
     vectorize[simd_width](vec.size, closure)
 
@@ -218,7 +218,7 @@ def vector_add(mut a: Vector, b: Vector):
         b: Source vector.
     """
     for i in range(a.size):
-        a.data[i * a.stride] += b.data[i * b.stride]
+        a.data[unsafe_offset=i * a.stride] += b.data[unsafe_offset=i * b.stride]
 
 
 def vector_sub(mut a: Vector, b: Vector):
@@ -229,7 +229,7 @@ def vector_sub(mut a: Vector, b: Vector):
         b: Source vector.
     """
     for i in range(a.size):
-        a.data[i * a.stride] -= b.data[i * b.stride]
+        a.data[unsafe_offset=i * a.stride] -= b.data[unsafe_offset=i * b.stride]
 
 
 def vector_scale(mut vec: Vector, alpha: Float64):
@@ -242,7 +242,7 @@ def vector_scale(mut vec: Vector, alpha: Float64):
     comptime simd_width: Int = simd_width_of[DType.float64]()
 
     def closure[width: Int](i: Int) {mut vec, alpha}:
-        vec.data[i * vec.stride] *= alpha
+        vec.data[unsafe_offset=i * vec.stride] *= alpha
 
     vectorize[simd_width](vec.size, closure)
 
@@ -256,7 +256,7 @@ def vector_axpy(alpha: Float64, x: Vector, mut y: Vector):
         y: Destination vector (mutated).
     """
     for i in range(y.size):
-        y.data[i * y.stride] += alpha * x.data[i * x.stride]
+        y.data[unsafe_offset=i * y.stride] += alpha * x.data[unsafe_offset=i * x.stride]
 
 
 def vector_dot(a: Vector, b: Vector) -> Float64:
@@ -271,7 +271,7 @@ def vector_dot(a: Vector, b: Vector) -> Float64:
     """
     var result: Float64 = 0.0
     for i in range(a.size):
-        result += a.data[i * a.stride] * b.data[i * b.stride]
+        result += a.data[unsafe_offset=i * a.stride] * b.data[unsafe_offset=i * b.stride]
     return result
 
 
@@ -286,6 +286,6 @@ def vector_norm(vec: Vector) -> Float64:
     """
     var result: Float64 = 0.0
     for i in range(vec.size):
-        var v = vec.data[i * vec.stride]
+        var v = vec.data[unsafe_offset=i * vec.stride]
         result += v * v
     return sqrt(result)

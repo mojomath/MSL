@@ -88,12 +88,12 @@ struct OdeResult(Copyable, Movable):
         self.success = copy.success
         self.errno = copy.errno
 
-    def __init__(out self, *, deinit take: Self):
-        self.t = take.t
-        self.nsteps = take.nsteps
-        self.nfev = take.nfev
-        self.success = take.success
-        self.errno = take.errno
+    def __init__(out self, *, deinit move: Self):
+        self.t = move.t
+        self.nsteps = move.nsteps
+        self.nfev = move.nfev
+        self.success = move.success
+        self.errno = move.errno
 
 
 # ===----------------------------------------------------------------------=== #

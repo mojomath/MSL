@@ -58,9 +58,9 @@ struct InterpResult(Copyable, Movable):
         self.val = copy.val
         self.errno = copy.errno
 
-    def __init__(out self, *, deinit take: Self):
-        self.val = take.val
-        self.errno = take.errno
+    def __init__(out self, *, deinit move: Self):
+        self.val = move.val
+        self.errno = move.errno
 
 
 # ===----------------------------------------------------------------------=== #
@@ -111,10 +111,10 @@ struct LinearInterp[mut: Bool, origin: Origin[mut=mut], //](Movable):
         self._ya = ya
         self._n = n
 
-    def __init__(out self, *, deinit take: Self):
-        self._xa = take._xa
-        self._ya = take._ya
-        self._n = take._n
+    def __init__(out self, *, deinit move: Self):
+        self._xa = move._xa
+        self._ya = move._ya
+        self._n = move._n
 
     def eval(self, x: Float64) -> InterpResult:
         """Evaluate interpolant at x."""
@@ -199,13 +199,13 @@ struct CubicSpline[mut: Bool, origin: Origin[mut=mut], //](Movable):
         self._d = _alloc_DType.float64(n)
         self._build()
 
-    def __init__(out self, *, deinit take: Self):
-        self._xa = take._xa
-        self._ya = take._ya
-        self._n = take._n
-        self._b = take._b
-        self._c = take._c
-        self._d = take._d
+    def __init__(out self, *, deinit move: Self):
+        self._xa = move._xa
+        self._ya = move._ya
+        self._n = move._n
+        self._b = move._b
+        self._c = move._c
+        self._d = move._d
 
     def __del__(deinit self):
         self._b.free()
@@ -343,13 +343,13 @@ struct AkimaSpline[mut: Bool, origin: Origin[mut=mut], //](Movable):
         self._d = _alloc_DType.float64(n)
         self._build()
 
-    def __init__(out self, *, deinit take: Self):
-        self._xa = take._xa
-        self._ya = take._ya
-        self._n = take._n
-        self._b = take._b
-        self._c = take._c
-        self._d = take._d
+    def __init__(out self, *, deinit move: Self):
+        self._xa = move._xa
+        self._ya = move._ya
+        self._n = move._n
+        self._b = move._b
+        self._c = move._c
+        self._d = move._d
 
     def __del__(deinit self):
         self._b.free()

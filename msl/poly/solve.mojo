@@ -51,10 +51,10 @@ struct QuadraticRoots(Copyable, Movable):
         self.x1 = copy.x1
         self.nroots = copy.nroots
 
-    def __init__(out self, *, deinit take: Self):
-        self.x0 = take.x0
-        self.x1 = take.x1
-        self.nroots = take.nroots
+    def __init__(out self, *, deinit move: Self):
+        self.x0 = move.x0
+        self.x1 = move.x1
+        self.nroots = move.nroots
 
 
 struct CubicRoots(Copyable, Movable):
@@ -87,11 +87,11 @@ struct CubicRoots(Copyable, Movable):
         self.x2 = copy.x2
         self.nroots = copy.nroots
 
-    def __init__(out self, *, deinit take: Self):
-        self.x0 = take.x0
-        self.x1 = take.x1
-        self.x2 = take.x2
-        self.nroots = take.nroots
+    def __init__(out self, *, deinit move: Self):
+        self.x0 = move.x0
+        self.x1 = move.x1
+        self.x2 = move.x2
+        self.nroots = move.nroots
 
 
 def poly_solve_quadratic(a: Float64, b: Float64, c: Float64) -> QuadraticRoots:

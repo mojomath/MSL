@@ -115,11 +115,11 @@ struct Matrix(Copyable, Movable):
 
     def get(self, i: Int, j: Int) -> Float64:
         """Get element at row i, column j."""
-        return self.data[i * self.tda + j]
+        return self.data[unsafe_offset=i * self.tda + j]
 
     def set(self, i: Int, j: Int, value: Float64):
         """Set element at row i, column j to value."""
-        self.data[i * self.tda + j] = value
+        self.data[unsafe_offset=i * self.tda + j] = value
 
     def __getitem__(self, i: Int, j: Int) -> Float64:
         """Get element at row i, column j."""
@@ -144,7 +144,7 @@ struct Matrix(Copyable, Movable):
         """Return an identity matrix of size n x n."""
         var mat = Matrix(n, n, initialize=True)
         for i in range(n):
-            mat.data[i * mat.tda + i] = 1.0
+            mat.data[unsafe_offset=i * mat.tda + i] = 1.0
         return mat^
 
     @staticmethod
@@ -154,7 +154,7 @@ struct Matrix(Copyable, Movable):
         comptime simd_width: Int = simd_width_of[DType.float64]()
 
         def closure[width: Int](i: Int) {mut mat, x}:
-            mat.data[i] = x
+            mat.data[unsafe_offset=i] = x
 
         vectorize[simd_width](mat.nelems(), closure)
         return mat^
@@ -234,7 +234,7 @@ def matrix_set_all(mut mat: Matrix, x: Float64):
     comptime simd_width: Int = simd_width_of[DType.float64]()
 
     def closure[width: Int](i: Int) {mut mat, x}:
-        mat.data[i] = x
+        mat.data[unsafe_offset=i] = x
 
     vectorize[simd_width](mat.nelems(), closure)
 
@@ -248,7 +248,7 @@ def matrix_set_identity(mut mat: Matrix):
     matrix_set_zero(mat)
     for i in range(mat.s1):
         if i < mat.s2:
-            mat.data[i * mat.tda + i] = 1.0
+            mat.data[unsafe_offset=i * mat.tda + i] = 1.0
 
 
 def matrix_add(mut a: Matrix, b: Matrix):
@@ -260,7 +260,7 @@ def matrix_add(mut a: Matrix, b: Matrix):
     """
     for i in range(a.s1):
         for j in range(a.s2):
-            a.data[i * a.tda + j] += b.data[i * b.tda + j]
+            a.data[unsafe_offset=i * a.tda + j] += b.data[unsafe_offset=i * b.tda + j]
 
 
 def matrix_sub(mut a: Matrix, b: Matrix):
@@ -272,7 +272,7 @@ def matrix_sub(mut a: Matrix, b: Matrix):
     """
     for i in range(a.s1):
         for j in range(a.s2):
-            a.data[i * a.tda + j] -= b.data[i * b.tda + j]
+            a.data[unsafe_offset=i * a.tda + j] -= b.data[unsafe_offset=i * b.tda + j]
 
 
 def matrix_scale(mut mat: Matrix, alpha: Float64):
@@ -285,7 +285,7 @@ def matrix_scale(mut mat: Matrix, alpha: Float64):
     comptime simd_width: Int = simd_width_of[DType.float64]()
 
     def closure[width: Int](i: Int) {mut mat, alpha}:
-        mat.data[i] *= alpha
+        mat.data[unsafe_offset=i] *= alpha
 
     vectorize[simd_width](mat.nelems(), closure)
 
@@ -302,7 +302,7 @@ def matrix_transpose(a: Matrix) -> Matrix:
     var result = Matrix(a.s2, a.s1)
     for i in range(a.s1):
         for j in range(a.s2):
-            result.data[j * result.tda + i] = a.data[i * a.tda + j]
+            result.data[unsafe_offset=j * result.tda + i] = a.data[unsafe_offset=i * a.tda + j]
     return result^
 
 
@@ -319,7 +319,7 @@ def matrix_mul(a: Matrix, b: Matrix) -> Matrix:
     var result = Matrix(a.s1, b.s2, initialize=True)
     for i in range(a.s1):
         for k in range(a.s2):
-            var aik = a.data[i * a.tda + k]
+            var aik = a.data[unsafe_offset=i * a.tda + k]
             for j in range(b.s2):
-                result.data[i * result.tda + j] += aik * b.data[k * b.tda + j]
+                result.data[unsafe_offset=i * result.tda + j] += aik * b.data[unsafe_offset=k * b.tda + j]
     return result^

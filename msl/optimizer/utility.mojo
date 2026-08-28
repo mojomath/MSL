@@ -49,12 +49,12 @@ struct RootResult(Copyable, Movable):
         self.success = copy.success
         self.errno = copy.errno
 
-    def __init__(out self, *, deinit take: Self):
-        self.root = take.root
-        self.nit = take.nit
-        self.nfev = take.nfev
-        self.success = take.success
-        self.errno = take.errno
+    def __init__(out self, *, deinit move: Self):
+        self.root = move.root
+        self.nit = move.nit
+        self.nfev = move.nfev
+        self.success = move.success
+        self.errno = move.errno
 
 
 struct MinResult(Copyable, Movable):
@@ -97,13 +97,13 @@ struct MinResult(Copyable, Movable):
         self.success = copy.success
         self.errno = copy.errno
 
-    def __init__(out self, *, deinit take: Self):
-        self.x = take.x
-        self.fun = take.fun
-        self.nit = take.nit
-        self.nfev = take.nfev
-        self.success = take.success
-        self.errno = take.errno
+    def __init__(out self, *, deinit move: Self):
+        self.x = move.x
+        self.fun = move.fun
+        self.nit = move.nit
+        self.nfev = move.nfev
+        self.success = move.success
+        self.errno = move.errno
 
 
 struct MinBracketResult(Copyable, Movable):
@@ -152,16 +152,16 @@ struct MinBracketResult(Copyable, Movable):
         self.success = copy.success
         self.errno = copy.errno
 
-    def __init__(out self, *, deinit take: Self):
-        self.x_minimum = take.x_minimum
-        self.f_minimum = take.f_minimum
-        self.x_lower = take.x_lower
-        self.f_lower = take.f_lower
-        self.x_upper = take.x_upper
-        self.f_upper = take.f_upper
-        self.nfev = take.nfev
-        self.success = take.success
-        self.errno = take.errno
+    def __init__(out self, *, deinit move: Self):
+        self.x_minimum = move.x_minimum
+        self.f_minimum = move.f_minimum
+        self.x_lower = move.x_lower
+        self.f_lower = move.f_lower
+        self.x_upper = move.x_upper
+        self.f_upper = move.f_upper
+        self.nfev = move.nfev
+        self.success = move.success
+        self.errno = move.errno
 
 
 def root_test_interval(

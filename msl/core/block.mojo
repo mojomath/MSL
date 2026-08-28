@@ -61,9 +61,9 @@ struct Block(Copyable, Movable):
         if copy.size > 0:
             unsafe_memcpy(dest=self.data, src=copy.data, count=copy.size)
 
-    def __init__(out self, *, deinit take: Self):
-        self.size = take.size
-        self.data = take.data
+    def __init__(out self, *, deinit move: Self):
+        self.size = move.size
+        self.data = move.data
 
     def __del__(deinit self):
         if self.size > 0:

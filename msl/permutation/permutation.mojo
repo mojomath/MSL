@@ -52,31 +52,31 @@ struct Permutation(Copyable, Movable):
         self.size = n
         self.data = alloc[Scalar[DType.int]](n)
         for i in range(n):
-            self.data.store(i, Scalar[DType.int](i))
+            self.data.unsafe_store(i, Scalar[DType.int](i))
 
     def __del__(deinit self):
         self.data.free()
 
     def get(self, i: Int) -> Int:
         """Get element at index i."""
-        return Int(self.data[i])
+        return Int(self.data[unsafe_offset=i])
 
     def set(self, i: Int, value: Int):
         """Set element at index i."""
-        self.data.store(i, Scalar[DType.int](value))
+        self.data.unsafe_store(i, Scalar[DType.int](value))
 
     def swap(self, i: Int, j: Int):
         """Swap elements at indices i and j."""
-        var temp = self.data[i]
-        self.data.store(i, self.data[j])
-        self.data.store(j, temp)
+        var temp = self.data[unsafe_offset=i]
+        self.data.unsafe_store(i, self.data[unsafe_offset=j])
+        self.data.unsafe_store(j, temp)
 
     def inversions(self) -> Int:
         """Count the number of inversions."""
         var inv: Int = 0
         for i in range(self.size):
             for j in range(i + 1, self.size):
-                if self.data[i] > self.data[j]:
+                if self.data[unsafe_offset=i] > self.data[unsafe_offset=j]:
                     inv += 1
         return inv
 
@@ -92,7 +92,7 @@ def permutation_alloc(n: Int) -> Permutation:
 
 def permutation_init(p: Permutation):
     for i in range(p.size):
-        p.data.store(i, Scalar[DType.int](i))
+        p.data.unsafe_store(i, Scalar[DType.int](i))
 
 
 def permutation_next(p: Permutation) -> Bool:
@@ -101,7 +101,7 @@ def permutation_next(p: Permutation) -> Bool:
 
     var i = p.size - 2
     while i >= 0:
-        if p.data[i] < p.data[i + 1]:
+        if p.data[unsafe_offset=i] < p.data[unsafe_offset=i + 1]:
             break
         i -= 1
 
@@ -110,20 +110,20 @@ def permutation_next(p: Permutation) -> Bool:
 
     var j = p.size - 1
     while j > i:
-        if p.data[j] > p.data[i]:
+        if p.data[unsafe_offset=j] > p.data[unsafe_offset=i]:
             break
         j -= 1
 
-    var temp = p.data[i]
-    p.data.store(i, p.data[j])
-    p.data.store(j, temp)
+    var temp = p.data[unsafe_offset=i]
+    p.data.unsafe_store(i, p.data[unsafe_offset=j])
+    p.data.unsafe_store(j, temp)
 
     var left = i + 1
     var right = p.size - 1
     while left < right:
-        var t = p.data[left]
-        p.data.store(left, p.data[right])
-        p.data.store(right, t)
+        var t = p.data[unsafe_offset=left]
+        p.data.unsafe_store(left, p.data[unsafe_offset=right])
+        p.data.unsafe_store(right, t)
         left += 1
         right -= 1
 

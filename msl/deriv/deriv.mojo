@@ -70,9 +70,9 @@ struct DerivResult(Copyable, Movable):
         self.val = copy.val
         self.err = copy.err
 
-    def __init__(out self, *, deinit take: Self):
-        self.val = take.val
-        self.err = take.err
+    def __init__(out self, *, deinit move: Self):
+        self.val = move.val
+        self.err = move.err
 
 
 # ===----------------------------------------------------------------------=== #
