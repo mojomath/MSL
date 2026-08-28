@@ -56,7 +56,7 @@ struct Vector(Copyable, Movable):
     def __init__(out self, size: Int, *, initialize: Bool = False):
         self.size = size
         self.stride = 1
-        self.data = alloc[Float64](size)
+        self.data = unsafe_alloc[Float64](size)
         if initialize:
             unsafe_memset_zero(self.data, size)
         self.owner = True
@@ -64,7 +64,7 @@ struct Vector(Copyable, Movable):
     def __init__(out self, size: Int, stride: Int, *, initialize: Bool = False):
         self.size = size
         self.stride = stride
-        self.data = alloc[Float64](size * stride)
+        self.data = unsafe_alloc[Float64](size * stride)
         if initialize:
             unsafe_memset_zero(self.data, size * stride)
         self.owner = True

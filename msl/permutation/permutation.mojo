@@ -50,7 +50,7 @@ struct Permutation(Copyable, Movable):
 
     def __init__(out self, n: Int):
         self.size = n
-        self.data = alloc[Scalar[DType.int]](n)
+        self.data = unsafe_alloc[Scalar[DType.int]](n)
         for i in range(n):
             self.data.unsafe_store(i, Scalar[DType.int](i))
 

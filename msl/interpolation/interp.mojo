@@ -84,7 +84,7 @@ def _bsearch[
 
 
 def _alloc_DType.float64(n: Int) -> Pointer[Float64, MutUntrackedOrigin]:
-    var p = alloc[Float64](n)
+    var p = unsafe_alloc[Float64](n)
     unsafe_memset_zero(p, n)
     return p
 

@@ -111,12 +111,12 @@ struct IntegrationWorkspace(Movable):
         self.nrmax = 0
         self.i = 0
         self.maximum_level = 0
-        self.alist = alloc[Float64](limit)
-        self.blist = alloc[Float64](limit)
-        self.rlist = alloc[Float64](limit)
-        self.elist = alloc[Float64](limit)
-        self.order = alloc[Int](limit)
-        self.level = alloc[Int](limit)
+        self.alist = unsafe_alloc[Float64](limit)
+        self.blist = unsafe_alloc[Float64](limit)
+        self.rlist = unsafe_alloc[Float64](limit)
+        self.elist = unsafe_alloc[Float64](limit)
+        self.order = unsafe_alloc[Int](limit)
+        self.level = unsafe_alloc[Int](limit)
         unsafe_memset_zero(self.alist, limit)
         unsafe_memset_zero(self.blist, limit)
         unsafe_memset_zero(self.rlist, limit)

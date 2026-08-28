@@ -102,7 +102,7 @@ struct OdeResult(Copyable, Movable):
 
 
 def _alloc(n: Int) -> Pointer[Float64, MutExt]:
-    var p = alloc[Float64](n)
+    var p = unsafe_alloc[Float64](n)
     unsafe_memset_zero(p, n)
     return p
 

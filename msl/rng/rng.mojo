@@ -78,7 +78,7 @@ struct MTState(Copyable, Movable):
     var idx: Int
 
     def __init__(out self):
-        self.state = alloc[UInt64](MT_N)
+        self.state = unsafe_alloc[UInt64](MT_N)
         self.idx = MT_N
 
     def __init__(out self, *, deinit move: Self):
@@ -86,7 +86,7 @@ struct MTState(Copyable, Movable):
         self.idx = move.idx
 
     def __init__(out self, *, copy: Self):
-        self.state = alloc[UInt64](MT_N)
+        self.state = unsafe_alloc[UInt64](MT_N)
         self.idx = copy.idx
         for i in range(MT_N):
             self.state.unsafe_store(i, copy.state[i])

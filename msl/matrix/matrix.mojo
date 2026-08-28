@@ -58,7 +58,7 @@ struct Matrix(Copyable, Movable):
         self.s1 = n1
         self.s2 = n2
         self.tda = n2
-        self.data = alloc[Float64](n1 * n2)
+        self.data = unsafe_alloc[Float64](n1 * n2)
         if initialize:
             unsafe_memset_zero(self.data, n1 * n2)
         self.owner = True

@@ -51,13 +51,13 @@ struct Block(Copyable, Movable):
 
     def __init__(out self, size: Int, *, initialize: Bool = False):
         self.size = size
-        self.data = alloc[Float64](size)
+        self.data = unsafe_alloc[Float64](size)
         if initialize:
             unsafe_memset_zero(self.data, size)
 
     def __init__(out self, *, copy: Self):
         self.size = copy.size
-        self.data = alloc[Float64](copy.size)
+        self.data = unsafe_alloc[Float64](copy.size)
         if copy.size > 0:
             unsafe_memcpy(dest=self.data, src=copy.data, count=copy.size)
 
