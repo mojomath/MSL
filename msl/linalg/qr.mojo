@@ -73,35 +73,35 @@ def qr_decomp[
     """
     for i in range(n):
         # compute Householder transform of column i, rows i..n-1
-        var alpha = a[i * lda + i]
+        var alpha = a[unsafe_offset=i * lda + i]
         var xnorm_sq: Float64 = 0.0
         for k in range(i + 1, n):
-            var v = a[k * lda + i]
+            var v = a[unsafe_offset=k * lda + i]
             xnorm_sq += v * v
         var xnorm = sqrt(xnorm_sq)
 
         if xnorm == 0.0:
-            tau[i] = 0.0
+            tau[unsafe_offset=i] = 0.0
         else:
             var beta = -_sign(alpha) * hypot(alpha, xnorm)
             var tau_i = (beta - alpha) / beta
-            tau[i] = tau_i
+            tau[unsafe_offset=i] = tau_i
 
             var s = alpha - beta
             for k in range(i + 1, n):
-                a[k * lda + i] /= s
-            a[i * lda + i] = beta
+                a[unsafe_offset=k * lda + i] /= s
+            a[unsafe_offset=i * lda + i] = beta
 
             # apply the reflector to the remaining columns i+1..n-1
             if i + 1 < n:
                 for j in range(i + 1, n):
                     # d = v' * A[:,j] over rows i..n-1, with v[i] implicitly 1
-                    var d = a[i * lda + j]
+                    var d = a[unsafe_offset=i * lda + j]
                     for k in range(i + 1, n):
-                        d += a[k * lda + i] * a[k * lda + j]
-                    a[i * lda + j] -= tau_i * d
+                        d += a[unsafe_offset=k * lda + i] * a[unsafe_offset=k * lda + j]
+                    a[unsafe_offset=i * lda + j] -= tau_i * d
                     for k in range(i + 1, n):
-                        a[k * lda + j] -= tau_i * d * a[k * lda + i]
+                        a[unsafe_offset=k * lda + j] -= tau_i * d * a[unsafe_offset=k * lda + i]
 
 
 def _qr_qtvec[
@@ -120,19 +120,19 @@ def _qr_qtvec[
 ):
     """Compute v <- Q^T v in-place, given the packed QR factorization."""
     for i in range(n):
-        var tau_i = tau[i]
+        var tau_i = tau[unsafe_offset=i]
         if tau_i == 0.0:
             continue
 
-        var w0 = v[i]
+        var w0 = v[unsafe_offset=i]
         var d1: Float64 = 0.0
         for k in range(i + 1, n):
-            d1 += qr[k * lda + i] * v[k]
+            d1 += qr[unsafe_offset=k * lda + i] * v[unsafe_offset=k]
         var d = w0 + d1
 
-        v[i] = w0 - tau_i * d
+        v[unsafe_offset=i] = w0 - tau_i * d
         for k in range(i + 1, n):
-            v[k] -= tau_i * d * qr[k * lda + i]
+            v[unsafe_offset=k] -= tau_i * d * qr[unsafe_offset=k * lda + i]
 
 
 def qr_svx[
@@ -153,10 +153,10 @@ def qr_svx[
     _qr_qtvec(qr, lda, n, tau, x)
 
     for i in range(n - 1, -1, -1):
-        var sum = x[i]
+        var sum = x[unsafe_offset=i]
         for k in range(i + 1, n):
-            sum -= qr[i * lda + k] * x[k]
-        x[i] = sum / qr[i * lda + i]
+            sum -= qr[unsafe_offset=i * lda + k] * x[unsafe_offset=k]
+        x[unsafe_offset=i] = sum / qr[unsafe_offset=i * lda + i]
 
 
 def qr_solve[
@@ -181,5 +181,5 @@ def qr_solve[
     x must be length n; b is not modified.
     """
     for i in range(n):
-        x[i] = b[i]
+        x[unsafe_offset=i] = b[unsafe_offset=i]
     qr_svx(qr, lda, n, tau, x)

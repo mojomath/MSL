@@ -74,38 +74,38 @@ def lu_decomp[
     for j in range(n):
         # find pivot: largest-magnitude entry in column j, rows j..n-1
         var j_pivot = j
-        var max_val = abs(a[j * lda + j])
+        var max_val = abs(a[unsafe_offset=j * lda + j])
         for i in range(j + 1, n):
-            var v = abs(a[i * lda + j])
+            var v = abs(a[unsafe_offset=i * lda + j])
             if v > max_val:
                 max_val = v
                 j_pivot = i
 
-        piv[j] = j_pivot
+        piv[unsafe_offset=j] = j_pivot
 
-        var ajpj = a[j_pivot * lda + j]
+        var ajpj = a[unsafe_offset=j_pivot * lda + j]
 
         if ajpj != 0.0:
             if j_pivot != j:
                 for k in range(n):
-                    var tmp = a[j * lda + k]
-                    a[j * lda + k] = a[j_pivot * lda + k]
-                    a[j_pivot * lda + k] = tmp
+                    var tmp = a[unsafe_offset=j * lda + k]
+                    a[unsafe_offset=j * lda + k] = a[unsafe_offset=j_pivot * lda + k]
+                    a[unsafe_offset=j_pivot * lda + k] = tmp
                 signum = -signum
 
             if j < n - 1:
-                var ajj = a[j * lda + j]
+                var ajj = a[unsafe_offset=j * lda + j]
                 for i in range(j + 1, n):
-                    a[i * lda + j] /= ajj
+                    a[unsafe_offset=i * lda + j] /= ajj
         else:
             singular = True
 
         if j < n - 1:
             for i in range(j + 1, n):
-                var lij = a[i * lda + j]
+                var lij = a[unsafe_offset=i * lda + j]
                 if lij != 0.0:
                     for k in range(j + 1, n):
-                        a[i * lda + k] -= lij * a[j * lda + k]
+                        a[unsafe_offset=i * lda + k] -= lij * a[unsafe_offset=j * lda + k]
 
     if singular:
         return 0
@@ -132,25 +132,25 @@ def lu_svx[
     back substitution using the L and U factors packed in lu.
     """
     for j in range(n):
-        var jp = piv[j]
+        var jp = piv[unsafe_offset=j]
         if jp != j:
-            var tmp = x[j]
-            x[j] = x[jp]
-            x[jp] = tmp
+            var tmp = x[unsafe_offset=j]
+            x[unsafe_offset=j] = x[unsafe_offset=jp]
+            x[unsafe_offset=jp] = tmp
 
     # forward substitution: L c = P b (L is unit lower triangular)
     for i in range(n):
         var sum: Float64 = 0.0
         for k in range(i):
-            sum += lu[i * lda + k] * x[k]
-        x[i] -= sum
+            sum += lu[unsafe_offset=i * lda + k] * x[unsafe_offset=k]
+        x[unsafe_offset=i] -= sum
 
     # back substitution: U x = c
     for i in range(n - 1, -1, -1):
         var sum: Float64 = 0.0
         for k in range(i + 1, n):
-            sum += lu[i * lda + k] * x[k]
-        x[i] = (x[i] - sum) / lu[i * lda + i]
+            sum += lu[unsafe_offset=i * lda + k] * x[unsafe_offset=k]
+        x[unsafe_offset=i] = (x[unsafe_offset=i] - sum) / lu[unsafe_offset=i * lda + i]
 
 
 def lu_solve[
@@ -175,7 +175,7 @@ def lu_solve[
     x must be length n; it receives the solution. b is not modified.
     """
     for i in range(n):
-        x[i] = b[i]
+        x[unsafe_offset=i] = b[unsafe_offset=i]
     lu_svx(lu, lda, n, piv, x)
 
 
@@ -187,7 +187,7 @@ def lu_det[
     """Compute det(A) from the LU decomposition of A."""
     var det = Float64(signum)
     for i in range(n):
-        det *= lu[i * lda + i]
+        det *= lu[unsafe_offset=i * lda + i]
     return det
 
 
@@ -199,7 +199,7 @@ def lu_lndet[
     """Compute log(|det(A)|) from the LU decomposition of A."""
     var lndet: Float64 = 0.0
     for i in range(n):
-        lndet += log(abs(lu[i * lda + i]))
+        lndet += log(abs(lu[unsafe_offset=i * lda + i]))
     return lndet
 
 
@@ -227,7 +227,7 @@ def lu_invert[
     """
     for col in range(n):
         for i in range(n):
-            work[i] = 1.0 if i == col else 0.0
+            work[unsafe_offset=i] = 1.0 if i == col else 0.0
         lu_svx(lu, lda, n, piv, work)
         for i in range(n):
-            inv[i * inv_lda + col] = work[i]
+            inv[unsafe_offset=i * inv_lda + col] = work[unsafe_offset=i]

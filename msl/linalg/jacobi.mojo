@@ -65,13 +65,13 @@ def _symschur2[
     Float64, Float64, Float64
 ]:
     """Return (c, s, |Apq|) for the Jacobi rotation annihilating A[p,q]."""
-    var apq = a[p * lda + q]
+    var apq = a[unsafe_offset=p * lda + q]
 
     if apq == 0.0:
         return (1.0, 0.0, 0.0)
 
-    var app = a[p * lda + p]
-    var aqq = a[q * lda + q]
+    var app = a[unsafe_offset=p * lda + p]
+    var aqq = a[unsafe_offset=q * lda + q]
     var tau = (aqq - app) / (2.0 * apq)
     var t: Float64
     if tau >= 0.0:
@@ -96,10 +96,10 @@ def _apply_jacobi_left[
     s: Float64,
 ):
     for j in range(n):
-        var apj = a[p * lda + j]
-        var aqj = a[q * lda + j]
-        a[p * lda + j] = apj * c - aqj * s
-        a[q * lda + j] = apj * s + aqj * c
+        var apj = a[unsafe_offset=p * lda + j]
+        var aqj = a[unsafe_offset=q * lda + j]
+        a[unsafe_offset=p * lda + j] = apj * c - aqj * s
+        a[unsafe_offset=q * lda + j] = apj * s + aqj * c
 
 
 def _apply_jacobi_right[
@@ -115,10 +115,10 @@ def _apply_jacobi_right[
     s: Float64,
 ):
     for i in range(m):
-        var aip = a[i * lda + p]
-        var aiq = a[i * lda + q]
-        a[i * lda + p] = aip * c - aiq * s
-        a[i * lda + q] = aip * s + aiq * c
+        var aip = a[unsafe_offset=i * lda + p]
+        var aiq = a[unsafe_offset=i * lda + q]
+        a[unsafe_offset=i * lda + p] = aip * c - aiq * s
+        a[unsafe_offset=i * lda + q] = aip * s + aiq * c
 
 
 def _offdiag_norm[
@@ -131,7 +131,7 @@ def _offdiag_norm[
         for j in range(n):
             if i == j:
                 continue
-            var aij = a[i * lda + j]
+            var aij = a[unsafe_offset=i * lda + j]
             if aij != 0.0:
                 var ax = abs(aij)
                 if scale < ax:
@@ -167,7 +167,7 @@ def eigen_jacobi[
     """
     for i in range(n):
         for j in range(n):
-            evec[i * evec_lda + j] = 1.0 if i == j else 0.0
+            evec[unsafe_offset=i * evec_lda + j] = 1.0 if i == j else 0.0
 
     var rot = 0
     while rot < max_rot:
@@ -189,7 +189,7 @@ def eigen_jacobi[
         rot += 1
 
     for p in range(n):
-        eval[p] = a[p * lda + p]
+        eval[unsafe_offset=p] = a[unsafe_offset=p * lda + p]
 
     if rot == max_rot:
         return MSL_EMAXITER

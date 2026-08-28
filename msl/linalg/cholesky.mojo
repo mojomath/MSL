@@ -63,25 +63,25 @@ def cholesky_decomp[
     Returns MSL_SUCCESS, or MSL_EDOM if A is not positive-definite.
     """
     for j in range(n):
-        var sum = a[j * lda + j]
+        var sum = a[unsafe_offset=j * lda + j]
         for k in range(j):
-            sum -= a[j * lda + k] * a[j * lda + k]
+            sum -= a[unsafe_offset=j * lda + k] * a[unsafe_offset=j * lda + k]
 
         if sum <= 0.0:
             return MSL_EDOM
 
         var ljj = sqrt(sum)
-        a[j * lda + j] = ljj
+        a[unsafe_offset=j * lda + j] = ljj
 
         for i in range(j + 1, n):
-            var s = a[i * lda + j]
+            var s = a[unsafe_offset=i * lda + j]
             for k in range(j):
-                s -= a[i * lda + k] * a[j * lda + k]
-            a[i * lda + j] = s / ljj
+                s -= a[unsafe_offset=i * lda + k] * a[unsafe_offset=j * lda + k]
+            a[unsafe_offset=i * lda + j] = s / ljj
 
     for i in range(n):
         for j in range(i + 1, n):
-            a[i * lda + j] = 0.0
+            a[unsafe_offset=i * lda + j] = 0.0
 
     return MSL_SUCCESS
 
@@ -100,17 +100,17 @@ def cholesky_svx[
     """Solve L L^T x = b in-place, where x initially holds b."""
     # forward substitution: L c = b
     for i in range(n):
-        var sum = x[i]
+        var sum = x[unsafe_offset=i]
         for k in range(i):
-            sum -= l[i * lda + k] * x[k]
-        x[i] = sum / l[i * lda + i]
+            sum -= l[unsafe_offset=i * lda + k] * x[unsafe_offset=k]
+        x[unsafe_offset=i] = sum / l[unsafe_offset=i * lda + i]
 
     # back substitution: L^T x = c
     for i in range(n - 1, -1, -1):
-        var sum = x[i]
+        var sum = x[unsafe_offset=i]
         for k in range(i + 1, n):
-            sum -= l[k * lda + i] * x[k]
-        x[i] = sum / l[i * lda + i]
+            sum -= l[unsafe_offset=k * lda + i] * x[unsafe_offset=k]
+        x[unsafe_offset=i] = sum / l[unsafe_offset=i * lda + i]
 
 
 def cholesky_solve[
@@ -130,5 +130,5 @@ def cholesky_solve[
     """Solve A x = b given the Cholesky decomposition of A (see
     cholesky_decomp). x must be length n; b is not modified."""
     for i in range(n):
-        x[i] = b[i]
+        x[unsafe_offset=i] = b[unsafe_offset=i]
     cholesky_svx(l, lda, n, x)
