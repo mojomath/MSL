@@ -62,7 +62,7 @@ struct Permutation(Copyable, Movable):
         for i in range(n):
             self.data.unsafe_store(i, Scalar[DType.int](i))
 
-    def __del__(deinit self):
+    def __deinit__(deinit self):
         self.data.unsafe_free()
 
     def get(self, i: Int) -> Int:

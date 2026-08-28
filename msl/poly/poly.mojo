@@ -47,9 +47,9 @@ def poly_eval[
     mut: Bool, origin: Origin[mut=mut], //
 ](c: Pointer[Float64, origin], len: Int, x: Float64) -> Float64:
     """Evaluate c[0] + c[1] x + ... + c[len-1] x^(len-1) via Horner's method."""
-    var ans = c[len - 1]
+    var ans = c[unsafe_offset=len - 1]
     for i in range(len - 1, 0, -1):
-        ans = c[i - 1] + x * ans
+        ans = c[unsafe_offset=i - 1] + x * ans
     return ans
 
 
@@ -74,22 +74,22 @@ def poly_eval_derivs[
     var nmax = 0
     for i in range(lenres):
         if i < lenc:
-            res[i] = c[lenc - 1]
+            res[unsafe_offset=i] = c[unsafe_offset=lenc - 1]
             nmax = i
         else:
-            res[i] = 0.0
+            res[unsafe_offset=i] = 0.0
 
     for i in range(lenc - 1):
         var k = (lenc - 1) - i
-        res[0] = x * res[0] + c[k - 1]
+        res[unsafe_offset=0] = x * res[unsafe_offset=0] + c[unsafe_offset=k - 1]
         var lmax = nmax if nmax < k - 1 else k - 1
         for l in range(1, lmax + 1):
-            res[l] = x * res[l] + res[l - 1]
+            res[unsafe_offset=l] = x * res[unsafe_offset=l] + res[unsafe_offset=l - 1]
 
     var f: Float64 = 1.0
     for i in range(2, nmax + 1):
         f *= Float64(i)
-        res[i] *= f
+        res[unsafe_offset=i] *= f
 
 
 def poly_dd_init[
@@ -109,14 +109,14 @@ def poly_dd_init[
 
     dd must be length size. See Abramowitz & Stegun 25.2.26.
     """
-    dd[0] = y[0]
+    dd[unsafe_offset=0] = y[unsafe_offset=0]
 
     for j in range(size - 1, 0, -1):
-        dd[j] = (y[j] - y[j - 1]) / (x[j] - x[j - 1])
+        dd[unsafe_offset=j] = (y[unsafe_offset=j] - y[unsafe_offset=j - 1]) / (x[unsafe_offset=j] - x[unsafe_offset=j - 1])
 
     for i in range(2, size):
         for j in range(size - 1, i - 1, -1):
-            dd[j] = (dd[j] - dd[j - 1]) / (x[j] - x[j - i])
+            dd[unsafe_offset=j] = (dd[unsafe_offset=j] - dd[unsafe_offset=j - 1]) / (x[unsafe_offset=j] - x[unsafe_offset=j - i])
 
 
 def poly_dd_eval[
@@ -132,9 +132,9 @@ def poly_dd_eval[
     xval: Float64,
 ) -> Float64:
     """Evaluate a divided-difference polynomial at xval."""
-    var y = dd[size - 1]
+    var y = dd[unsafe_offset=size - 1]
     for i in range(size - 1, 0, -1):
-        y = dd[i - 1] + (xval - x[i - 1]) * y
+        y = dd[unsafe_offset=i - 1] + (xval - x[unsafe_offset=i - 1]) * y
     return y
 
 
@@ -159,17 +159,17 @@ def poly_dd_taylor[
     c and w must both be length size.
     """
     for i in range(size):
-        c[i] = 0.0
-        w[i] = 0.0
+        c[unsafe_offset=i] = 0.0
+        w[unsafe_offset=i] = 0.0
 
-    w[size - 1] = 1.0
-    c[0] = dd[0]
+    w[unsafe_offset=size - 1] = 1.0
+    c[unsafe_offset=0] = dd[unsafe_offset=0]
 
     for i in range(size - 2, -1, -1):
-        w[i] = -w[i + 1] * (x[size - 2 - i] - xp)
+        w[unsafe_offset=i] = -w[unsafe_offset=i + 1] * (x[unsafe_offset=size - 2 - i] - xp)
 
         for j in range(i + 1, size - 1):
-            w[j] = w[j] - w[j + 1] * (x[size - 2 - i] - xp)
+            w[unsafe_offset=j] = w[unsafe_offset=j] - w[unsafe_offset=j + 1] * (x[unsafe_offset=size - 2 - i] - xp)
 
         for j in range(i, size):
-            c[j - i] += w[j] * dd[size - i - 1]
+            c[unsafe_offset=j - i] += w[unsafe_offset=j] * dd[unsafe_offset=size - i - 1]

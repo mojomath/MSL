@@ -36,8 +36,10 @@ Defines the `RNGAlgorithm` trait and the parametric `RNG[T]` wrapper.
 # ===----------------------------------------------------------------------=== #
 # Stdlib
 # ===----------------------------------------------------------------------=== #
-from std.memory import Pointer
+from std.memory import Pointer, unsafe_memcpy
+from std.memory.alloc import unsafe_alloc
 
+from msl import MutExt
 
 # ===----------------------------------------------------------------------=== #
 # RNGAlgorithm trait
@@ -91,14 +93,14 @@ struct MTState(Copyable, Movable):
     def __init__(out self, *, copy: Self):
         self.state = unsafe_alloc[UInt64](MT_N)
         self.idx = copy.idx
-        for i in range(MT_N):
-            self.state.unsafe_store(i, copy.state[i])
 
-    def __del__(deinit self):
+        unsafe_memcpy(dest=self.state, src=copy.state, count=MT_N)
+
+    def __deinit__(deinit self):
         self.state.unsafe_free()
 
     def __getitem__(self, i: Int) -> UInt64:
-        return self.state[i]
+        return self.state[unsafe_offset=i]
 
     def __setitem__(mut self, i: Int, value: UInt64):
         self.state.unsafe_store(i, value)
@@ -131,7 +133,7 @@ struct MT19937(RNGAlgorithm):
         """Re-seed the generator."""
         self._state[0] = s
         for i in range(1, MT_N):
-            var prev = self._state.state[i - 1]
+            var prev = self._state.state[unsafe_offset=i - 1]
             self._state.state.unsafe_store(
                 i,
                 (1812433253 * (prev ^ (prev >> 30)) + UInt64(i))
@@ -144,35 +146,35 @@ struct MT19937(RNGAlgorithm):
         if self._state.idx >= MT_N:
             var i: Int = 0
             while i < MT_N - MT_M:
-                var y = (self._state.state[i] & MT_UPPER_MASK) | (
-                    self._state.state[i + 1] & MT_LOWER_MASK
+                var y = (self._state.state[unsafe_offset=i] & MT_UPPER_MASK) | (
+                    self._state.state[unsafe_offset=i + 1] & MT_LOWER_MASK
                 )
                 var idx = i + MT_M
                 self._state.state.unsafe_store(
-                    i, self._state.state[idx] ^ (y >> 1) ^ MT_MATRIX_A * (y & 1)
+                    i, self._state.state[unsafe_offset=idx] ^ (y >> 1) ^ MT_MATRIX_A * (y & 1)
                 )
                 i += 1
 
             while i < MT_N - 1:
-                var y = (self._state.state[i] & MT_UPPER_MASK) | (
-                    self._state.state[i + 1] & MT_LOWER_MASK
+                var y = (self._state.state[unsafe_offset=i] & MT_UPPER_MASK) | (
+                    self._state.state[unsafe_offset=i + 1] & MT_LOWER_MASK
                 )
                 var idx = i + MT_M - MT_N
                 self._state.state.unsafe_store(
-                    i, self._state.state[idx] ^ (y >> 1) ^ MT_MATRIX_A * (y & 1)
+                    i, self._state.state[unsafe_offset=idx] ^ (y >> 1) ^ MT_MATRIX_A * (y & 1)
                 )
                 i += 1
 
-            var y = (self._state.state[MT_N - 1] & MT_UPPER_MASK) | (
-                self._state.state[0] & MT_LOWER_MASK
+            var y = (self._state.state[unsafe_offset=MT_N - 1] & MT_UPPER_MASK) | (
+                self._state.state[unsafe_offset=0] & MT_LOWER_MASK
             )
             self._state.state.unsafe_store(
                 MT_N - 1,
-                self._state.state[MT_M - 1] ^ (y >> 1) ^ MT_MATRIX_A * (y & 1),
+                self._state.state[unsafe_offset=MT_M - 1] ^ (y >> 1) ^ MT_MATRIX_A * (y & 1),
             )
             self._state.idx = 0
 
-        var y2 = self._state.state[self._state.idx]
+        var y2 = self._state.state[unsafe_offset=self._state.idx]
         self._state.idx += 1
 
         y2 ^= y2 >> 11

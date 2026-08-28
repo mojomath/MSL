@@ -40,6 +40,7 @@ from std.math import exp
 from msl.core.const import MSL_DBL_EPSILON
 from msl.core.errno import MSL_EDOM
 from msl.sf.result import SFSResult
+from msl.sf.gamma import lngamma
 
 
 # ===----------------------------------------------------------------------=== #

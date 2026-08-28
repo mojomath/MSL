@@ -47,6 +47,7 @@ from msl.core.errno import (
     MSL_EDOM,
     MSL_EMAXITER,
     MSL_SUCCESS,
+    MSL_EZERODIV,
 )
 from msl.optimizer.utility import RootResult
 

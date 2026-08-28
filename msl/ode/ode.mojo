@@ -52,10 +52,14 @@ from std.memory import (
     Pointer,
     unsafe_memset_zero,
 )
+from std.memory.alloc import (
+    unsafe_alloc,
+)
 
 # ===----------------------------------------------------------------------=== #
 # MSL
 # ===----------------------------------------------------------------------=== #
+from msl import MutExt
 from msl.core.const import MSL_DBL_EPSILON
 from msl.core.errno import (
     MSL_EINVAL,
@@ -184,25 +188,25 @@ def ode_rk4[
 
         # k2 = f(t + h/2, y + h/2 * k1)
         for i in range(dim):
-            ytmp[i] = y[i] + 0.5 * step * k1[i]
+            ytmp[unsafe_offset=i] = y[unsafe_offset=i] + 0.5 * step * k1[unsafe_offset=i]
         rhs(t + 0.5 * step, ytmp, k2)
         nfev += 1
 
         # k3 = f(t + h/2, y + h/2 * k2)
         for i in range(dim):
-            ytmp[i] = y[i] + 0.5 * step * k2[i]
+            ytmp[unsafe_offset=i] = y[unsafe_offset=i] + 0.5 * step * k2[unsafe_offset=i]
         rhs(t + 0.5 * step, ytmp, k3)
         nfev += 1
 
         # k4 = f(t + h, y + h * k3)
         for i in range(dim):
-            ytmp[i] = y[i] + step * k3[i]
+            ytmp[unsafe_offset=i] = y[unsafe_offset=i] + step * k3[unsafe_offset=i]
         rhs(t + step, ytmp, k4)
         nfev += 1
 
         # y_new = y + h/6 * (k1 + 2*k2 + 2*k3 + k4)
         for i in range(dim):
-            y[i] += (step / 6.0) * (k1[i] + 2.0 * k2[i] + 2.0 * k3[i] + k4[i])
+            y[unsafe_offset=i] += (step / 6.0) * (k1[unsafe_offset=i] + 2.0 * k2[unsafe_offset=i] + 2.0 * k3[unsafe_offset=i] + k4[unsafe_offset=i])
 
         t += step
         nsteps += 1
@@ -327,6 +331,14 @@ def ode_rkf45[
     var ytmp = _alloc(dim)
     var yerr = _alloc(dim)
 
+    ref _AH_vals = materialize[_AH]()
+    ref _B3_vals = materialize[_B3]()
+    ref _B4_vals = materialize[_B4]()
+    ref _B5_vals = materialize[_B5]()
+    ref _B6_vals = materialize[_B6]()
+    ref _EC_vals = materialize[_EC]()
+    ref _C_vals = materialize[_C]()
+
     var h_max = (t1 - t0) if hmax <= 0.0 else hmax
     var h_min = 0.0 if hmin <= 0.0 else hmin
 
@@ -346,74 +358,74 @@ def ode_rkf45[
 
         # k2
         for i in range(dim):
-            ytmp[i] = y[i] + h * _AH[0] * k1[i]
-        rhs(t + _AH[0] * h, ytmp, k2)
+            ytmp[unsafe_offset=i] = y[unsafe_offset=i] + h * _AH_vals[0] * k1[unsafe_offset=i]
+        rhs(t + _AH_vals[0] * h, ytmp, k2)
         nfev += 1
 
         # k3
         for i in range(dim):
-            ytmp[i] = y[i] + h * (_B3[0] * k1[i] + _B3[1] * k2[i])
-        rhs(t + _AH[1] * h, ytmp, k3)
+            ytmp[unsafe_offset=i] = y[unsafe_offset=i] + h * (_B3_vals[0] * k1[unsafe_offset=i] + _B3_vals[1] * k2[unsafe_offset=i])
+        rhs(t + _AH_vals[1] * h, ytmp, k3)
         nfev += 1
 
         # k4
         for i in range(dim):
-            ytmp[i] = y[i] + h * (
-                _B4[0] * k1[i] + _B4[1] * k2[i] + _B4[2] * k3[i]
+            ytmp[unsafe_offset=i] = y[unsafe_offset=i] + h * (
+                _B4_vals[0] * k1[unsafe_offset=i] + _B4_vals[1] * k2[unsafe_offset=i] + _B4_vals[2] * k3[unsafe_offset=i]
             )
-        rhs(t + _AH[2] * h, ytmp, k4)
+        rhs(t + _AH_vals[2] * h, ytmp, k4)
         nfev += 1
 
         # k5
         for i in range(dim):
-            ytmp[i] = y[i] + h * (
-                _B5[0] * k1[i]
-                + _B5[1] * k2[i]
-                + _B5[2] * k3[i]
-                + _B5[3] * k4[i]
+            ytmp[unsafe_offset=i] = y[unsafe_offset=i] + h * (
+                _B5_vals[0] * k1[unsafe_offset=i]
+                + _B5_vals[1] * k2[unsafe_offset=i]
+                + _B5_vals[2] * k3[unsafe_offset=i]
+                + _B5_vals[3] * k4[unsafe_offset=i]
             )
-        rhs(t + _AH[3] * h, ytmp, k5)
+        rhs(t + _AH_vals[3] * h, ytmp, k5)
         nfev += 1
 
         # k6
         for i in range(dim):
-            ytmp[i] = y[i] + h * (
-                _B6[0] * k1[i]
-                + _B6[1] * k2[i]
-                + _B6[2] * k3[i]
-                + _B6[3] * k4[i]
-                + _B6[4] * k5[i]
+            ytmp[unsafe_offset=i] = y[unsafe_offset=i] + h * (
+                _B6_vals[0] * k1[unsafe_offset=i]
+                + _B6_vals[1] * k2[unsafe_offset=i]
+                + _B6_vals[2] * k3[unsafe_offset=i]
+                + _B6_vals[3] * k4[unsafe_offset=i]
+                + _B6_vals[4] * k5[unsafe_offset=i]
             )
-        rhs(t + _AH[4] * h, ytmp, k6)
+        rhs(t + _AH_vals[4] * h, ytmp, k6)
         nfev += 1
 
         # Error estimate
         for i in range(dim):
-            yerr[i] = h * (
-                _EC[1] * k1[i]
-                + _EC[3] * k3[i]
-                + _EC[4] * k4[i]
-                + _EC[5] * k5[i]
-                + _EC[6] * k6[i]
+            yerr[unsafe_offset=i] = h * (
+                _EC_vals[1] * k1[unsafe_offset=i]
+                + _EC_vals[3] * k3[unsafe_offset=i]
+                + _EC_vals[4] * k4[unsafe_offset=i]
+                + _EC_vals[5] * k5[unsafe_offset=i]
+                + _EC_vals[6] * k6[unsafe_offset=i]
             )
 
         # Step control: find max(|yerr[i]| / D0[i])
         var rmax: Float64 = MSL_DBL_EPSILON
         for i in range(dim):
-            var D0 = epsrel * abs(y[i]) + epsabs
-            var r = abs(yerr[i]) / D0
+            var D0 = epsrel * abs(y[unsafe_offset=i]) + epsabs
+            var r = abs(yerr[unsafe_offset=i]) / D0
             if r > rmax:
                 rmax = r
 
         if rmax <= 1.0:
             # Accept step - update y with 5th-order estimate
             for i in range(dim):
-                y[i] += h * (
-                    _C[0] * k1[i]
-                    + _C[2] * k3[i]
-                    + _C[3] * k4[i]
-                    + _C[4] * k5[i]
-                    + _C[5] * k6[i]
+                y[unsafe_offset=i] += h * (
+                    _C_vals[0] * k1[unsafe_offset=i]
+                    + _C_vals[2] * k3[unsafe_offset=i]
+                    + _C_vals[3] * k4[unsafe_offset=i]
+                    + _C_vals[4] * k5[unsafe_offset=i]
+                    + _C_vals[5] * k6[unsafe_offset=i]
                 )
             t += h
             nsteps += 1
