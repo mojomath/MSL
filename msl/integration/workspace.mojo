@@ -143,7 +143,7 @@ struct IntegrationWorkspace(Movable):
         self.order = move.order
         self.level = move.level
 
-    def __del__(deinit self):
+    def __deinit__(deinit self):
         self.alist.unsafe_free()
         self.blist.unsafe_free()
         self.rlist.unsafe_free()
@@ -159,20 +159,20 @@ struct IntegrationWorkspace(Movable):
         self.nrmax = 0
         self.i = 0
         self.maximum_level = 0
-        self.alist[0] = a
-        self.blist[0] = b
-        self.rlist[0] = result
-        self.elist[0] = error
-        self.order[0] = 0
-        self.level[0] = 0
+        self.alist[unsafe_offset=0] = a
+        self.blist[unsafe_offset=0] = b
+        self.rlist[unsafe_offset=0] = result
+        self.elist[unsafe_offset=0] = error
+        self.order[unsafe_offset=0] = 0
+        self.level[unsafe_offset=0] = 0
 
     def retrieve(self) -> Tuple[Float64, Float64, Float64, Float64]:
         """Return (a, b, result, error) for the current worst interval."""
         return (
-            self.alist[self.i],
-            self.blist[self.i],
-            self.rlist[self.i],
-            self.elist[self.i],
+            self.alist[unsafe_offset=self.i],
+            self.blist[unsafe_offset=self.i],
+            self.rlist[unsafe_offset=self.i],
+            self.elist[unsafe_offset=self.i],
         )
 
     def update(
@@ -189,32 +189,32 @@ struct IntegrationWorkspace(Movable):
         """Store the two children of the bisected interval and run qpsrt."""
         var i_max = self.i
         var i_new = self.size
-        var new_level = self.level[i_max] + 1
+        var new_level = self.level[unsafe_offset=i_max] + 1
 
         if error2 > error1:
-            self.alist[i_max] = a2
-            self.blist[i_max] = b2
-            self.rlist[i_max] = area2
-            self.elist[i_max] = error2
-            self.level[i_max] = new_level
+            self.alist[unsafe_offset=i_max] = a2
+            self.blist[unsafe_offset=i_max] = b2
+            self.rlist[unsafe_offset=i_max] = area2
+            self.elist[unsafe_offset=i_max] = error2
+            self.level[unsafe_offset=i_max] = new_level
 
-            self.alist[i_new] = a1
-            self.blist[i_new] = b1
-            self.rlist[i_new] = area1
-            self.elist[i_new] = error1
-            self.level[i_new] = new_level
+            self.alist[unsafe_offset=i_new] = a1
+            self.blist[unsafe_offset=i_new] = b1
+            self.rlist[unsafe_offset=i_new] = area1
+            self.elist[unsafe_offset=i_new] = error1
+            self.level[unsafe_offset=i_new] = new_level
         else:
-            self.alist[i_max] = a1
-            self.blist[i_max] = b1
-            self.rlist[i_max] = area1
-            self.elist[i_max] = error1
-            self.level[i_max] = new_level
+            self.alist[unsafe_offset=i_max] = a1
+            self.blist[unsafe_offset=i_max] = b1
+            self.rlist[unsafe_offset=i_max] = area1
+            self.elist[unsafe_offset=i_max] = error1
+            self.level[unsafe_offset=i_max] = new_level
 
-            self.alist[i_new] = a2
-            self.blist[i_new] = b2
-            self.rlist[i_new] = area2
-            self.elist[i_new] = error2
-            self.level[i_new] = new_level
+            self.alist[unsafe_offset=i_new] = a2
+            self.blist[unsafe_offset=i_new] = b2
+            self.rlist[unsafe_offset=i_new] = area2
+            self.elist[unsafe_offset=i_new] = error2
+            self.level[unsafe_offset=i_new] = new_level
 
         self.size += 1
         if new_level > self.maximum_level:
@@ -226,18 +226,18 @@ struct IntegrationWorkspace(Movable):
         """Maintain order[] as descending-by-error index array."""
         var last = self.size - 1
         var i_nrmax = self.nrmax
-        var i_maxerr = self.order[i_nrmax]
+        var i_maxerr = self.order[unsafe_offset=i_nrmax]
 
         if last < 2:
-            self.order[0] = 0
-            self.order[1] = 1
+            self.order[unsafe_offset=0] = 0
+            self.order[unsafe_offset=1] = 1
             self.i = i_maxerr
             return
 
-        var errmax = self.elist[i_maxerr]
+        var errmax = self.elist[unsafe_offset=i_maxerr]
 
-        while i_nrmax > 0 and errmax > self.elist[self.order[i_nrmax - 1]]:
-            self.order[i_nrmax] = self.order[i_nrmax - 1]
+        while i_nrmax > 0 and errmax > self.elist[unsafe_offset=self.order[unsafe_offset=i_nrmax - 1]]:
+            self.order[unsafe_offset=i_nrmax] = self.order[unsafe_offset=i_nrmax - 1]
             i_nrmax -= 1
 
         var top: Int
@@ -247,30 +247,30 @@ struct IntegrationWorkspace(Movable):
             top = self.limit - last + 1
 
         var idx = i_nrmax + 1
-        while idx < top and errmax < self.elist[self.order[idx]]:
-            self.order[idx - 1] = self.order[idx]
+        while idx < top and errmax < self.elist[unsafe_offset=self.order[unsafe_offset=idx]]:
+            self.order[unsafe_offset=idx - 1] = self.order[unsafe_offset=idx]
             idx += 1
-        self.order[idx - 1] = i_maxerr
+        self.order[unsafe_offset=idx - 1] = i_maxerr
 
-        var errmin = self.elist[last]
+        var errmin = self.elist[unsafe_offset=last]
         var k = top - 1
-        while k > idx - 2 and errmin >= self.elist[self.order[k]]:
-            self.order[k + 1] = self.order[k]
+        while k > idx - 2 and errmin >= self.elist[unsafe_offset=self.order[unsafe_offset=k]]:
+            self.order[unsafe_offset=k + 1] = self.order[unsafe_offset=k]
             k -= 1
-        self.order[k + 1] = last
+        self.order[unsafe_offset=k + 1] = last
 
-        self.i = self.order[i_nrmax]
+        self.i = self.order[unsafe_offset=i_nrmax]
         self.nrmax = i_nrmax
 
     def sum_results(self) -> Float64:
         """Sum all rlist entries."""
         var total: Float64 = 0.0
         for k in range(self.size):
-            total += self.rlist[k]
+            total += self.rlist[unsafe_offset=k]
         return total
 
     def large_interval(self) -> Bool:
-        return self.level[self.i] < self.maximum_level
+        return self.level[unsafe_offset=self.i] < self.maximum_level
 
     def increase_nrmax(mut self) -> Bool:
         """Advance nrmax past fully-refined intervals. Returns True if advanced.
@@ -281,13 +281,13 @@ struct IntegrationWorkspace(Movable):
             last if last > (1 + self.limit // 2) else self.limit + 1 - last
         )
         for _ in range(jupbnd - id):
-            var i_max = self.order[self.nrmax]
+            var i_max = self.order[unsafe_offset=self.nrmax]
             self.i = i_max
-            if self.level[i_max] < self.maximum_level:
+            if self.level[unsafe_offset=i_max] < self.maximum_level:
                 return True
             self.nrmax += 1
         return False
 
     def reset_nrmax(mut self):
         self.nrmax = 0
-        self.i = self.order[0]
+        self.i = self.order[unsafe_offset=0]
