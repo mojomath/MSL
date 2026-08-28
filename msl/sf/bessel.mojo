@@ -36,7 +36,7 @@ Bessel functions.
 # ===----------------------------------------------------------------------=== #
 # Stdlib
 # ===----------------------------------------------------------------------=== #
-from std.collections import InlineArray
+from std.collections import Array
 from std.math import (
     abs,
     cos,
@@ -73,7 +73,7 @@ comptime SFPrecisionApprox: Int = 2
 def cheb_eval[
     N: Int
 ](
-    c: InlineArray[Float64, N], order: Int, a: Float64, b: Float64, x: Float64
+    c: Array[Float64, N], order: Int, a: Float64, b: Float64, x: Float64
 ) -> SFSResult:
     var d: Float64 = 0.0
     var dd: Float64 = 0.0
@@ -108,7 +108,7 @@ def bessel_J0(x: Float64) -> SFSResult:
         result.err = y * y
         return result
     elif y <= 4.0:
-        var bj0_c: InlineArray[Float64, 13] = [
+        var bj0_c: Array[Float64, 13] = [
             0.100254161968939137,
             -0.665223007764405132,
             0.248983703498281314,
@@ -128,7 +128,7 @@ def bessel_J0(x: Float64) -> SFSResult:
         var z = 32.0 / (y * y) - 1.0
         var sqrty = sqrt(y)
 
-        var bm0_c: InlineArray[Float64, 21] = [
+        var bm0_c: Array[Float64, 21] = [
             0.09284961637381644,
             -0.00142987707403484,
             0.00002830579271257,
@@ -153,7 +153,7 @@ def bessel_J0(x: Float64) -> SFSResult:
         ]
         var ca = cheb_eval(bm0_c, 20, -1.0, 1.0, z)
 
-        var bth0_c: InlineArray[Float64, 24] = [
+        var bth0_c: Array[Float64, 24] = [
             -0.24639163774300119,
             0.001737098307508963,
             -0.000062183633402968,
@@ -208,7 +208,7 @@ def bessel_J1(x: Float64) -> SFSResult:
         result.err = y * y
         return result
     elif y <= 4.0:
-        var bj1_c: InlineArray[Float64, 13] = [
+        var bj1_c: Array[Float64, 13] = [
             0.0149447472378184,
             -0.425408808762136,
             0.254653877192681,
@@ -239,7 +239,7 @@ def bessel_J1(x: Float64) -> SFSResult:
         var sqrty = sqrt(y)
         var sign_x = 1.0 if x > 0.0 else -1.0
 
-        var bm1_c: InlineArray[Float64, 21] = [
+        var bm1_c: Array[Float64, 21] = [
             0.1170304509391578,
             -0.0021846037119180,
             0.0000644125585904,
@@ -264,7 +264,7 @@ def bessel_J1(x: Float64) -> SFSResult:
         ]
         var ca = cheb_eval(bm1_c, 20, -1.0, 1.0, z)
 
-        var bth1_c: InlineArray[Float64, 24] = [
+        var bth1_c: Array[Float64, 24] = [
             -0.0789742881163768,
             0.0020532235061588,
             -0.0001144014099977,
@@ -323,7 +323,7 @@ def bessel_Y0(x: Float64) -> SFSResult:
         result.err = 1.0
         return result
     elif y <= 4.0:
-        var by0_c: InlineArray[Float64, 13] = [
+        var by0_c: Array[Float64, 13] = [
             -0.0248403262838782,
             -1.874611202953201,
             0.685402772065160,
@@ -353,7 +353,7 @@ def bessel_Y0(x: Float64) -> SFSResult:
         var z = 32.0 / (y * y) - 1.0
         var sqrty = sqrt(y)
 
-        var bm0_c: InlineArray[Float64, 21] = [
+        var bm0_c: Array[Float64, 21] = [
             0.09284961637381644,
             -0.00142987707403484,
             0.00002830579271257,
@@ -378,7 +378,7 @@ def bessel_Y0(x: Float64) -> SFSResult:
         ]
         var ca = cheb_eval(bm0_c, 20, -1.0, 1.0, z)
 
-        var bth0_c: InlineArray[Float64, 24] = [
+        var bth0_c: Array[Float64, 24] = [
             -0.24639163774300119,
             0.001737098307508963,
             -0.000062183633402968,
@@ -438,7 +438,7 @@ def bessel_Y1(x: Float64) -> SFSResult:
         result.err = 1.0
         return result
     elif y <= 4.0:
-        var by1_c: InlineArray[Float64, 13] = [
+        var by1_c: Array[Float64, 13] = [
             -0.0048476478836790,
             -2.251232040233957,
             0.541141121133259,
@@ -471,7 +471,7 @@ def bessel_Y1(x: Float64) -> SFSResult:
         var z = 32.0 / (y * y) - 1.0
         var sqrty = sqrt(y)
 
-        var bm1_c: InlineArray[Float64, 21] = [
+        var bm1_c: Array[Float64, 21] = [
             0.1170304509391578,
             -0.0021846037119180,
             0.0000644125585904,
@@ -496,7 +496,7 @@ def bessel_Y1(x: Float64) -> SFSResult:
         ]
         var ca = cheb_eval(bm1_c, 20, -1.0, 1.0, z)
 
-        var bth1_c: InlineArray[Float64, 24] = [
+        var bth1_c: Array[Float64, 24] = [
             -0.0789742881163768,
             0.0020532235061588,
             -0.0001144014099977,
@@ -550,7 +550,7 @@ def bessel_I0(x: Float64) -> SFSResult:
         result.err = y * y
         return result
     elif y <= 4.0:
-        var bi0_c: InlineArray[Float64, 13] = [
+        var bi0_c: Array[Float64, 13] = [
             0.0441891604541899,
             0.450358340603743,
             0.127474324165233,
@@ -570,7 +570,7 @@ def bessel_I0(x: Float64) -> SFSResult:
     else:
         var z = 16.0 / (y * y) - 1.0
 
-        var bim0_c: InlineArray[Float64, 19] = [
+        var bim0_c: Array[Float64, 19] = [
             0.249505230526282,
             -0.0000412666474633,
             0.0000018687834231,
@@ -618,7 +618,7 @@ def bessel_I1(x: Float64) -> SFSResult:
         result.err = y * y
         return result
     elif y <= 4.0:
-        var bi1_c: InlineArray[Float64, 13] = [
+        var bi1_c: Array[Float64, 13] = [
             0.0072995592376945,
             0.260805308193142,
             0.115318456458377,
@@ -644,7 +644,7 @@ def bessel_I1(x: Float64) -> SFSResult:
     else:
         var z = 16.0 / (y * y) - 1.0
 
-        var bim1_c: InlineArray[Float64, 19] = [
+        var bim1_c: Array[Float64, 19] = [
             0.333095859022228,
             -0.001469084870662,
             0.0000933771327677,
@@ -698,7 +698,7 @@ def bessel_K0(x: Float64) -> SFSResult:
         result.err = 1.0
         return result
     elif y <= 4.0:
-        var bk0_c: InlineArray[Float64, 13] = [
+        var bk0_c: Array[Float64, 13] = [
             0.0129745833230940,
             -0.104404983299170,
             0.0356689352347854,
@@ -724,7 +724,7 @@ def bessel_K0(x: Float64) -> SFSResult:
     else:
         var z = 16.0 / (y * y) - 1.0
 
-        var bkm0_c: InlineArray[Float64, 19] = [
+        var bkm0_c: Array[Float64, 19] = [
             0.159182408570797,
             -0.0022339519477607,
             0.0000987613446424,
@@ -778,7 +778,7 @@ def bessel_K1(x: Float64) -> SFSResult:
         result.err = 1.0
         return result
     elif y <= 4.0:
-        var bk1_c: InlineArray[Float64, 13] = [
+        var bk1_c: Array[Float64, 13] = [
             -0.0014377633780934,
             -0.150226342304776,
             0.0865054235600797,
@@ -806,7 +806,7 @@ def bessel_K1(x: Float64) -> SFSResult:
     else:
         var z = 16.0 / (y * y) - 1.0
 
-        var bkm1_c: InlineArray[Float64, 19] = [
+        var bkm1_c: Array[Float64, 19] = [
             0.218850767684584,
             -0.0055468183653642,
             0.0003303857646899,

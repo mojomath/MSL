@@ -38,7 +38,7 @@ from msl.integration.qk import _qk_generic
 from msl.integration.workspace import QKResult
 
 
-comptime _xgk: InlineArray[Float64, 11] = [
+comptime _xgk: Array[Float64, 11] = [
     0.995657163025808080735527280689003,
     0.973906528517171720077964012084452,
     0.930157491355708226001207180059508,
@@ -52,7 +52,7 @@ comptime _xgk: InlineArray[Float64, 11] = [
     0.000000000000000000000000000000000,
 ]
 
-comptime _wg: InlineArray[Float64, 5] = [
+comptime _wg: Array[Float64, 5] = [
     0.066671344308688137593568809893332,
     0.149451349150580593145776339657697,
     0.219086362515982043995534934228163,
@@ -60,7 +60,7 @@ comptime _wg: InlineArray[Float64, 5] = [
     0.295524224714752870173892994651338,
 ]
 
-comptime _wgk: InlineArray[Float64, 11] = [
+comptime _wgk: Array[Float64, 11] = [
     0.011694638867371874278064396062192,
     0.032558162307964727478818972459390,
     0.054755896574351996031381300244580,
@@ -90,6 +90,6 @@ def qk21[
     Returns:
         QKResult with result, abserr, resabs, resasc.
     """
-    var fv1 = InlineArray[Float64, 11](uninitialized=True)
-    var fv2 = InlineArray[Float64, 11](uninitialized=True)
+    var fv1 = Array[Float64, 11](uninitialized=True)
+    var fv2 = Array[Float64, 11](uninitialized=True)
     return _qk_generic[integrand](11, _xgk, _wg, _wgk, fv1, fv2, a, b)

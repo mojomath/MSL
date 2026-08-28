@@ -1,6 +1,4 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-
-# ===----------------------------------------------------------------------=== #
 # MSL (Mojo Scientific Library)
 #
 # Derived from GNU Scientific Library (GSL)
@@ -40,7 +38,9 @@ from std.memory import (
     unsafe_memcpy,
     unsafe_memset_zero,
 )
+from std.memory.alloc import unsafe_alloc
 
+from msl import MutExt
 
 # ===----------------------------------------------------------------------=== #
 # Block struct
@@ -70,7 +70,7 @@ struct Block(Copyable, Movable):
         self.size = move.size
         self.data = move.data
 
-    def __del__(deinit self):
+    def __deinit__(deinit self):
         if self.size > 0:
             self.data.unsafe_free()
 
@@ -84,7 +84,7 @@ struct Block(Copyable, Movable):
 
     def immut_ptr(self) -> Pointer[Float64, origin_of(self)]:
         """Return pointer to the block data."""
-        return self.data.as_immutable().unsafe_origin_cast[origin_of(self)]()
+        return self.data.as_imm().unsafe_origin_cast[origin_of(self)]()
 
 
 # ===----------------------------------------------------------------------=== #

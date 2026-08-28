@@ -34,7 +34,7 @@ Gamma functions.
 # ===----------------------------------------------------------------------=== #
 # Stdlib
 # ===----------------------------------------------------------------------=== #
-from std.collections import InlineArray
+from std.collections import Array
 from std.math import (
     abs,
     exp,
@@ -61,7 +61,7 @@ comptime LogRootTwoPi: Float64 = 0.9189385332046727418
 # Lanczos coefficients for gamma=7, kmax=8
 # ===----------------------------------------------------------------------=== #
 
-comptime lanczos_c: InlineArray[Float64, 9] = [
+comptime lanczos_c: Array[Float64, 9] = [
     0.99999999999980993227684700473478,
     676.520368121885098567009190444019,
     -1259.13921672240287047156078755283,
@@ -76,11 +76,11 @@ comptime lanczos_c: InlineArray[Float64, 9] = [
 
 # ===----------------------------------------------------------------------=== #
 # Precomputed factorials for n = 0 to n = 150 (151 values)
-# Limit to 150 (compiler limit on large InlineArray literals)
-# because Mojo cannot compile large InlineArray literals (>200 elements)
+# Limit to 150 (compiler limit on large Array literals)
+# because Mojo cannot compile large Array literals (>200 elements)
 # ===----------------------------------------------------------------------=== #
 
-comptime fact_table: InlineArray[Float64, 151] = [
+comptime fact_table: Array[Float64, 151] = [
     1.00000000000e00,
     1.00000000000e00,
     2.00000000000e00,
@@ -240,7 +240,7 @@ comptime fact_table: InlineArray[Float64, 151] = [
 # n!! = n * (n-2) * (n-4) * ... (ends at 1 or 2)
 # ===----------------------------------------------------------------------=== #
 
-comptime doublefact_table: InlineArray[Float64, 151] = [
+comptime doublefact_table: Array[Float64, 151] = [
     1.00000000000e00,
     1.00000000000e00,
     2.00000000000e00,
@@ -592,7 +592,7 @@ def _gammastar(x: Float64) -> SFSResult:
     if x < 2.0:
         var t = 4.0 / 3.0 * (x - 0.5) - 1.0
 
-        var gstar_cs: InlineArray[Float64, 13] = [
+        var gstar_cs: Array[Float64, 13] = [
             0.00250662827563475527079,
             0.12431359316440235670,
             0.03813225933718515534,
@@ -614,7 +614,7 @@ def _gammastar(x: Float64) -> SFSResult:
     if x < 10.0:
         var t = 0.25 * (x - 2.0) - 1.0
 
-        var gstar_cs2: InlineArray[Float64, 13] = [
+        var gstar_cs2: Array[Float64, 13] = [
             0.00000352962225500422260,
             0.00013059433214083752768,
             0.00104780268165977166,
@@ -648,7 +648,7 @@ def _gammastar(x: Float64) -> SFSResult:
 def cheb_eval[
     N: Int
 ](
-    c: InlineArray[Float64, N], order: Int, a: Float64, b: Float64, x: Float64
+    c: Array[Float64, N], order: Int, a: Float64, b: Float64, x: Float64
 ) -> SFSResult:
     var d: Float64 = 0.0
     var dd: Float64 = 0.0

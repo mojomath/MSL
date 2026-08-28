@@ -36,7 +36,7 @@ from msl.integration.qk import _qk_generic
 from msl.integration.workspace import QKResult
 
 
-comptime _xgk: InlineArray[Float64, 21] = [
+comptime _xgk: Array[Float64, 21] = [
     0.998859031588277663838315576545863,
     0.993128599185094924786122388471320,
     0.981507877450250259193342994720217,
@@ -60,7 +60,7 @@ comptime _xgk: InlineArray[Float64, 21] = [
     0.000000000000000000000000000000000,
 ]
 
-comptime _wg: InlineArray[Float64, 10] = [
+comptime _wg: Array[Float64, 10] = [
     0.017614007139152118311861962351853,
     0.040601429800386941331039952274932,
     0.062672048334109063569506535187042,
@@ -73,7 +73,7 @@ comptime _wg: InlineArray[Float64, 10] = [
     0.152753387130725850698084331955098,
 ]
 
-comptime _wgk: InlineArray[Float64, 21] = [
+comptime _wgk: Array[Float64, 21] = [
     0.003073583718520531501218293246031,
     0.008600269855642942198661787950102,
     0.014626169256971252983787960308868,
@@ -102,6 +102,6 @@ def qk41[
     fn_: def(Float64) capturing -> Float64
 ](a: Float64, b: Float64) -> QKResult:
     """41-point Gauss-Kronrod quadrature."""
-    var fv1 = InlineArray[Float64, 21](uninitialized=True)
-    var fv2 = InlineArray[Float64, 21](uninitialized=True)
+    var fv1 = Array[Float64, 21](uninitialized=True)
+    var fv2 = Array[Float64, 21](uninitialized=True)
     return _qk_generic[fn_](21, _xgk, _wg, _wgk, fv1, fv2, a, b)

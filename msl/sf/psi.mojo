@@ -34,7 +34,7 @@ psi(x) = d/dx ln(Gamma(x))
 # ===----------------------------------------------------------------------=== #
 # Stdlib
 # ===----------------------------------------------------------------------=== #
-from std.collections import InlineArray
+from std.collections import Array
 from std.math import (
     abs,
     log,
@@ -56,7 +56,7 @@ comptime MSL_EULER: Float64 = 0.5772156649015328606065120900824024
 # Chebyshev data: psi on [0,1], t = 2x - 1
 # ===----------------------------------------------------------------------=== #
 
-comptime _psics_data: InlineArray[Float64, 23] = [
+comptime _psics_data: Array[Float64, 23] = [
     -0.038057080835217922,
     0.491415393029387130,
     -0.056815747821244730,
@@ -86,7 +86,7 @@ comptime _psics_data: InlineArray[Float64, 23] = [
 # Chebyshev data: asymptotic psi on [2,inf), t = 8/x^2 - 1
 # ===----------------------------------------------------------------------=== #
 
-comptime _apsics_data: InlineArray[Float64, 16] = [
+comptime _apsics_data: Array[Float64, 16] = [
     -0.0204749044678185,
     -0.0101801271534859,
     0.0000559718725387,

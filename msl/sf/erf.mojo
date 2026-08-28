@@ -34,7 +34,7 @@ Error functions.
 # ===----------------------------------------------------------------------=== #
 # Stdlib
 # ===----------------------------------------------------------------------=== #
-from std.collections import InlineArray
+from std.collections import Array
 from std.math import (
     abs,
     exp,
@@ -60,7 +60,7 @@ from msl.sf.result import SFSResult
 def cheb_eval[
     N: Int
 ](
-    c: InlineArray[Float64, N], order: Int, a: Float64, b: Float64, x: Float64
+    c: Array[Float64, N], order: Int, a: Float64, b: Float64, x: Float64
 ) -> SFSResult:
     var d: Float64 = 0.0
     var dd: Float64 = 0.0
@@ -87,7 +87,7 @@ def cheb_eval[
 
 
 def erfc8_sum(x: Float64) -> Float64:
-    var erfc8_P: InlineArray[Float64, 6] = [
+    var erfc8_P: Array[Float64, 6] = [
         2.97886562639399288862,
         7.409740605964741794425,
         6.1602098531096305440906,
@@ -95,7 +95,7 @@ def erfc8_sum(x: Float64) -> Float64:
         1.275366644729965952479585264,
         0.5641895835477550741253201704,
     ]
-    var erfc8_Q: InlineArray[Float64, 7] = [
+    var erfc8_Q: Array[Float64, 7] = [
         3.3690752069827527677,
         9.608965327192787870698,
         17.08144074746600431571095,
@@ -179,7 +179,7 @@ def erfc(x: Float64) -> SFSResult:
         return result^
 
     if x < 1.0:
-        var et_xlt1: InlineArray[Float64, 21] = [
+        var et_xlt1: Array[Float64, 21] = [
             1.06073416421769980345174155056,
             -0.42582445804381043569204735291,
             0.04955262679620434040357683080,
@@ -209,7 +209,7 @@ def erfc(x: Float64) -> SFSResult:
         return result^
 
     if x < 8.0:
-        var et_xgt1: InlineArray[Float64, 17] = [
+        var et_xgt1: Array[Float64, 17] = [
             2.96978671319817e-16,
             3.62233517000948e-14,
             2.64316767841567e-12,
@@ -256,7 +256,7 @@ def log_erfc(x: Float64) -> SFSResult:
         return result^
 
     if x < 1.0:
-        var et_xlt1: InlineArray[Float64, 21] = [
+        var et_xlt1: Array[Float64, 21] = [
             1.06073416421769980345174155056,
             -0.42582445804381043569204735291,
             0.04955262679620434040357683080,
@@ -286,7 +286,7 @@ def log_erfc(x: Float64) -> SFSResult:
         return result^
 
     if x < 8.0:
-        var et_xgt1: InlineArray[Float64, 17] = [
+        var et_xgt1: Array[Float64, 17] = [
             2.96978671319817e-16,
             3.62233517000948e-14,
             2.64316767841567e-12,

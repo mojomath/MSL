@@ -72,11 +72,11 @@ def _qk_generic[
     integrand: def(Float64) capturing -> Float64,
 ](
     n: Int,
-    xgk: InlineArray[Float64, _],
-    wg: InlineArray[Float64, _],
-    wgk: InlineArray[Float64, _],
-    mut fv1: InlineArray[Float64, _],
-    mut fv2: InlineArray[Float64, _],
+    xgk: Array[Float64, _],
+    wg: Array[Float64, _],
+    wgk: Array[Float64, _],
+    mut fv1: Array[Float64, _],
+    mut fv2: Array[Float64, _],
     a: Float64,
     b: Float64,
 ) -> QKResult:

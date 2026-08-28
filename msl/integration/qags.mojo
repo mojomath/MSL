@@ -36,7 +36,7 @@ better via extrapolation.
 # ===----------------------------------------------------------------------=== #
 # Stdlib
 # ===----------------------------------------------------------------------=== #
-from std.collections import InlineArray
+from std.collections import Array
 from std.math import abs
 
 # ===----------------------------------------------------------------------=== #
@@ -65,14 +65,14 @@ def _subinterval_too_small(a1: Float64, a2: Float64, b2: Float64) -> Bool:
 
 
 struct ExtrapolationTable(Movable):
-    var rlist2: InlineArray[Float64, 52]
-    var res3la: InlineArray[Float64, 3]
+    var rlist2: Array[Float64, 52]
+    var res3la: Array[Float64, 3]
     var n: Int
     var nres: Int
 
     def __init__(out self):
-        self.rlist2 = InlineArray[Float64, 52](fill=0.0)
-        self.res3la = InlineArray[Float64, 3](fill=0.0)
+        self.rlist2 = Array[Float64, 52](fill=0.0)
+        self.res3la = Array[Float64, 3](fill=0.0)
         self.n = 0
         self.nres = 0
 

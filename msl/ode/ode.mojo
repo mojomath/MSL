@@ -226,26 +226,26 @@ def ode_rk4[
 # ===----------------------------------------------------------------------=== #
 
 # Butcher tableau for RKF45
-comptime _AH: InlineArray[Float64, 5] = [
+comptime _AH: Array[Float64, 5] = [
     1.0 / 4.0,
     3.0 / 8.0,
     12.0 / 13.0,
     1.0,
     1.0 / 2.0,
 ]
-comptime _B3: InlineArray[Float64, 2] = [3.0 / 32.0, 9.0 / 32.0]
-comptime _B4: InlineArray[Float64, 3] = [
+comptime _B3: Array[Float64, 2] = [3.0 / 32.0, 9.0 / 32.0]
+comptime _B4: Array[Float64, 3] = [
     1932.0 / 2197.0,
     -7200.0 / 2197.0,
     7296.0 / 2197.0,
 ]
-comptime _B5: InlineArray[Float64, 4] = [
+comptime _B5: Array[Float64, 4] = [
     8341.0 / 4104.0,
     -32832.0 / 4104.0,
     29440.0 / 4104.0,
     -845.0 / 4104.0,
 ]
-comptime _B6: InlineArray[Float64, 5] = [
+comptime _B6: Array[Float64, 5] = [
     -6080.0 / 20520.0,
     41040.0 / 20520.0,
     -28352.0 / 20520.0,
@@ -253,7 +253,7 @@ comptime _B6: InlineArray[Float64, 5] = [
     -5643.0 / 20520.0,
 ]
 # 5th-order output weights (indices 0,2 are zero)
-comptime _C: InlineArray[Float64, 6] = [
+comptime _C: Array[Float64, 6] = [
     902880.0 / 7618050.0,
     0.0,
     3953664.0 / 7618050.0,
@@ -262,7 +262,7 @@ comptime _C: InlineArray[Float64, 6] = [
     277020.0 / 7618050.0,
 ]
 # Error coefficients (difference 5th - 4th order)
-comptime _EC: InlineArray[Float64, 7] = [
+comptime _EC: Array[Float64, 7] = [
     0.0,
     1.0 / 360.0,
     0.0,

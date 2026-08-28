@@ -61,21 +61,21 @@ from msl.integration.workspace import IntegrationResult
 # ===----------------------------------------------------------------------=== #
 
 # Level 1: nodes shared by 10-, 21-, 43-, 87-point rules
-comptime x1: InlineArray[Float64, 5] = [
+comptime x1: Array[Float64, 5] = [
     0.973906528517171720077964012084452,
     0.865063366688984510732096688423493,
     0.679409568299024406234327365114874,
     0.433395394129247190799265943165784,
     0.148874338981631210884826001129720,
 ]
-comptime w10: InlineArray[Float64, 5] = [
+comptime w10: Array[Float64, 5] = [
     0.066671344308688137593568809893332,
     0.149451349150580593145776339657697,
     0.219086362515982043995534934228163,
     0.269266719309996355091226921569469,
     0.295524224714752870173892994651338,
 ]
-comptime w21a: InlineArray[Float64, 5] = [
+comptime w21a: Array[Float64, 5] = [
     0.032558162307964727478818972459390,
     0.075039674810919952767043140916190,
     0.109387158802297641899210590325805,
@@ -84,14 +84,14 @@ comptime w21a: InlineArray[Float64, 5] = [
 ]
 
 # Level 2: additional nodes for 21-point rule (+ centre weight)
-comptime x2: InlineArray[Float64, 5] = [
+comptime x2: Array[Float64, 5] = [
     0.995657163025808080735527280689003,
     0.930157491355708226001207180059508,
     0.780817726586416897063717578345042,
     0.562757134668604683339000099272694,
     0.294392862701460198131126603103866,
 ]
-comptime w21b: InlineArray[Float64, 6] = [
+comptime w21b: Array[Float64, 6] = [
     0.011694638867371874278064396062192,
     0.054755896574351996031381300244580,
     0.093125454583697605535065465083366,
@@ -101,7 +101,7 @@ comptime w21b: InlineArray[Float64, 6] = [
 ]
 
 # Level 3: additional nodes for 43-point rule (+ centre weight)
-comptime x3: InlineArray[Float64, 11] = [
+comptime x3: Array[Float64, 11] = [
     0.999333360901932097599310220204904,
     0.987433402908088869795961478381209,
     0.954807934814266299257919200290931,
@@ -114,7 +114,7 @@ comptime x3: InlineArray[Float64, 11] = [
     0.222254919776601296498260928066212,
     0.074650617461383322043914435796506,
 ]
-comptime w43a: InlineArray[Float64, 10] = [
+comptime w43a: Array[Float64, 10] = [
     0.016296734289666564924281974617663,
     0.037522876120869501461613795898115,
     0.054694902058255442147212685465005,
@@ -126,7 +126,7 @@ comptime w43a: InlineArray[Float64, 10] = [
     0.061744995201442546108064816314038,
     0.071387267268693397076946364703380,
 ]
-comptime w43b: InlineArray[Float64, 12] = [
+comptime w43b: Array[Float64, 12] = [
     0.001844477640212414100389106552965,
     0.010798689585891651740465406741293,
     0.021895363867795428102523123075149,
@@ -142,7 +142,7 @@ comptime w43b: InlineArray[Float64, 12] = [
 ]
 
 # Level 4: additional nodes for 87-point rule (+ centre weight)
-comptime x4: InlineArray[Float64, 22] = [
+comptime x4: Array[Float64, 22] = [
     0.999902977262729234490529830591582,
     0.997989895986678745427496322365960,
     0.992175497860687222808523352251425,
@@ -166,7 +166,7 @@ comptime x4: InlineArray[Float64, 22] = [
     0.111842213179907478300294509297585,
     0.037352123394619963421895427476047,
 ]
-comptime w87a: InlineArray[Float64, 21] = [
+comptime w87a: Array[Float64, 21] = [
     0.008148377384149172900002878448190,
     0.018761438201562822243935059003794,
     0.027347451050052286161582829741283,
@@ -189,7 +189,7 @@ comptime w87a: InlineArray[Float64, 21] = [
     0.036412220731351787562801163687577,
     0.037253875503047708539592001191226,
 ]
-comptime w87b: InlineArray[Float64, 23] = [
+comptime w87b: Array[Float64, 23] = [
     0.000274145563762072350016527092881,
     0.001807124155057942948341311753254,
     0.004096869282759164864458070683480,
@@ -263,11 +263,11 @@ def qng_integrate[
     var f_center = fn_(center)
 
     # savfun stores paired sums f(c+x)+f(c-x) for all 21 non-centre points
-    var savfun = InlineArray[Float64, 21](uninitialized=True)
-    var fv1 = InlineArray[Float64, 5](uninitialized=True)
-    var fv2 = InlineArray[Float64, 5](uninitialized=True)
-    var fv3 = InlineArray[Float64, 5](uninitialized=True)
-    var fv4 = InlineArray[Float64, 5](uninitialized=True)
+    var savfun = Array[Float64, 21](uninitialized=True)
+    var fv1 = Array[Float64, 5](uninitialized=True)
+    var fv2 = Array[Float64, 5](uninitialized=True)
+    var fv3 = Array[Float64, 5](uninitialized=True)
+    var fv4 = Array[Float64, 5](uninitialized=True)
 
     # ===--- Level 1: 10-point Gauss / 21-point Kronrod ---===
     var res10: Float64 = 0.0

@@ -34,7 +34,7 @@ Airy functions Ai(x) and Bi(x) and their derivatives.
 # ===----------------------------------------------------------------------=== #
 # Stdlib
 # ===----------------------------------------------------------------------=== #
-from std.collections import InlineArray
+from std.collections import Array
 from std.math import (
     abs,
     cos,
@@ -67,7 +67,7 @@ def cheb_eval_mode[
     N: Int,
     //,
 ](
-    c: InlineArray[Float64, N],
+    c: Array[Float64, N],
     order: Int,
     a: Float64,
     b: Float64,
@@ -118,7 +118,7 @@ def airy_mod_phase(x: Float64, mode: Int) -> Tuple[SFSResult, SFSResult]:
     if x < -2.0:
         z = 16.0 / (x * x * x) + 1.0
 
-        var am21_c: InlineArray[Float64, 37] = [
+        var am21_c: Array[Float64, 37] = [
             0.0065809191761485,
             0.0023675984685722,
             0.0001324741670371,
@@ -159,7 +159,7 @@ def airy_mod_phase(x: Float64, mode: Int) -> Tuple[SFSResult, SFSResult]:
         ]
         result_m = cheb_eval_mode(am21_c, 36, a, b, 20, z, mode)
 
-        var ath1_c: InlineArray[Float64, 36] = [
+        var ath1_c: Array[Float64, 36] = [
             -0.07125837815669365,
             -0.00590471979831451,
             -0.00012114544069499,
@@ -202,7 +202,7 @@ def airy_mod_phase(x: Float64, mode: Int) -> Tuple[SFSResult, SFSResult]:
     elif x <= -1.0:
         z = (16.0 / (x * x * x) + 9.0) / 7.0
 
-        var am22_c: InlineArray[Float64, 33] = [
+        var am22_c: Array[Float64, 33] = [
             -0.01562844480625341,
             0.00778336445239681,
             0.00086705777047718,
@@ -239,7 +239,7 @@ def airy_mod_phase(x: Float64, mode: Int) -> Tuple[SFSResult, SFSResult]:
         ]
         result_m = cheb_eval_mode(am22_c, 32, a, b, 15, z, mode)
 
-        var ath2_c: InlineArray[Float64, 32] = [
+        var ath2_c: Array[Float64, 32] = [
             0.00440527345871877,
             -0.03042919452318455,
             -0.00138565328377179,
@@ -300,7 +300,7 @@ def airy_aie(x: Float64, mode: Int) -> SFSResult:
     var z = 2.0 / (x * sqx) - 1.0
     var y = sqrt(sqx)
 
-    var aip_c: InlineArray[Float64, 12] = [
+    var aip_c: Array[Float64, 12] = [
         0.0703125,
         -0.23236044689120375,
         -0.17280839208486408,
@@ -334,7 +334,7 @@ def airy_bie(x: Float64, mode: Int) -> SFSResult:
         z = ATR / (x * sqx) + BTR
         var y = sqrt(sqx)
 
-        var bip_c: InlineArray[Float64, 12] = [
+        var bip_c: Array[Float64, 12] = [
             0.625,
             1.0794554296523708,
             0.4497656761576845,
@@ -356,7 +356,7 @@ def airy_bie(x: Float64, mode: Int) -> SFSResult:
         z = 16.0 / (x * sqx) - 1.0
         var y = sqrt(sqx)
 
-        var bip2_c: InlineArray[Float64, 13] = [
+        var bip2_c: Array[Float64, 13] = [
             0.625,
             1.31307720189604,
             0.42626309709883,
@@ -415,7 +415,7 @@ def airy_ai(x: Float64, mode: Int = SFPrecisionDouble) -> SFSResult:
     elif x <= 1.0:
         var z = x * x * x
 
-        var aif_c: InlineArray[Float64, 9] = [
+        var aif_c: Array[Float64, 9] = [
             -0.03797135849666999750,
             0.05919188853726363857,
             0.00098629280577279975,
@@ -428,7 +428,7 @@ def airy_ai(x: Float64, mode: Int = SFPrecisionDouble) -> SFSResult:
         ]
         var result_c0 = cheb_eval_mode(aif_c, 8, -1.0, 1.0, 8, z, mode)
 
-        var aig_c: InlineArray[Float64, 8] = [
+        var aig_c: Array[Float64, 8] = [
             0.01815236558116127,
             0.02157256316601076,
             0.00025678356987483,
@@ -476,7 +476,7 @@ def airy_bi(x: Float64, mode: Int = SFPrecisionDouble) -> SFSResult:
     elif x <= 1.0:
         var z = x * x * x
 
-        var bif_c: InlineArray[Float64, 9] = [
+        var bif_c: Array[Float64, 9] = [
             -0.01673021647198664948,
             0.10252335834249445610,
             0.00170830925073815165,
@@ -489,7 +489,7 @@ def airy_bi(x: Float64, mode: Int = SFPrecisionDouble) -> SFSResult:
         ]
         var result_c0 = cheb_eval_mode(bif_c, 8, -1.0, 1.0, 8, z, mode)
 
-        var big_c: InlineArray[Float64, 8] = [
+        var big_c: Array[Float64, 8] = [
             0.02246622324857452,
             0.03736477545301955,
             0.00044476218957212,
@@ -509,7 +509,7 @@ def airy_bi(x: Float64, mode: Int = SFPrecisionDouble) -> SFSResult:
     elif x < 2.0:
         var z = 2.0 * x * x * x / (x * x) - 1.0
 
-        var aip_c: InlineArray[Float64, 12] = [
+        var aip_c: Array[Float64, 12] = [
             0.0703125,
             -0.23236044689120375,
             -0.17280839208486408,
@@ -525,7 +525,7 @@ def airy_bi(x: Float64, mode: Int = SFPrecisionDouble) -> SFSResult:
         ]
         var result_c0 = cheb_eval_mode(aip_c, 11, -1.0, 1.0, 8, z, mode)
 
-        var aig_c: InlineArray[Float64, 8] = [
+        var aig_c: Array[Float64, 8] = [
             0.01815236558116127,
             0.02157256316601076,
             0.00025678356987483,
@@ -549,7 +549,7 @@ def airy_bi(x: Float64, mode: Int = SFPrecisionDouble) -> SFSResult:
     else:
         var z = 16.0 / (x * sqrt(x)) - 1.0
 
-        var bip_c: InlineArray[Float64, 12] = [
+        var bip_c: Array[Float64, 12] = [
             0.625,
             1.0794554296523708,
             0.4497656761576845,
@@ -565,7 +565,7 @@ def airy_bi(x: Float64, mode: Int = SFPrecisionDouble) -> SFSResult:
         ]
         var result_c0 = cheb_eval_mode(bip_c, 11, -1.0, 1.0, 8, z, mode)
 
-        var big_c: InlineArray[Float64, 8] = [
+        var big_c: Array[Float64, 8] = [
             0.02246622324857452,
             0.03736477545301955,
             0.00044476218957212,
@@ -603,7 +603,7 @@ def airy_ai_scaled(x: Float64, mode: Int = SFPrecisionDouble) -> SFSResult:
     elif x <= 1.0:
         var z = x * x * x
 
-        var aif_c: InlineArray[Float64, 9] = [
+        var aif_c: Array[Float64, 9] = [
             -0.03797135849666999750,
             0.05919188853726363857,
             0.00098629280577279975,
@@ -616,7 +616,7 @@ def airy_ai_scaled(x: Float64, mode: Int = SFPrecisionDouble) -> SFSResult:
         ]
         var result_c0 = cheb_eval_mode(aif_c, 8, -1.0, 1.0, 8, z, mode)
 
-        var aig_c: InlineArray[Float64, 8] = [
+        var aig_c: Array[Float64, 8] = [
             0.01815236558116127,
             0.02157256316601076,
             0.00025678356987483,
@@ -660,7 +660,7 @@ def airy_bi_scaled(x: Float64, mode: Int = SFPrecisionDouble) -> SFSResult:
     elif x <= 1.0:
         var z = x * x * x
 
-        var bif_c: InlineArray[Float64, 9] = [
+        var bif_c: Array[Float64, 9] = [
             -0.01673021647198664948,
             0.10252335834249445610,
             0.00170830925073815165,
@@ -673,7 +673,7 @@ def airy_bi_scaled(x: Float64, mode: Int = SFPrecisionDouble) -> SFSResult:
         ]
         var result_c0 = cheb_eval_mode(bif_c, 8, -1.0, 1.0, 8, z, mode)
 
-        var big_c: InlineArray[Float64, 8] = [
+        var big_c: Array[Float64, 8] = [
             0.02246622324857452,
             0.03736477545301955,
             0.00044476218957212,
@@ -735,7 +735,7 @@ def airy_ai_deriv_scaled(
         var x2 = x * x
         var z = x2 * x2
 
-        var aif_c: InlineArray[Float64, 9] = [
+        var aif_c: Array[Float64, 9] = [
             -0.03797135849666999750,
             0.05919188853726363857,
             0.00098629280577279975,
@@ -748,7 +748,7 @@ def airy_ai_deriv_scaled(
         ]
         var c0 = cheb_eval_mode(aif_c, 8, -1.0, 1.0, 8, z, mode)
 
-        var aig_c: InlineArray[Float64, 8] = [
+        var aig_c: Array[Float64, 8] = [
             0.01815236558116127,
             0.02157256316601076,
             0.00025678356987483,
@@ -770,7 +770,7 @@ def airy_ai_deriv_scaled(
         var x32 = x * sqx
         var z = 2.0 / (x * sqx) - 1.0
 
-        var aip1_c: InlineArray[Float64, 9] = [
+        var aip1_c: Array[Float64, 9] = [
             -0.375,
             0.3745990447334779,
             0.1928507877655783,
@@ -818,7 +818,7 @@ def airy_bi_deriv_scaled(
         var x2 = x * x
         var z = x2 * x2
 
-        var bif_c: InlineArray[Float64, 9] = [
+        var bif_c: Array[Float64, 9] = [
             -0.01673021647198664948,
             0.10252335834249445610,
             0.00170830925073815165,
@@ -831,7 +831,7 @@ def airy_bi_deriv_scaled(
         ]
         var c0 = cheb_eval_mode(bif_c, 8, -1.0, 1.0, 8, z, mode)
 
-        var big_c: InlineArray[Float64, 8] = [
+        var big_c: Array[Float64, 8] = [
             0.02246622324857452,
             0.03736477545301955,
             0.00044476218957212,
@@ -855,7 +855,7 @@ def airy_bi_deriv_scaled(
             var sqx = sqrt(x)
             var z = 8.7506905708484345 / (x * sqx) - 2.0938363213560543
 
-            var bip1_c: InlineArray[Float64, 9] = [
+            var bip1_c: Array[Float64, 9] = [
                 0.375,
                 0.2713721561297926,
                 0.1250593785093774,
@@ -875,7 +875,7 @@ def airy_bi_deriv_scaled(
             var sqx = sqrt(x)
             var z = 16.0 / (x * sqx) - 1.0
 
-            var bip1_c: InlineArray[Float64, 9] = [
+            var bip1_c: Array[Float64, 9] = [
                 0.375,
                 0.2713721561297926,
                 0.1250593785093774,
