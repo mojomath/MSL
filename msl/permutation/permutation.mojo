@@ -55,7 +55,7 @@ struct Permutation(Copyable, Movable):
             self.data.unsafe_store(i, Scalar[DType.int](i))
 
     def __del__(deinit self):
-        self.data.free()
+        self.data.unsafe_free()
 
     def get(self, i: Int) -> Int:
         """Get element at index i."""

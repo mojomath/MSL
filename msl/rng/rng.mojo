@@ -92,7 +92,7 @@ struct MTState(Copyable, Movable):
             self.state.unsafe_store(i, copy.state[i])
 
     def __del__(deinit self):
-        self.state.free()
+        self.state.unsafe_free()
 
     def __getitem__(self, i: Int) -> UInt64:
         return self.state[i]

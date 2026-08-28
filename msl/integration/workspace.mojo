@@ -138,12 +138,12 @@ struct IntegrationWorkspace(Movable):
         self.level = move.level
 
     def __del__(deinit self):
-        self.alist.free()
-        self.blist.free()
-        self.rlist.free()
-        self.elist.free()
-        self.order.free()
-        self.level.free()
+        self.alist.unsafe_free()
+        self.blist.unsafe_free()
+        self.rlist.unsafe_free()
+        self.elist.unsafe_free()
+        self.order.unsafe_free()
+        self.level.unsafe_free()
 
     def initialise(
         mut self, a: Float64, b: Float64, result: Float64, error: Float64

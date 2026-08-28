@@ -208,9 +208,9 @@ struct CubicSpline[mut: Bool, origin: Origin[mut=mut], //](Movable):
         self._d = move._d
 
     def __del__(deinit self):
-        self._b.free()
-        self._c.free()
-        self._d.free()
+        self._b.unsafe_free()
+        self._c.unsafe_free()
+        self._d.unsafe_free()
 
     def _build(mut self):
         """Solve tridiagonal system for second derivatives."""
@@ -253,9 +253,9 @@ struct CubicSpline[mut: Bool, origin: Origin[mut=mut], //](Movable):
             self._b[i] = dy - h * (self._c[i + 1] + 2.0 * self._c[i]) / 3.0
             self._d[i] = (self._c[i + 1] - self._c[i]) / (3.0 * h)
 
-        g.free()
-        diag.free()
-        offdiag.free()
+        g.unsafe_free()
+        diag.unsafe_free()
+        offdiag.unsafe_free()
 
     def eval(self, x: Float64) -> InterpResult:
         """Evaluate spline at x."""
@@ -352,9 +352,9 @@ struct AkimaSpline[mut: Bool, origin: Origin[mut=mut], //](Movable):
         self._d = move._d
 
     def __del__(deinit self):
-        self._b.free()
-        self._c.free()
-        self._d.free()
+        self._b.unsafe_free()
+        self._c.unsafe_free()
+        self._d.unsafe_free()
 
     def _build(mut self):
         """Compute Akima coefficients."""
@@ -403,7 +403,7 @@ struct AkimaSpline[mut: Bool, origin: Origin[mut=mut], //](Movable):
             self._c[i] = (3.0 * m2 - 2.0 * t_l - t_r) / h
             self._d[i] = (t_l + t_r - 2.0 * m2) / (h * h)
 
-        m.free()
+        m.unsafe_free()
 
     def eval(self, x: Float64) -> InterpResult:
         """Evaluate spline at x."""

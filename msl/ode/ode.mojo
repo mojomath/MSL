@@ -191,11 +191,11 @@ def ode_rk4[
         t += step
         nsteps += 1
 
-    k1.free()
-    k2.free()
-    k3.free()
-    k4.free()
-    ytmp.free()
+    k1.unsafe_free()
+    k2.unsafe_free()
+    k3.unsafe_free()
+    k4.unsafe_free()
+    ytmp.unsafe_free()
 
     if nsteps >= max_steps and t < t1 - MSL_DBL_EPSILON * abs(t1):
         return OdeResult(
@@ -411,14 +411,14 @@ def ode_rkf45[
             h_new = max(h_new, h_min)
         h = h_new
 
-    k1.free()
-    k2.free()
-    k3.free()
-    k4.free()
-    k5.free()
-    k6.free()
-    ytmp.free()
-    yerr.free()
+    k1.unsafe_free()
+    k2.unsafe_free()
+    k3.unsafe_free()
+    k4.unsafe_free()
+    k5.unsafe_free()
+    k6.unsafe_free()
+    ytmp.unsafe_free()
+    yerr.unsafe_free()
 
     if nsteps >= max_steps and t < t1 - MSL_DBL_EPSILON * abs(t1):
         return OdeResult(

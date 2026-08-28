@@ -67,7 +67,7 @@ struct Block(Copyable, Movable):
 
     def __del__(deinit self):
         if self.size > 0:
-            self.data.free()
+            self.data.unsafe_free()
 
     def nelems(self) -> Int:
         """Return the size of the block."""

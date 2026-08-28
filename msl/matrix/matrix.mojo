@@ -91,7 +91,7 @@ struct Matrix(Copyable, Movable):
 
     def __del__(deinit self):
         if self.owner:
-            self.data.free()
+            self.data.unsafe_free()
 
     def size1(self) -> Int:
         """Return number of rows."""

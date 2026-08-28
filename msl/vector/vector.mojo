@@ -94,7 +94,7 @@ struct Vector(Copyable, Movable):
 
     def __del__(deinit self):
         if self.owner:
-            self.data.free()
+            self.data.unsafe_free()
 
     def get_size(self) -> Int:
         """Return the size of the vector."""
