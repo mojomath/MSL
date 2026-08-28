@@ -317,7 +317,9 @@ def airy_aie(x: Float64, mode: Int) -> SFSResult:
         -0.00000001684929847,
         -0.00000000120652576,
     ]
-    var result_c = cheb_eval_mode(materialize[aip_c](), 11, -1.0, 1.0, 8, z, mode)
+    var result_c = cheb_eval_mode(
+        materialize[aip_c](), 11, -1.0, 1.0, 8, z, mode
+    )
 
     var result = SFSResult()
     result.val = (0.28125 + result_c.val) / y
@@ -351,7 +353,9 @@ def airy_bie(x: Float64, mode: Int) -> SFSResult:
             9.636538e-8,
             8.139e-9,
         ]
-        var result_c = cheb_eval_mode(materialize[bip_c](), 11, -1.0, 1.0, 8, z, mode)
+        var result_c = cheb_eval_mode(
+            materialize[bip_c](), 11, -1.0, 1.0, 8, z, mode
+        )
         result.val = (0.625 + result_c.val) / y
         result.err = result_c.err / y + MSL_DBL_EPSILON * abs(result.val)
     else:
@@ -374,7 +378,9 @@ def airy_bie(x: Float64, mode: Int) -> SFSResult:
             2.639e-9,
             1.6e-10,
         ]
-        var result_c = cheb_eval_mode(materialize[bip2_c](), 12, -1.0, 1.0, 9, z, mode)
+        var result_c = cheb_eval_mode(
+            materialize[bip2_c](), 12, -1.0, 1.0, 9, z, mode
+        )
         result.val = (0.625 + result_c.val) / y
         result.err = result_c.err / y + MSL_DBL_EPSILON * abs(result.val)
     return result^
@@ -427,7 +433,9 @@ def airy_ai(x: Float64, mode: Int = SFPrecisionDouble) -> SFSResult:
             0.00000000000000012014,
             0.00000000000000000010,
         ]
-        var result_c0 = cheb_eval_mode(materialize[aif_c](), 8, -1.0, 1.0, 8, z, mode)
+        var result_c0 = cheb_eval_mode(
+            materialize[aif_c](), 8, -1.0, 1.0, 8, z, mode
+        )
 
         comptime aig_c: Array[Float64, 8] = [
             0.01815236558116127,
@@ -439,7 +447,9 @@ def airy_ai(x: Float64, mode: Int = SFPrecisionDouble) -> SFSResult:
             0.00000000000001392,
             0.00000000000000001,
         ]
-        var result_c1 = cheb_eval_mode(materialize[aig_c](), 7, -1.0, 1.0, 7, z, mode)
+        var result_c1 = cheb_eval_mode(
+            materialize[aig_c](), 7, -1.0, 1.0, 7, z, mode
+        )
 
         var result = SFSResult()
         result.val = 0.375 + (result_c0.val - x * (0.25 + result_c1.val))
@@ -486,7 +496,9 @@ def airy_bi(x: Float64, mode: Int = SFPrecisionDouble) -> SFSResult:
             0.00000000000000020810,
             0.00000000000000000018,
         ]
-        var result_c0 = cheb_eval_mode(materialize[bif_c](), 8, -1.0, 1.0, 8, z, mode)
+        var result_c0 = cheb_eval_mode(
+            materialize[bif_c](), 8, -1.0, 1.0, 8, z, mode
+        )
 
         comptime big_c: Array[Float64, 8] = [
             0.02246622324857452,
@@ -498,7 +510,9 @@ def airy_bi(x: Float64, mode: Int = SFPrecisionDouble) -> SFSResult:
             0.00000000000002411,
             0.00000000000000002,
         ]
-        var result_c1 = cheb_eval_mode(materialize[big_c](), 7, -1.0, 1.0, 7, z, mode)
+        var result_c1 = cheb_eval_mode(
+            materialize[big_c](), 7, -1.0, 1.0, 7, z, mode
+        )
 
         var result = SFSResult()
         result.val = 0.375 + (result_c0.val - x * (0.25 + result_c1.val))
@@ -522,7 +536,9 @@ def airy_bi(x: Float64, mode: Int = SFPrecisionDouble) -> SFSResult:
             -0.00000001684929847,
             -0.00000000120652576,
         ]
-        var result_c0 = cheb_eval_mode(materialize[aip_c](), 11, -1.0, 1.0, 8, z, mode)
+        var result_c0 = cheb_eval_mode(
+            materialize[aip_c](), 11, -1.0, 1.0, 8, z, mode
+        )
 
         comptime aig_c: Array[Float64, 8] = [
             0.01815236558116127,
@@ -534,7 +550,9 @@ def airy_bi(x: Float64, mode: Int = SFPrecisionDouble) -> SFSResult:
             0.00000000000001392,
             0.00000000000000001,
         ]
-        var result_c1 = cheb_eval_mode(materialize[aig_c](), 7, -1.0, 1.0, 7, z, mode)
+        var result_c1 = cheb_eval_mode(
+            materialize[aig_c](), 7, -1.0, 1.0, 7, z, mode
+        )
 
         var x32 = x * sqrt(x)
 
@@ -562,7 +580,9 @@ def airy_bi(x: Float64, mode: Int = SFPrecisionDouble) -> SFSResult:
             9.636538e-8,
             8.139e-9,
         ]
-        var result_c0 = cheb_eval_mode(materialize[bip_c](), 11, -1.0, 1.0, 8, z, mode)
+        var result_c0 = cheb_eval_mode(
+            materialize[bip_c](), 11, -1.0, 1.0, 8, z, mode
+        )
 
         comptime big_c: Array[Float64, 8] = [
             0.02246622324857452,
@@ -574,7 +594,9 @@ def airy_bi(x: Float64, mode: Int = SFPrecisionDouble) -> SFSResult:
             0.00000000000002411,
             0.00000000000000002,
         ]
-        var result_c1 = cheb_eval_mode(materialize[big_c](), 7, -1.0, 1.0, 7, z, mode)
+        var result_c1 = cheb_eval_mode(
+            materialize[big_c](), 7, -1.0, 1.0, 7, z, mode
+        )
 
         var y = sqrt(sqrt(x))
 

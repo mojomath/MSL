@@ -188,25 +188,36 @@ def ode_rk4[
 
         # k2 = f(t + h/2, y + h/2 * k1)
         for i in range(dim):
-            ytmp[unsafe_offset=i] = y[unsafe_offset=i] + 0.5 * step * k1[unsafe_offset=i]
+            ytmp[unsafe_offset=i] = (
+                y[unsafe_offset=i] + 0.5 * step * k1[unsafe_offset=i]
+            )
         rhs(t + 0.5 * step, ytmp, k2)
         nfev += 1
 
         # k3 = f(t + h/2, y + h/2 * k2)
         for i in range(dim):
-            ytmp[unsafe_offset=i] = y[unsafe_offset=i] + 0.5 * step * k2[unsafe_offset=i]
+            ytmp[unsafe_offset=i] = (
+                y[unsafe_offset=i] + 0.5 * step * k2[unsafe_offset=i]
+            )
         rhs(t + 0.5 * step, ytmp, k3)
         nfev += 1
 
         # k4 = f(t + h, y + h * k3)
         for i in range(dim):
-            ytmp[unsafe_offset=i] = y[unsafe_offset=i] + step * k3[unsafe_offset=i]
+            ytmp[unsafe_offset=i] = (
+                y[unsafe_offset=i] + step * k3[unsafe_offset=i]
+            )
         rhs(t + step, ytmp, k4)
         nfev += 1
 
         # y_new = y + h/6 * (k1 + 2*k2 + 2*k3 + k4)
         for i in range(dim):
-            y[unsafe_offset=i] += (step / 6.0) * (k1[unsafe_offset=i] + 2.0 * k2[unsafe_offset=i] + 2.0 * k3[unsafe_offset=i] + k4[unsafe_offset=i])
+            y[unsafe_offset=i] += (step / 6.0) * (
+                k1[unsafe_offset=i]
+                + 2.0 * k2[unsafe_offset=i]
+                + 2.0 * k3[unsafe_offset=i]
+                + k4[unsafe_offset=i]
+            )
 
         t += step
         nsteps += 1
@@ -358,20 +369,27 @@ def ode_rkf45[
 
         # k2
         for i in range(dim):
-            ytmp[unsafe_offset=i] = y[unsafe_offset=i] + h * _AH_vals[0] * k1[unsafe_offset=i]
+            ytmp[unsafe_offset=i] = (
+                y[unsafe_offset=i] + h * _AH_vals[0] * k1[unsafe_offset=i]
+            )
         rhs(t + _AH_vals[0] * h, ytmp, k2)
         nfev += 1
 
         # k3
         for i in range(dim):
-            ytmp[unsafe_offset=i] = y[unsafe_offset=i] + h * (_B3_vals[0] * k1[unsafe_offset=i] + _B3_vals[1] * k2[unsafe_offset=i])
+            ytmp[unsafe_offset=i] = y[unsafe_offset=i] + h * (
+                _B3_vals[0] * k1[unsafe_offset=i]
+                + _B3_vals[1] * k2[unsafe_offset=i]
+            )
         rhs(t + _AH_vals[1] * h, ytmp, k3)
         nfev += 1
 
         # k4
         for i in range(dim):
             ytmp[unsafe_offset=i] = y[unsafe_offset=i] + h * (
-                _B4_vals[0] * k1[unsafe_offset=i] + _B4_vals[1] * k2[unsafe_offset=i] + _B4_vals[2] * k3[unsafe_offset=i]
+                _B4_vals[0] * k1[unsafe_offset=i]
+                + _B4_vals[1] * k2[unsafe_offset=i]
+                + _B4_vals[2] * k3[unsafe_offset=i]
             )
         rhs(t + _AH_vals[2] * h, ytmp, k4)
         nfev += 1

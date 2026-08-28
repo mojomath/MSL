@@ -116,7 +116,9 @@ def _psi_x(x: Float64) -> Float64:
     if x >= 2.0:
         var t = 8.0 / (x * x) - 1.0
         return (
-            log(x) - 0.5 / x + cheb_eval[16](materialize[_apsics_data](), 15, -1.0, 1.0, t).val
+            log(x)
+            - 0.5 / x
+            + cheb_eval[16](materialize[_apsics_data](), 15, -1.0, 1.0, t).val
         )
     elif x >= 1.0:
         return cheb_eval[23](
@@ -125,7 +127,9 @@ def _psi_x(x: Float64) -> Float64:
     else:
         return (
             -1.0 / x
-            + cheb_eval[23](materialize[_psics_data](), 22, -1.0, 1.0, 2.0 * x - 1.0).val
+            + cheb_eval[23](
+                materialize[_psics_data](), 22, -1.0, 1.0, 2.0 * x - 1.0
+            ).val
         )
 
 

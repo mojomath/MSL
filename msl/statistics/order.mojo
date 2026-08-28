@@ -156,31 +156,54 @@ def stats_select[
 
     while True:
         if right <= left + 1:
-            if right == left + 1 and data[unsafe_offset=right * stride] < data[unsafe_offset=left * stride]:
+            if (
+                right == left + 1
+                and data[unsafe_offset=right * stride]
+                < data[unsafe_offset=left * stride]
+            ):
                 var tmp = data[unsafe_offset=left * stride]
-                data[unsafe_offset=left * stride] = data[unsafe_offset=right * stride]
+                data[unsafe_offset=left * stride] = data[
+                    unsafe_offset=right * stride
+                ]
                 data[unsafe_offset=right * stride] = tmp
             return data[unsafe_offset=k * stride]
 
         var mid = (left + right) >> 1
 
         var tmp = data[unsafe_offset=mid * stride]
-        data[unsafe_offset=mid * stride] = data[unsafe_offset=(left + 1) * stride]
+        data[unsafe_offset=mid * stride] = data[
+            unsafe_offset=(left + 1) * stride
+        ]
         data[unsafe_offset=(left + 1) * stride] = tmp
 
-        if data[unsafe_offset=left * stride] > data[unsafe_offset=right * stride]:
+        if (
+            data[unsafe_offset=left * stride]
+            > data[unsafe_offset=right * stride]
+        ):
             tmp = data[unsafe_offset=left * stride]
-            data[unsafe_offset=left * stride] = data[unsafe_offset=right * stride]
+            data[unsafe_offset=left * stride] = data[
+                unsafe_offset=right * stride
+            ]
             data[unsafe_offset=right * stride] = tmp
 
-        if data[unsafe_offset=(left + 1) * stride] > data[unsafe_offset=right * stride]:
+        if (
+            data[unsafe_offset=(left + 1) * stride]
+            > data[unsafe_offset=right * stride]
+        ):
             tmp = data[unsafe_offset=(left + 1) * stride]
-            data[unsafe_offset=(left + 1) * stride] = data[unsafe_offset=right * stride]
+            data[unsafe_offset=(left + 1) * stride] = data[
+                unsafe_offset=right * stride
+            ]
             data[unsafe_offset=right * stride] = tmp
 
-        if data[unsafe_offset=left * stride] > data[unsafe_offset=(left + 1) * stride]:
+        if (
+            data[unsafe_offset=left * stride]
+            > data[unsafe_offset=(left + 1) * stride]
+        ):
             tmp = data[unsafe_offset=left * stride]
-            data[unsafe_offset=left * stride] = data[unsafe_offset=(left + 1) * stride]
+            data[unsafe_offset=left * stride] = data[
+                unsafe_offset=(left + 1) * stride
+            ]
             data[unsafe_offset=(left + 1) * stride] = tmp
 
         var i = left + 1
@@ -226,7 +249,10 @@ def stats_median_from_sorted_data[
     var rhs = n // 2
     if lhs == rhs:
         return sorted_data[unsafe_offset=lhs * stride]
-    return (sorted_data[unsafe_offset=lhs * stride] + sorted_data[unsafe_offset=rhs * stride]) * 0.5
+    return (
+        sorted_data[unsafe_offset=lhs * stride]
+        + sorted_data[unsafe_offset=rhs * stride]
+    ) * 0.5
 
 
 def stats_median[
@@ -264,9 +290,9 @@ def stats_quantile_from_sorted_data[
     var delta = index - Float64(lhs)
     if lhs == n - 1:
         return sorted_data[unsafe_offset=lhs * stride]
-    return (1.0 - delta) * sorted_data[unsafe_offset=lhs * stride] + delta * sorted_data[unsafe_offset=
-        (lhs + 1) * stride
-    ]
+    return (1.0 - delta) * sorted_data[
+        unsafe_offset=lhs * stride
+    ] + delta * sorted_data[unsafe_offset=(lhs + 1) * stride]
 
 
 # ---------------------------------------------------------------------------

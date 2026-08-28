@@ -151,7 +151,10 @@ struct MT19937(RNGAlgorithm):
                 )
                 var idx = i + MT_M
                 self._state.state.unsafe_store(
-                    i, self._state.state[unsafe_offset=idx] ^ (y >> 1) ^ MT_MATRIX_A * (y & 1)
+                    i,
+                    self._state.state[unsafe_offset=idx]
+                    ^ (y >> 1)
+                    ^ MT_MATRIX_A * (y & 1),
                 )
                 i += 1
 
@@ -161,16 +164,21 @@ struct MT19937(RNGAlgorithm):
                 )
                 var idx = i + MT_M - MT_N
                 self._state.state.unsafe_store(
-                    i, self._state.state[unsafe_offset=idx] ^ (y >> 1) ^ MT_MATRIX_A * (y & 1)
+                    i,
+                    self._state.state[unsafe_offset=idx]
+                    ^ (y >> 1)
+                    ^ MT_MATRIX_A * (y & 1),
                 )
                 i += 1
 
-            var y = (self._state.state[unsafe_offset=MT_N - 1] & MT_UPPER_MASK) | (
-                self._state.state[unsafe_offset=0] & MT_LOWER_MASK
-            )
+            var y = (
+                self._state.state[unsafe_offset=MT_N - 1] & MT_UPPER_MASK
+            ) | (self._state.state[unsafe_offset=0] & MT_LOWER_MASK)
             self._state.state.unsafe_store(
                 MT_N - 1,
-                self._state.state[unsafe_offset=MT_M - 1] ^ (y >> 1) ^ MT_MATRIX_A * (y & 1),
+                self._state.state[unsafe_offset=MT_M - 1]
+                ^ (y >> 1)
+                ^ MT_MATRIX_A * (y & 1),
             )
             self._state.idx = 0
 

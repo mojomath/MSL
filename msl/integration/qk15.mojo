@@ -116,7 +116,7 @@ def qk15[
     var fv2_5: Float64 = 0.0
     var fv2_6: Float64 = 0.0
     var fv2_7: Float64 = 0.0
-    
+
     ref _wgk_vals = materialize[_wgk]()
     ref _wg_vals = materialize[_wg]()
     ref _xgk_vals = materialize[_xgk]()

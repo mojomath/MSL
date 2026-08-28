@@ -84,7 +84,9 @@ def poly_eval_derivs[
         res[unsafe_offset=0] = x * res[unsafe_offset=0] + c[unsafe_offset=k - 1]
         var lmax = nmax if nmax < k - 1 else k - 1
         for l in range(1, lmax + 1):
-            res[unsafe_offset=l] = x * res[unsafe_offset=l] + res[unsafe_offset=l - 1]
+            res[unsafe_offset=l] = (
+                x * res[unsafe_offset=l] + res[unsafe_offset=l - 1]
+            )
 
     var f: Float64 = 1.0
     for i in range(2, nmax + 1):
@@ -112,11 +114,15 @@ def poly_dd_init[
     dd[unsafe_offset=0] = y[unsafe_offset=0]
 
     for j in range(size - 1, 0, -1):
-        dd[unsafe_offset=j] = (y[unsafe_offset=j] - y[unsafe_offset=j - 1]) / (x[unsafe_offset=j] - x[unsafe_offset=j - 1])
+        dd[unsafe_offset=j] = (y[unsafe_offset=j] - y[unsafe_offset=j - 1]) / (
+            x[unsafe_offset=j] - x[unsafe_offset=j - 1]
+        )
 
     for i in range(2, size):
         for j in range(size - 1, i - 1, -1):
-            dd[unsafe_offset=j] = (dd[unsafe_offset=j] - dd[unsafe_offset=j - 1]) / (x[unsafe_offset=j] - x[unsafe_offset=j - i])
+            dd[unsafe_offset=j] = (
+                dd[unsafe_offset=j] - dd[unsafe_offset=j - 1]
+            ) / (x[unsafe_offset=j] - x[unsafe_offset=j - i])
 
 
 def poly_dd_eval[
@@ -166,10 +172,16 @@ def poly_dd_taylor[
     c[unsafe_offset=0] = dd[unsafe_offset=0]
 
     for i in range(size - 2, -1, -1):
-        w[unsafe_offset=i] = -w[unsafe_offset=i + 1] * (x[unsafe_offset=size - 2 - i] - xp)
+        w[unsafe_offset=i] = -w[unsafe_offset=i + 1] * (
+            x[unsafe_offset=size - 2 - i] - xp
+        )
 
         for j in range(i + 1, size - 1):
-            w[unsafe_offset=j] = w[unsafe_offset=j] - w[unsafe_offset=j + 1] * (x[unsafe_offset=size - 2 - i] - xp)
+            w[unsafe_offset=j] = w[unsafe_offset=j] - w[unsafe_offset=j + 1] * (
+                x[unsafe_offset=size - 2 - i] - xp
+            )
 
         for j in range(i, size):
-            c[unsafe_offset=j - i] += w[unsafe_offset=j] * dd[unsafe_offset=size - i - 1]
+            c[unsafe_offset=j - i] += (
+                w[unsafe_offset=j] * dd[unsafe_offset=size - i - 1]
+            )

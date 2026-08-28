@@ -95,4 +95,6 @@ def qk21[
     ref _xgk_vals = materialize[_xgk]()
     ref _wg_vals = materialize[_wg]()
     ref _wgk_vals = materialize[_wgk]()
-    return _qk_generic[integrand](11, _xgk_vals, _wg_vals, _wgk_vals, fv1, fv2, a, b)
+    return _qk_generic[integrand](
+        11, _xgk_vals, _wg_vals, _wgk_vals, fv1, fv2, a, b
+    )

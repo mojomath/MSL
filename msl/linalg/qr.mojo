@@ -98,10 +98,15 @@ def qr_decomp[
                     # d = v' * A[:,j] over rows i..n-1, with v[i] implicitly 1
                     var d = a[unsafe_offset=i * lda + j]
                     for k in range(i + 1, n):
-                        d += a[unsafe_offset=k * lda + i] * a[unsafe_offset=k * lda + j]
+                        d += (
+                            a[unsafe_offset=k * lda + i]
+                            * a[unsafe_offset=k * lda + j]
+                        )
                     a[unsafe_offset=i * lda + j] -= tau_i * d
                     for k in range(i + 1, n):
-                        a[unsafe_offset=k * lda + j] -= tau_i * d * a[unsafe_offset=k * lda + i]
+                        a[unsafe_offset=k * lda + j] -= (
+                            tau_i * d * a[unsafe_offset=k * lda + i]
+                        )
 
 
 def _qr_qtvec[

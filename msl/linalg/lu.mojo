@@ -89,7 +89,9 @@ def lu_decomp[
             if j_pivot != j:
                 for k in range(n):
                     var tmp = a[unsafe_offset=j * lda + k]
-                    a[unsafe_offset=j * lda + k] = a[unsafe_offset=j_pivot * lda + k]
+                    a[unsafe_offset=j * lda + k] = a[
+                        unsafe_offset=j_pivot * lda + k
+                    ]
                     a[unsafe_offset=j_pivot * lda + k] = tmp
                 signum = -signum
 
@@ -105,7 +107,9 @@ def lu_decomp[
                 var lij = a[unsafe_offset=i * lda + j]
                 if lij != 0.0:
                     for k in range(j + 1, n):
-                        a[unsafe_offset=i * lda + k] -= lij * a[unsafe_offset=j * lda + k]
+                        a[unsafe_offset=i * lda + k] -= (
+                            lij * a[unsafe_offset=j * lda + k]
+                        )
 
     if singular:
         return 0
@@ -150,7 +154,9 @@ def lu_svx[
         var sum: Float64 = 0.0
         for k in range(i + 1, n):
             sum += lu[unsafe_offset=i * lda + k] * x[unsafe_offset=k]
-        x[unsafe_offset=i] = (x[unsafe_offset=i] - sum) / lu[unsafe_offset=i * lda + i]
+        x[unsafe_offset=i] = (x[unsafe_offset=i] - sum) / lu[
+            unsafe_offset=i * lda + i
+        ]
 
 
 def lu_solve[

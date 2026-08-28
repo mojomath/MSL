@@ -352,7 +352,9 @@ def qng_integrate[
 
     for k in range(22):
         var abscissa = half_length * x4_vals[k]
-        res87 += w87b_vals[k] * (fn_(center + abscissa) + fn_(center - abscissa))
+        res87 += w87b_vals[k] * (
+            fn_(center + abscissa) + fn_(center - abscissa)
+        )
 
     var err87 = _rescale_error((res87 - res43) * half_length, resabs, resasc)
 

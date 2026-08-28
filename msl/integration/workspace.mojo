@@ -236,8 +236,14 @@ struct IntegrationWorkspace(Movable):
 
         var errmax = self.elist[unsafe_offset=i_maxerr]
 
-        while i_nrmax > 0 and errmax > self.elist[unsafe_offset=self.order[unsafe_offset=i_nrmax - 1]]:
-            self.order[unsafe_offset=i_nrmax] = self.order[unsafe_offset=i_nrmax - 1]
+        while (
+            i_nrmax > 0
+            and errmax
+            > self.elist[unsafe_offset=self.order[unsafe_offset=i_nrmax - 1]]
+        ):
+            self.order[unsafe_offset=i_nrmax] = self.order[
+                unsafe_offset=i_nrmax - 1
+            ]
             i_nrmax -= 1
 
         var top: Int
@@ -247,14 +253,20 @@ struct IntegrationWorkspace(Movable):
             top = self.limit - last + 1
 
         var idx = i_nrmax + 1
-        while idx < top and errmax < self.elist[unsafe_offset=self.order[unsafe_offset=idx]]:
+        while (
+            idx < top
+            and errmax < self.elist[unsafe_offset=self.order[unsafe_offset=idx]]
+        ):
             self.order[unsafe_offset=idx - 1] = self.order[unsafe_offset=idx]
             idx += 1
         self.order[unsafe_offset=idx - 1] = i_maxerr
 
         var errmin = self.elist[unsafe_offset=last]
         var k = top - 1
-        while k > idx - 2 and errmin >= self.elist[unsafe_offset=self.order[unsafe_offset=k]]:
+        while (
+            k > idx - 2
+            and errmin >= self.elist[unsafe_offset=self.order[unsafe_offset=k]]
+        ):
             self.order[unsafe_offset=k + 1] = self.order[unsafe_offset=k]
             k -= 1
         self.order[unsafe_offset=k + 1] = last

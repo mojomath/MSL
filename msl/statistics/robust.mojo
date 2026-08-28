@@ -124,7 +124,10 @@ def stats_Sn0_from_sorted_data[
     """
     var np1_2 = (n + 1) // 2
 
-    work[unsafe_offset=0] = sorted_data[unsafe_offset=(n // 2) * stride] - sorted_data[unsafe_offset=0]
+    work[unsafe_offset=0] = (
+        sorted_data[unsafe_offset=(n // 2) * stride]
+        - sorted_data[unsafe_offset=0]
+    )
 
     for i in range(2, np1_2 + 1):
         var nA = i - 1
@@ -231,7 +234,8 @@ def stats_Sn0_from_sorted_data[
             work[unsafe_offset=i - 1] = medA if medA < medB else medB
 
     work[unsafe_offset=n - 1] = (
-        sorted_data[unsafe_offset=(n - 1) * stride] - sorted_data[unsafe_offset=(np1_2 - 1) * stride]
+        sorted_data[unsafe_offset=(n - 1) * stride]
+        - sorted_data[unsafe_offset=(np1_2 - 1) * stride]
     )
 
     _sort_inplace(work, n)
@@ -330,10 +334,13 @@ def stats_Qn0_from_sorted_data[
         var j = 0
         for i in range(1, ni):
             if left[unsafe_offset=i] <= right[unsafe_offset=i]:
-                weight[unsafe_offset=j] = right[unsafe_offset=i] - left[unsafe_offset=i] + 1
+                weight[unsafe_offset=j] = (
+                    right[unsafe_offset=i] - left[unsafe_offset=i] + 1
+                )
                 var jh = left[unsafe_offset=i] + weight[unsafe_offset=j] // 2
                 work[unsafe_offset=j] = (
-                    sorted_data[unsafe_offset=i * stride] - sorted_data[unsafe_offset=(ni - jh) * stride]
+                    sorted_data[unsafe_offset=i * stride]
+                    - sorted_data[unsafe_offset=(ni - jh) * stride]
                 )
                 j += 1
 
@@ -383,7 +390,8 @@ def stats_Qn0_from_sorted_data[
         for i in range(ni - 1, -1, -1):
             while (
                 j < ni
-                and sorted_data[unsafe_offset=i * stride] - sorted_data[unsafe_offset=(ni - j - 1) * stride]
+                and sorted_data[unsafe_offset=i * stride]
+                - sorted_data[unsafe_offset=(ni - j - 1) * stride]
                 < trial
             ):
                 j += 1
@@ -392,7 +400,8 @@ def stats_Qn0_from_sorted_data[
         j = ni + 1
         for i in range(ni):
             while (
-                sorted_data[unsafe_offset=i * stride] - sorted_data[unsafe_offset=(ni - j + 1) * stride]
+                sorted_data[unsafe_offset=i * stride]
+                - sorted_data[unsafe_offset=(ni - j + 1) * stride]
                 > trial
             ):
                 j -= 1
@@ -422,7 +431,10 @@ def stats_Qn0_from_sorted_data[
     for i in range(1, ni):
         var jj = left[unsafe_offset=i]
         while jj <= right[unsafe_offset=i]:
-            work[unsafe_offset=j] = sorted_data[unsafe_offset=i * stride] - sorted_data[unsafe_offset=(ni - jj) * stride]
+            work[unsafe_offset=j] = (
+                sorted_data[unsafe_offset=i * stride]
+                - sorted_data[unsafe_offset=(ni - jj) * stride]
+            )
             j += 1
             jj += 1
 
