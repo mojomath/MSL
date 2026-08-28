@@ -52,7 +52,7 @@ def test_block_ptr_read() raises:
     ptr.store(0, 1.0)
     ptr.store(1, 2.0)
     ptr.store(2, 3.0)
-    
+
     var read_ptr = block.immut_ptr()
     assert read_ptr[0] == 1.0
     assert read_ptr[1] == 2.0
@@ -72,7 +72,7 @@ def test_block_large() raises:
     var data = block_data(block)
     for i in range(n):
         data.store(i, Float64(i))
-    
+
     for i in range(n):
         assert data[i] == Float64(i)
     print("test_block_large: PASSED")
@@ -83,12 +83,12 @@ def test_block_fill_pattern() raises:
     var data = block_data(block)
     for i in range(5):
         data.store(i, Float64(i) * 3.0 + 1.0)
-    
-    assert data[0] == 1.0
-    assert data[1] == 4.0
-    assert data[2] == 7.0
-    assert data[3] == 10.0
-    assert data[4] == 13.0
+
+    assert data[unsafe_offset=0] == 1.0
+    assert data[unsafe_offset=1] == 4.0
+    assert data[unsafe_offset=2] == 7.0
+    assert data[unsafe_offset=3] == 10.0
+    assert data[unsafe_offset=4] == 13.0
     print("test_block_fill_pattern: PASSED")
 
 
