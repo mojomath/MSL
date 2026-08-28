@@ -402,11 +402,12 @@ comptime doublefact_table: Array[Float64, 151] = [
 
 def lngamma_lanczos(x: Float64) -> Float64:
     var x_adj = x - 1.0
+    ref lanczos_c_vals = materialize[lanczos_c]()
 
-    var Ag = lanczos_c[0]
+    var Ag = lanczos_c_vals[0]
     var k = 1
     while k <= 8:
-        Ag += lanczos_c[k] / (x_adj + Float64(k))
+        Ag += lanczos_c_vals[k] / (x_adj + Float64(k))
         k += 1
 
     var term1 = (x_adj + 0.5) * log((x_adj + 7.5) / 2.718281828459045)
@@ -695,13 +696,14 @@ def _gammainv(x: Float64) -> SFSResult:
 
 def fact(n: UInt64) -> SFSResult:
     var result = SFSResult()
+    ref fact_table_vals = materialize[fact_table]()
 
     if n > 150:
         result.val = 0.0
         result.err = 0.0
         return result^
 
-    result.val = fact_table[n]
+    result.val = fact_table_vals[n]
     result.err = MSL_DBL_EPSILON * abs(result.val)
     return result^
 
@@ -713,13 +715,14 @@ def fact(n: UInt64) -> SFSResult:
 
 def doublefact(n: UInt64) -> SFSResult:
     var result = SFSResult()
+    ref doublefact_table_vals = materialize[doublefact_table]()
 
     if n > 150:
         result.val = 0.0
         result.err = 0.0
         return result^
 
-    result.val = doublefact_table[n]
+    result.val = doublefact_table_vals[n]
     result.err = MSL_DBL_EPSILON * abs(result.val)
     return result^
 
@@ -730,9 +733,10 @@ def doublefact(n: UInt64) -> SFSResult:
 
 
 def lnfact(n: UInt64) -> SFSResult:
+    ref fact_table_vals = materialize[fact_table]()
     if n <= 150:
         var result = SFSResult()
-        result.val = log(fact_table[n])
+        result.val = log(fact_table_vals[n])
         result.err = MSL_DBL_EPSILON * abs(result.val)
         return result^
 
@@ -745,9 +749,10 @@ def lnfact(n: UInt64) -> SFSResult:
 
 
 def lndoublefact(n: UInt64) -> SFSResult:
+    ref doublefact_table_vals = materialize[doublefact_table]()
     if n <= 150:
         var result = SFSResult()
-        result.val = log(doublefact_table[n])
+        result.val = log(doublefact_table_vals[n])
         result.err = MSL_DBL_EPSILON * abs(result.val)
         return result^
 
