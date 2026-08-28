@@ -22,15 +22,15 @@ Weighted descriptive statistics (Float64), ported from GSL statistics.
 """
 
 from std.math import abs, sqrt
-from std.memory import UnsafePointer
+from std.memory import Pointer
 
 
 def stats_wmean[
     w_origin: Origin, x_origin: Origin
 ](
-    w: UnsafePointer[Float64, w_origin],
+    w: Pointer[Float64, w_origin],
     wstride: Int,
-    data: UnsafePointer[Float64, x_origin],
+    data: Pointer[Float64, x_origin],
     stride: Int,
     n: Int,
 ) -> Float64:
@@ -48,9 +48,9 @@ def stats_wmean[
 def _compute_wvariance[
     w_origin: Origin, x_origin: Origin
 ](
-    w: UnsafePointer[Float64, w_origin],
+    w: Pointer[Float64, w_origin],
     wstride: Int,
-    data: UnsafePointer[Float64, x_origin],
+    data: Pointer[Float64, x_origin],
     stride: Int,
     n: Int,
     wmean: Float64,
@@ -69,9 +69,9 @@ def _compute_wvariance[
 def _compute_wtss[
     w_origin: Origin, x_origin: Origin
 ](
-    w: UnsafePointer[Float64, w_origin],
+    w: Pointer[Float64, w_origin],
     wstride: Int,
-    data: UnsafePointer[Float64, x_origin],
+    data: Pointer[Float64, x_origin],
     stride: Int,
     n: Int,
     wmean: Float64,
@@ -87,7 +87,7 @@ def _compute_wtss[
 
 def _compute_weight_scale[
     w_origin: Origin
-](w: UnsafePointer[Float64, w_origin], wstride: Int, n: Int) -> Float64:
+](w: Pointer[Float64, w_origin], wstride: Int, n: Int) -> Float64:
     var a: Float64 = 0.0
     var b: Float64 = 0.0
     for i in range(n):
@@ -104,9 +104,9 @@ def _compute_weight_scale[
 def stats_wvariance_with_fixed_mean[
     w_origin: Origin, x_origin: Origin
 ](
-    w: UnsafePointer[Float64, w_origin],
+    w: Pointer[Float64, w_origin],
     wstride: Int,
-    data: UnsafePointer[Float64, x_origin],
+    data: Pointer[Float64, x_origin],
     stride: Int,
     n: Int,
     wmean: Float64,
@@ -118,9 +118,9 @@ def stats_wvariance_with_fixed_mean[
 def stats_wsd_with_fixed_mean[
     w_origin: Origin, x_origin: Origin
 ](
-    w: UnsafePointer[Float64, w_origin],
+    w: Pointer[Float64, w_origin],
     wstride: Int,
-    data: UnsafePointer[Float64, x_origin],
+    data: Pointer[Float64, x_origin],
     stride: Int,
     n: Int,
     wmean: Float64,
@@ -134,9 +134,9 @@ def stats_wsd_with_fixed_mean[
 def stats_wvariance_m[
     w_origin: Origin, x_origin: Origin
 ](
-    w: UnsafePointer[Float64, w_origin],
+    w: Pointer[Float64, w_origin],
     wstride: Int,
-    data: UnsafePointer[Float64, x_origin],
+    data: Pointer[Float64, x_origin],
     stride: Int,
     n: Int,
     wmean: Float64,
@@ -150,9 +150,9 @@ def stats_wvariance_m[
 def stats_wsd_m[
     w_origin: Origin, x_origin: Origin
 ](
-    w: UnsafePointer[Float64, w_origin],
+    w: Pointer[Float64, w_origin],
     wstride: Int,
-    data: UnsafePointer[Float64, x_origin],
+    data: Pointer[Float64, x_origin],
     stride: Int,
     n: Int,
     wmean: Float64,
@@ -164,9 +164,9 @@ def stats_wsd_m[
 def stats_wvariance[
     w_origin: Origin, x_origin: Origin
 ](
-    w: UnsafePointer[Float64, w_origin],
+    w: Pointer[Float64, w_origin],
     wstride: Int,
-    data: UnsafePointer[Float64, x_origin],
+    data: Pointer[Float64, x_origin],
     stride: Int,
     n: Int,
 ) -> Float64:
@@ -177,9 +177,9 @@ def stats_wvariance[
 def stats_wsd[
     w_origin: Origin, x_origin: Origin
 ](
-    w: UnsafePointer[Float64, w_origin],
+    w: Pointer[Float64, w_origin],
     wstride: Int,
-    data: UnsafePointer[Float64, x_origin],
+    data: Pointer[Float64, x_origin],
     stride: Int,
     n: Int,
 ) -> Float64:
@@ -190,9 +190,9 @@ def stats_wsd[
 def stats_wtss_m[
     w_origin: Origin, x_origin: Origin
 ](
-    w: UnsafePointer[Float64, w_origin],
+    w: Pointer[Float64, w_origin],
     wstride: Int,
-    data: UnsafePointer[Float64, x_origin],
+    data: Pointer[Float64, x_origin],
     stride: Int,
     n: Int,
     wmean: Float64,
@@ -203,9 +203,9 @@ def stats_wtss_m[
 def stats_wtss[
     w_origin: Origin, x_origin: Origin
 ](
-    w: UnsafePointer[Float64, w_origin],
+    w: Pointer[Float64, w_origin],
     wstride: Int,
-    data: UnsafePointer[Float64, x_origin],
+    data: Pointer[Float64, x_origin],
     stride: Int,
     n: Int,
 ) -> Float64:
@@ -216,9 +216,9 @@ def stats_wtss[
 def stats_wabsdev_m[
     w_origin: Origin, x_origin: Origin
 ](
-    w: UnsafePointer[Float64, w_origin],
+    w: Pointer[Float64, w_origin],
     wstride: Int,
-    data: UnsafePointer[Float64, x_origin],
+    data: Pointer[Float64, x_origin],
     stride: Int,
     n: Int,
     wmean: Float64,
@@ -238,9 +238,9 @@ def stats_wabsdev_m[
 def stats_wabsdev[
     w_origin: Origin, x_origin: Origin
 ](
-    w: UnsafePointer[Float64, w_origin],
+    w: Pointer[Float64, w_origin],
     wstride: Int,
-    data: UnsafePointer[Float64, x_origin],
+    data: Pointer[Float64, x_origin],
     stride: Int,
     n: Int,
 ) -> Float64:
@@ -251,9 +251,9 @@ def stats_wabsdev[
 def stats_wskew_m_sd[
     w_origin: Origin, x_origin: Origin
 ](
-    w: UnsafePointer[Float64, w_origin],
+    w: Pointer[Float64, w_origin],
     wstride: Int,
-    data: UnsafePointer[Float64, x_origin],
+    data: Pointer[Float64, x_origin],
     stride: Int,
     n: Int,
     wmean: Float64,
@@ -277,9 +277,9 @@ def stats_wskew_m_sd[
 def stats_wskew[
     w_origin: Origin, x_origin: Origin
 ](
-    w: UnsafePointer[Float64, w_origin],
+    w: Pointer[Float64, w_origin],
     wstride: Int,
-    data: UnsafePointer[Float64, x_origin],
+    data: Pointer[Float64, x_origin],
     stride: Int,
     n: Int,
 ) -> Float64:
@@ -291,9 +291,9 @@ def stats_wskew[
 def stats_wkurtosis_m_sd[
     w_origin: Origin, x_origin: Origin
 ](
-    w: UnsafePointer[Float64, w_origin],
+    w: Pointer[Float64, w_origin],
     wstride: Int,
-    data: UnsafePointer[Float64, x_origin],
+    data: Pointer[Float64, x_origin],
     stride: Int,
     n: Int,
     wmean: Float64,
@@ -317,9 +317,9 @@ def stats_wkurtosis_m_sd[
 def stats_wkurtosis[
     w_origin: Origin, x_origin: Origin
 ](
-    w: UnsafePointer[Float64, w_origin],
+    w: Pointer[Float64, w_origin],
     wstride: Int,
-    data: UnsafePointer[Float64, x_origin],
+    data: Pointer[Float64, x_origin],
     stride: Int,
     n: Int,
 ) -> Float64:

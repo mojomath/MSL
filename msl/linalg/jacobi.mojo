@@ -22,7 +22,7 @@ Cyclic Jacobi eigenvalue solver for real symmetric matrices (L1).
 
 Ported from GSL's gsl_eigen_jacobi (Golub & Van Loan, Matrix
 Computations, Algorithm 8.4.3). Matrices are row-major, dense, and
-passed as flat UnsafePointer buffers with an explicit leading
+passed as flat Pointer buffers with an explicit leading
 dimension (lda).
 
   A[i, j] is stored at data[i * lda + j]
@@ -41,7 +41,7 @@ from msl.core.errno import MSL_SUCCESS, MSL_EMAXITER
 def _symschur2[
     origin: MutOrigin, //,
 ](
-    a: UnsafePointer[Float64, origin], lda: Int, p: Int, q: Int
+    a: Pointer[Float64, origin], lda: Int, p: Int, q: Int
 ) -> Tuple[Float64, Float64, Float64]:
     """Return (c, s, |Apq|) for the Jacobi rotation annihilating A[p,q]."""
     var apq = a[p * lda + q]
@@ -65,7 +65,7 @@ def _symschur2[
 def _apply_jacobi_left[
     origin: MutOrigin, //,
 ](
-    a: UnsafePointer[Float64, origin], lda: Int, n: Int, p: Int, q: Int, c: Float64, s: Float64
+    a: Pointer[Float64, origin], lda: Int, n: Int, p: Int, q: Int, c: Float64, s: Float64
 ):
     for j in range(n):
         var apj = a[p * lda + j]
@@ -77,7 +77,7 @@ def _apply_jacobi_left[
 def _apply_jacobi_right[
     origin: MutOrigin, //,
 ](
-    a: UnsafePointer[Float64, origin], lda: Int, m: Int, p: Int, q: Int, c: Float64, s: Float64
+    a: Pointer[Float64, origin], lda: Int, m: Int, p: Int, q: Int, c: Float64, s: Float64
 ):
     for i in range(m):
         var aip = a[i * lda + p]
@@ -88,7 +88,7 @@ def _apply_jacobi_right[
 
 def _offdiag_norm[
     origin: MutOrigin, //,
-](a: UnsafePointer[Float64, origin], lda: Int, n: Int) -> Float64:
+](a: Pointer[Float64, origin], lda: Int, n: Int) -> Float64:
     var scale: Float64 = 0.0
     var ssq: Float64 = 1.0
     for i in range(n):
@@ -112,11 +112,11 @@ def eigen_jacobi[
     evec_origin: MutOrigin,
     //,
 ](
-    a: UnsafePointer[Float64, a_origin],
+    a: Pointer[Float64, a_origin],
     lda: Int,
     n: Int,
-    eval: UnsafePointer[Float64, eval_origin],
-    evec: UnsafePointer[Float64, evec_origin],
+    eval: Pointer[Float64, eval_origin],
+    evec: Pointer[Float64, evec_origin],
     evec_lda: Int,
     max_rot: Int = 100,
 ) -> Int:

@@ -32,7 +32,7 @@ Pure Mojo implementation of permutation operations for reordering
 elements in vectors and matrices.
 """
 
-from std.memory import UnsafePointer
+from std.memory import Pointer
 from msl import MutExt
 
 
@@ -45,7 +45,7 @@ struct Permutation(Copyable, Movable):
     """Permutation array for reordering elements."""
 
     # TODO: change to Int once mojo align them both.
-    var data: UnsafePointer[Scalar[DType.int], MutExt]
+    var data: Pointer[Scalar[DType.int], MutExt]
     var size: Int
 
     def __init__(out self, n: Int):

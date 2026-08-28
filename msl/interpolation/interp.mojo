@@ -32,7 +32,7 @@ Provides four scalar interpolation types:
 All 1-D types expose: eval, deriv, deriv2, integral.
 """
 
-from std.memory import UnsafePointer, memset_zero
+from std.memory import Pointer, unsafe_memset_zero
 from std.math import abs
 
 from msl.core.const import MSL_DBL_EPSILON
@@ -70,7 +70,7 @@ struct InterpResult(Copyable, Movable):
 
 def _bsearch[
     mut: Bool, origin: Origin[mut=mut], //
-](xa: UnsafePointer[Float64, origin], n: Int, x: Float64) -> Int:
+](xa: Pointer[Float64, origin], n: Int, x: Float64) -> Int:
     """Binary search: return index i such that xa[i] <= x < xa[i+1]."""
     var lo: Int = 0
     var hi: Int = n - 1
@@ -83,9 +83,9 @@ def _bsearch[
     return lo
 
 
-def _alloc_f64(n: Int) -> UnsafePointer[Float64, MutUntrackedOrigin]:
+def _alloc_DType.float64(n: Int) -> Pointer[Float64, MutUntrackedOrigin]:
     var p = alloc[Float64](n)
-    memset_zero(p, n)
+    unsafe_memset_zero(p, n)
     return p
 
 
@@ -97,14 +97,14 @@ def _alloc_f64(n: Int) -> UnsafePointer[Float64, MutUntrackedOrigin]:
 struct LinearInterp[mut: Bool, origin: Origin[mut=mut], //](Movable):
     """Piecewise linear interpolation."""
 
-    var _xa: UnsafePointer[Float64, Self.origin]
-    var _ya: UnsafePointer[Float64, Self.origin]
+    var _xa: Pointer[Float64, Self.origin]
+    var _ya: Pointer[Float64, Self.origin]
     var _n: Int
 
     def __init__(
         out self,
-        xa: UnsafePointer[Float64, Self.origin],
-        ya: UnsafePointer[Float64, Self.origin],
+        xa: Pointer[Float64, Self.origin],
+        ya: Pointer[Float64, Self.origin],
         n: Int,
     ):
         self._xa = xa
@@ -178,25 +178,25 @@ struct CubicSpline[mut: Bool, origin: Origin[mut=mut], //](Movable):
 
     comptime MutExt = MutUntrackedOrigin
 
-    var _xa: UnsafePointer[Float64, Self.origin]
-    var _ya: UnsafePointer[Float64, Self.origin]
+    var _xa: Pointer[Float64, Self.origin]
+    var _ya: Pointer[Float64, Self.origin]
     var _n: Int
-    var _b: UnsafePointer[Float64, Self.MutExt]
-    var _c: UnsafePointer[Float64, Self.MutExt]
-    var _d: UnsafePointer[Float64, Self.MutExt]
+    var _b: Pointer[Float64, Self.MutExt]
+    var _c: Pointer[Float64, Self.MutExt]
+    var _d: Pointer[Float64, Self.MutExt]
 
     def __init__(
         out self,
-        xa: UnsafePointer[Float64, Self.origin],
-        ya: UnsafePointer[Float64, Self.origin],
+        xa: Pointer[Float64, Self.origin],
+        ya: Pointer[Float64, Self.origin],
         n: Int,
     ):
         self._xa = xa
         self._ya = ya
         self._n = n
-        self._b = _alloc_f64(n)
-        self._c = _alloc_f64(n)
-        self._d = _alloc_f64(n)
+        self._b = _alloc_DType.float64(n)
+        self._c = _alloc_DType.float64(n)
+        self._d = _alloc_DType.float64(n)
         self._build()
 
     def __init__(out self, *, deinit take: Self):
@@ -215,9 +215,9 @@ struct CubicSpline[mut: Bool, origin: Origin[mut=mut], //](Movable):
     def _build(mut self):
         """Solve tridiagonal system for second derivatives."""
         var n = self._n
-        var g = _alloc_f64(n)
-        var diag = _alloc_f64(n)
-        var offdiag = _alloc_f64(n)
+        var g = _alloc_DType.float64(n)
+        var diag = _alloc_DType.float64(n)
+        var offdiag = _alloc_DType.float64(n)
 
         # Build RHS and diag/offdiag
         for i in range(1, n - 1):
@@ -322,25 +322,25 @@ struct AkimaSpline[mut: Bool, origin: Origin[mut=mut], //](Movable):
 
     comptime MutExt = MutUntrackedOrigin
 
-    var _xa: UnsafePointer[Float64, Self.origin]
-    var _ya: UnsafePointer[Float64, Self.origin]
+    var _xa: Pointer[Float64, Self.origin]
+    var _ya: Pointer[Float64, Self.origin]
     var _n: Int
-    var _b: UnsafePointer[Float64, Self.MutExt]
-    var _c: UnsafePointer[Float64, Self.MutExt]
-    var _d: UnsafePointer[Float64, Self.MutExt]
+    var _b: Pointer[Float64, Self.MutExt]
+    var _c: Pointer[Float64, Self.MutExt]
+    var _d: Pointer[Float64, Self.MutExt]
 
     def __init__(
         out self,
-        xa: UnsafePointer[Float64, Self.origin],
-        ya: UnsafePointer[Float64, Self.origin],
+        xa: Pointer[Float64, Self.origin],
+        ya: Pointer[Float64, Self.origin],
         n: Int,
     ):
         self._xa = xa
         self._ya = ya
         self._n = n
-        self._b = _alloc_f64(n)
-        self._c = _alloc_f64(n)
-        self._d = _alloc_f64(n)
+        self._b = _alloc_DType.float64(n)
+        self._c = _alloc_DType.float64(n)
+        self._d = _alloc_DType.float64(n)
         self._build()
 
     def __init__(out self, *, deinit take: Self):
@@ -362,7 +362,7 @@ struct AkimaSpline[mut: Bool, origin: Origin[mut=mut], //](Movable):
         # m[i] = finite difference slope for interval i, with offset +2 for phantom points
         # total = n-1 intervals + 4 phantom = n+3 slopes, stored at offset 2
         var m_size = n + 3
-        var m = _alloc_f64(m_size)
+        var m = _alloc_DType.float64(m_size)
 
         # Interior slopes: m[i+2] = (y[i+1]-y[i])/(x[i+1]-x[i])
         for i in range(n - 1):

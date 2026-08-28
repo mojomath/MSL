@@ -29,13 +29,13 @@ Core descriptive statistics (Float64), ported from GSL statistics module.
 """
 
 from std.math import abs, sqrt
-from std.memory import UnsafePointer
+from std.memory import Pointer
 
 
 def _compute_variance[
     origin: Origin
 ](
-    data: UnsafePointer[Float64, origin], stride: Int, n: Int, mean: Float64
+    data: Pointer[Float64, origin], stride: Int, n: Int, mean: Float64
 ) -> Float64:
     var variance: Float64 = 0.0
     for i in range(n):
@@ -47,7 +47,7 @@ def _compute_variance[
 def _compute_tss[
     origin: Origin
 ](
-    data: UnsafePointer[Float64, origin], stride: Int, n: Int, mean: Float64
+    data: Pointer[Float64, origin], stride: Int, n: Int, mean: Float64
 ) -> Float64:
     var tss: Float64 = 0.0
     for i in range(n):
@@ -59,9 +59,9 @@ def _compute_tss[
 def _compute_covariance[
     origin1: Origin, origin2: Origin
 ](
-    data1: UnsafePointer[Float64, origin1],
+    data1: Pointer[Float64, origin1],
     stride1: Int,
-    data2: UnsafePointer[Float64, origin2],
+    data2: Pointer[Float64, origin2],
     stride2: Int,
     n: Int,
     mean1: Float64,
@@ -77,7 +77,7 @@ def _compute_covariance[
 
 def stats_mean[
     origin: Origin
-](data: UnsafePointer[Float64, origin], stride: Int, n: Int) -> Float64:
+](data: Pointer[Float64, origin], stride: Int, n: Int) -> Float64:
     """Arithmetic mean."""
     if n <= 0:
         return 0.0
@@ -91,7 +91,7 @@ def stats_mean[
 def stats_variance_with_fixed_mean[
     origin: Origin
 ](
-    data: UnsafePointer[Float64, origin], stride: Int, n: Int, mean: Float64
+    data: Pointer[Float64, origin], stride: Int, n: Int, mean: Float64
 ) -> Float64:
     """Variance about a fixed mean (divides by n)."""
     if n <= 0:
@@ -102,7 +102,7 @@ def stats_variance_with_fixed_mean[
 def stats_sd_with_fixed_mean[
     origin: Origin
 ](
-    data: UnsafePointer[Float64, origin], stride: Int, n: Int, mean: Float64
+    data: Pointer[Float64, origin], stride: Int, n: Int, mean: Float64
 ) -> Float64:
     """Standard deviation about a fixed mean (divides by n)."""
     return sqrt(stats_variance_with_fixed_mean(data, stride, n, mean))
@@ -111,7 +111,7 @@ def stats_sd_with_fixed_mean[
 def stats_variance_m[
     origin: Origin
 ](
-    data: UnsafePointer[Float64, origin], stride: Int, n: Int, mean: Float64
+    data: Pointer[Float64, origin], stride: Int, n: Int, mean: Float64
 ) -> Float64:
     """Sample variance about provided mean (divides by n-1)."""
     if n <= 1:
@@ -124,7 +124,7 @@ def stats_variance_m[
 def stats_sd_m[
     origin: Origin
 ](
-    data: UnsafePointer[Float64, origin], stride: Int, n: Int, mean: Float64
+    data: Pointer[Float64, origin], stride: Int, n: Int, mean: Float64
 ) -> Float64:
     """Sample standard deviation about provided mean."""
     return sqrt(stats_variance_m(data, stride, n, mean))
@@ -132,7 +132,7 @@ def stats_sd_m[
 
 def stats_variance[
     origin: Origin
-](data: UnsafePointer[Float64, origin], stride: Int, n: Int) -> Float64:
+](data: Pointer[Float64, origin], stride: Int, n: Int) -> Float64:
     """Sample variance."""
     var mean = stats_mean(data, stride, n)
     return stats_variance_m(data, stride, n, mean)
@@ -140,7 +140,7 @@ def stats_variance[
 
 def stats_sd[
     origin: Origin
-](data: UnsafePointer[Float64, origin], stride: Int, n: Int) -> Float64:
+](data: Pointer[Float64, origin], stride: Int, n: Int) -> Float64:
     """Sample standard deviation."""
     var mean = stats_mean(data, stride, n)
     return stats_sd_m(data, stride, n, mean)
@@ -149,7 +149,7 @@ def stats_sd[
 def stats_tss_m[
     origin: Origin
 ](
-    data: UnsafePointer[Float64, origin], stride: Int, n: Int, mean: Float64
+    data: Pointer[Float64, origin], stride: Int, n: Int, mean: Float64
 ) -> Float64:
     """Total sum of squares around provided mean."""
     if n <= 0:
@@ -159,7 +159,7 @@ def stats_tss_m[
 
 def stats_tss[
     origin: Origin
-](data: UnsafePointer[Float64, origin], stride: Int, n: Int) -> Float64:
+](data: Pointer[Float64, origin], stride: Int, n: Int) -> Float64:
     """Total sum of squares around sample mean."""
     var mean = stats_mean(data, stride, n)
     return stats_tss_m(data, stride, n, mean)
@@ -167,7 +167,7 @@ def stats_tss[
 
 def stats_absdev[
     origin: Origin
-](data: UnsafePointer[Float64, origin], stride: Int, n: Int) -> Float64:
+](data: Pointer[Float64, origin], stride: Int, n: Int) -> Float64:
     """Mean absolute deviation."""
     var mean = stats_mean(data, stride, n)
     return stats_absdev_m(data, stride, n, mean)
@@ -176,7 +176,7 @@ def stats_absdev[
 def stats_absdev_m[
     origin: Origin
 ](
-    data: UnsafePointer[Float64, origin], stride: Int, n: Int, mean: Float64
+    data: Pointer[Float64, origin], stride: Int, n: Int, mean: Float64
 ) -> Float64:
     """Mean absolute deviation about provided mean."""
     if n <= 0:
@@ -190,7 +190,7 @@ def stats_absdev_m[
 
 def stats_skew[
     origin: Origin
-](data: UnsafePointer[Float64, origin], stride: Int, n: Int) -> Float64:
+](data: Pointer[Float64, origin], stride: Int, n: Int) -> Float64:
     """Skewness."""
     var mean = stats_mean(data, stride, n)
     var sd = stats_sd_m(data, stride, n, mean)
@@ -200,7 +200,7 @@ def stats_skew[
 def stats_skew_m_sd[
     origin: Origin
 ](
-    data: UnsafePointer[Float64, origin],
+    data: Pointer[Float64, origin],
     stride: Int,
     n: Int,
     mean: Float64,
@@ -219,7 +219,7 @@ def stats_skew_m_sd[
 
 def stats_kurtosis[
     origin: Origin
-](data: UnsafePointer[Float64, origin], stride: Int, n: Int) -> Float64:
+](data: Pointer[Float64, origin], stride: Int, n: Int) -> Float64:
     """Excess kurtosis (0 for Gaussian)."""
     var mean = stats_mean(data, stride, n)
     var sd = stats_sd_m(data, stride, n, mean)
@@ -229,7 +229,7 @@ def stats_kurtosis[
 def stats_kurtosis_m_sd[
     origin: Origin
 ](
-    data: UnsafePointer[Float64, origin],
+    data: Pointer[Float64, origin],
     stride: Int,
     n: Int,
     mean: Float64,
@@ -248,7 +248,7 @@ def stats_kurtosis_m_sd[
 
 def stats_lag1_autocorrelation[
     origin: Origin
-](data: UnsafePointer[Float64, origin], stride: Int, n: Int) -> Float64:
+](data: Pointer[Float64, origin], stride: Int, n: Int) -> Float64:
     """Lag-1 autocorrelation."""
     var mean = stats_mean(data, stride, n)
     return stats_lag1_autocorrelation_m(data, stride, n, mean)
@@ -257,7 +257,7 @@ def stats_lag1_autocorrelation[
 def stats_lag1_autocorrelation_m[
     origin: Origin
 ](
-    data: UnsafePointer[Float64, origin], stride: Int, n: Int, mean: Float64
+    data: Pointer[Float64, origin], stride: Int, n: Int, mean: Float64
 ) -> Float64:
     """Lag-1 autocorrelation about provided mean."""
     if n <= 1:
@@ -281,9 +281,9 @@ def stats_lag1_autocorrelation_m[
 def stats_covariance_m[
     origin1: Origin, origin2: Origin
 ](
-    data1: UnsafePointer[Float64, origin1],
+    data1: Pointer[Float64, origin1],
     stride1: Int,
-    data2: UnsafePointer[Float64, origin2],
+    data2: Pointer[Float64, origin2],
     stride2: Int,
     n: Int,
     mean1: Float64,
@@ -299,9 +299,9 @@ def stats_covariance_m[
 def stats_covariance[
     origin1: Origin, origin2: Origin
 ](
-    data1: UnsafePointer[Float64, origin1],
+    data1: Pointer[Float64, origin1],
     stride1: Int,
-    data2: UnsafePointer[Float64, origin2],
+    data2: Pointer[Float64, origin2],
     stride2: Int,
     n: Int,
 ) -> Float64:
@@ -314,9 +314,9 @@ def stats_covariance[
 def stats_correlation[
     origin1: Origin, origin2: Origin
 ](
-    data1: UnsafePointer[Float64, origin1],
+    data1: Pointer[Float64, origin1],
     stride1: Int,
-    data2: UnsafePointer[Float64, origin2],
+    data2: Pointer[Float64, origin2],
     stride2: Int,
     n: Int,
 ) -> Float64:

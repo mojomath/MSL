@@ -23,7 +23,7 @@ LU decomposition with partial pivoting for square matrices (L1).
 
 Ported from GSL's unblocked (Level 2) LU_decomp algorithm, based on
 LAPACK DGETF2. Matrices are row-major, dense, and passed as flat
-UnsafePointer buffers with an explicit leading dimension (lda).
+Pointer buffers with an explicit leading dimension (lda).
 
   A[i, j] is stored at data[i * lda + j]
 
@@ -40,10 +40,10 @@ def lu_decomp[
     piv_origin: MutOrigin,
     //,
 ](
-    a: UnsafePointer[Float64, a_origin],
+    a: Pointer[Float64, a_origin],
     lda: Int,
     n: Int,
-    piv: UnsafePointer[Int, piv_origin],
+    piv: Pointer[Int, piv_origin],
 ) -> Int:
     """Factor the n x n matrix A in-place into P A = L U.
 
@@ -106,11 +106,11 @@ def lu_svx[
     x_origin: MutOrigin,
     //,
 ](
-    lu: UnsafePointer[Float64, lu_origin],
+    lu: Pointer[Float64, lu_origin],
     lda: Int,
     n: Int,
-    piv: UnsafePointer[Int, piv_origin],
-    x: UnsafePointer[Float64, x_origin],
+    piv: Pointer[Int, piv_origin],
+    x: Pointer[Float64, x_origin],
 ):
     """Solve LU x = P b in-place, where x initially holds b.
 
@@ -149,12 +149,12 @@ def lu_solve[
     x_origin: MutOrigin,
     //,
 ](
-    lu: UnsafePointer[Float64, lu_origin],
+    lu: Pointer[Float64, lu_origin],
     lda: Int,
     n: Int,
-    piv: UnsafePointer[Int, piv_origin],
-    b: UnsafePointer[Float64, b_origin],
-    x: UnsafePointer[Float64, x_origin],
+    piv: Pointer[Int, piv_origin],
+    b: Pointer[Float64, b_origin],
+    x: Pointer[Float64, x_origin],
 ):
     """Solve A x = b given the LU decomposition of A (see lu_decomp).
 
@@ -169,7 +169,7 @@ def lu_det[
     mut: Bool,
     lu_origin: Origin[mut=mut],
     //,
-](lu: UnsafePointer[Float64, lu_origin], lda: Int, n: Int, signum: Int) -> Float64:
+](lu: Pointer[Float64, lu_origin], lda: Int, n: Int, signum: Int) -> Float64:
     """Compute det(A) from the LU decomposition of A."""
     var det = Float64(signum)
     for i in range(n):
@@ -181,7 +181,7 @@ def lu_lndet[
     mut: Bool,
     lu_origin: Origin[mut=mut],
     //,
-](lu: UnsafePointer[Float64, lu_origin], lda: Int, n: Int) -> Float64:
+](lu: Pointer[Float64, lu_origin], lda: Int, n: Int) -> Float64:
     """Compute log(|det(A)|) from the LU decomposition of A."""
     var lndet: Float64 = 0.0
     for i in range(n):
@@ -198,13 +198,13 @@ def lu_invert[
     work_origin: MutOrigin,
     //,
 ](
-    lu: UnsafePointer[Float64, lu_origin],
+    lu: Pointer[Float64, lu_origin],
     lda: Int,
     n: Int,
-    piv: UnsafePointer[Int, piv_origin],
-    inv: UnsafePointer[Float64, inv_origin],
+    piv: Pointer[Int, piv_origin],
+    inv: Pointer[Float64, inv_origin],
     inv_lda: Int,
-    work: UnsafePointer[Float64, work_origin],
+    work: Pointer[Float64, work_origin],
 ):
     """Compute A^-1 from the LU decomposition of A, one column at a time.
 

@@ -31,7 +31,7 @@ Matrix for 2D arrays.
 A matrix is a 2D array, the basic data structure for linear algebra operations.
 """
 
-from std.memory import UnsafePointer, memset_zero
+from std.memory import Pointer, unsafe_memset_zero
 from std.algorithm.functional import vectorize
 from std.sys.info import simd_width_of
 
@@ -51,7 +51,7 @@ struct Matrix(Copyable, Movable):
     var s2: Int
     """Number of columns."""
     var tda: Int
-    var data: UnsafePointer[Float64, MutExt]
+    var data: Pointer[Float64, MutExt]
     var owner: Bool
 
     def __init__(out self, n1: Int, n2: Int, *, initialize: Bool = False):
@@ -60,14 +60,14 @@ struct Matrix(Copyable, Movable):
         self.tda = n2
         self.data = alloc[Float64](n1 * n2)
         if initialize:
-            memset_zero(self.data, n1 * n2)
+            unsafe_memset_zero(self.data, n1 * n2)
         self.owner = True
 
     def __init__[
         origin: Origin, //
     ](
         out self,
-        ptr: UnsafePointer[Float64, origin],
+        ptr: Pointer[Float64, origin],
         n1: Int,
         n2: Int,
         tda: Int = 0,
@@ -86,7 +86,7 @@ struct Matrix(Copyable, Movable):
         self.s1 = n1
         self.s2 = n2
         self.tda = tda if tda > 0 else n2
-        self.data = rebind[UnsafePointer[Float64, MutExt]](ptr)
+        self.data = rebind[Pointer[Float64, MutExt]](ptr)
         self.owner = False
 
     def __del__(deinit self):
@@ -101,15 +101,15 @@ struct Matrix(Copyable, Movable):
         """Return number of columns."""
         return self.s2
 
-    def immut_ptr(ref self) -> UnsafePointer[Float64, origin_of(self)]:
+    def immut_ptr(ref self) -> Pointer[Float64, origin_of(self)]:
         """Return pointer to the matrix data."""
-        return rebind[UnsafePointer[Float64, origin_of(self)]](
+        return rebind[Pointer[Float64, origin_of(self)]](
             self.data.unsafe_mut_cast[False]().unsafe_origin_cast[
                 origin_of(self)
             ]()
         )
 
-    def mut_ptr(mut self) -> UnsafePointer[Float64, origin_of(self)]:
+    def mut_ptr(mut self) -> Pointer[Float64, origin_of(self)]:
         """Return mutable pointer to the matrix data."""
         return self.data.unsafe_origin_cast[origin_of(self)]()
 
@@ -151,7 +151,7 @@ struct Matrix(Copyable, Movable):
     def all(n1: Int, n2: Int, x: Float64) -> Matrix:
         """Return a matrix of size n1 x n2 with all elements set to x."""
         var mat = Matrix(n1, n2, initialize=True)
-        comptime simd_width: Int = simd_width_of[f64]()
+        comptime simd_width: Int = simd_width_of[DType.float64]()
 
         def closure[width: Int](i: Int) {mut mat, x}:
             mat.data[i] = x
@@ -221,7 +221,7 @@ def matrix_set_zero(mut mat: Matrix):
     Args:
         mat: Matrix to zero.
     """
-    memset_zero(mat.mut_ptr(), mat.s1 * mat.s2)
+    unsafe_memset_zero(mat.mut_ptr(), mat.s1 * mat.s2)
 
 
 def matrix_set_all(mut mat: Matrix, x: Float64):
@@ -231,7 +231,7 @@ def matrix_set_all(mut mat: Matrix, x: Float64):
         mat: Matrix to set.
         x: Value to set.
     """
-    comptime simd_width: Int = simd_width_of[f64]()
+    comptime simd_width: Int = simd_width_of[DType.float64]()
 
     def closure[width: Int](i: Int) {mut mat, x}:
         mat.data[i] = x
@@ -282,7 +282,7 @@ def matrix_scale(mut mat: Matrix, alpha: Float64):
         mat: Matrix to scale.
         alpha: Scalar multiplier.
     """
-    comptime simd_width: Int = simd_width_of[f64]()
+    comptime simd_width: Int = simd_width_of[DType.float64]()
 
     def closure[width: Int](i: Int) {mut mat, alpha}:
         mat.data[i] *= alpha

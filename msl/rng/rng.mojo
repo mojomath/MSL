@@ -33,7 +33,7 @@ Defines the `RNGAlgorithm` trait and the parametric `RNG[T]` wrapper.
 `MT19937` is the default algorithm.
 """
 
-from std.memory import UnsafePointer
+from std.memory import Pointer
 
 
 # ===----------------------------------------------------------------------=== #
@@ -41,7 +41,7 @@ from std.memory import UnsafePointer
 # ===----------------------------------------------------------------------=== #
 
 
-trait RNGAlgorithm(Copyable, ImplicitlyDestructible, Movable):
+trait RNGAlgorithm(Copyable, Deinitable, Movable):
     """Interface for RNG algorithms.
 
     Implementors provide raw 64-bit integer generation and seeding.
@@ -74,7 +74,7 @@ comptime MT_LOWER_MASK: UInt64 = 0x7FFFFFFF
 struct MTState(Copyable, Movable):
     """Mersenne Twister internal state buffer."""
 
-    var state: UnsafePointer[UInt64, MutExt]
+    var state: Pointer[UInt64, MutExt]
     var idx: Int
 
     def __init__(out self):

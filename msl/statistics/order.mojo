@@ -30,7 +30,7 @@ ported from GSL statistics module.
 """
 
 from std.math import floor
-from std.memory import UnsafePointer
+from std.memory import Pointer
 
 
 # ---------------------------------------------------------------------------
@@ -40,7 +40,7 @@ from std.memory import UnsafePointer
 
 def stats_max[
     origin: Origin
-](data: UnsafePointer[Float64, origin], stride: Int, n: Int) -> Float64:
+](data: Pointer[Float64, origin], stride: Int, n: Int) -> Float64:
     """Largest element of the dataset."""
     var result = data[0]
     for i in range(n):
@@ -52,7 +52,7 @@ def stats_max[
 
 def stats_min[
     origin: Origin
-](data: UnsafePointer[Float64, origin], stride: Int, n: Int) -> Float64:
+](data: Pointer[Float64, origin], stride: Int, n: Int) -> Float64:
     """Smallest element of the dataset."""
     var result = data[0]
     for i in range(n):
@@ -64,7 +64,7 @@ def stats_min[
 
 def stats_minmax[
     origin: Origin
-](data: UnsafePointer[Float64, origin], stride: Int, n: Int) -> Tuple[
+](data: Pointer[Float64, origin], stride: Int, n: Int) -> Tuple[
     Float64, Float64
 ]:
     """Returns (min, max) of the dataset."""
@@ -86,7 +86,7 @@ def stats_minmax[
 
 def stats_max_index[
     origin: Origin
-](data: UnsafePointer[Float64, origin], stride: Int, n: Int) -> Int:
+](data: Pointer[Float64, origin], stride: Int, n: Int) -> Int:
     """Index of the largest element (first occurrence)."""
     var mx = data[0]
     var idx = 0
@@ -100,7 +100,7 @@ def stats_max_index[
 
 def stats_min_index[
     origin: Origin
-](data: UnsafePointer[Float64, origin], stride: Int, n: Int) -> Int:
+](data: Pointer[Float64, origin], stride: Int, n: Int) -> Int:
     """Index of the smallest element (first occurrence)."""
     var mn = data[0]
     var idx = 0
@@ -114,7 +114,7 @@ def stats_min_index[
 
 def stats_minmax_index[
     origin: Origin
-](data: UnsafePointer[Float64, origin], stride: Int, n: Int) -> Tuple[Int, Int]:
+](data: Pointer[Float64, origin], stride: Int, n: Int) -> Tuple[Int, Int]:
     """Returns (min_index, max_index) of the dataset."""
     var mn = data[0]
     var mx = data[0]
@@ -138,7 +138,7 @@ def stats_minmax_index[
 
 def stats_select[
     origin: MutOrigin
-](data: UnsafePointer[Float64, origin], stride: Int, n: Int, k: Int) -> Float64:
+](data: Pointer[Float64, origin], stride: Int, n: Int, k: Int) -> Float64:
     """K-th smallest element via quickselect (partially sorts data in-place)."""
     var left = 0
     var right = n - 1
@@ -207,7 +207,7 @@ def stats_select[
 
 def stats_median_from_sorted_data[
     origin: Origin
-](sorted_data: UnsafePointer[Float64, origin], stride: Int, n: Int) -> Float64:
+](sorted_data: Pointer[Float64, origin], stride: Int, n: Int) -> Float64:
     """Median of pre-sorted data."""
     if n == 0:
         return 0.0
@@ -220,7 +220,7 @@ def stats_median_from_sorted_data[
 
 def stats_median[
     origin: MutOrigin
-](data: UnsafePointer[Float64, origin], stride: Int, n: Int) -> Float64:
+](data: Pointer[Float64, origin], stride: Int, n: Int) -> Float64:
     """Median of unsorted data (partially sorts data in-place via quickselect).
     """
     if n == 0:
@@ -242,7 +242,7 @@ def stats_median[
 def stats_quantile_from_sorted_data[
     origin: Origin
 ](
-    sorted_data: UnsafePointer[Float64, origin], stride: Int, n: Int, f: Float64
+    sorted_data: Pointer[Float64, origin], stride: Int, n: Int, f: Float64
 ) -> Float64:
     """Quantile at fraction f in [0,1] from pre-sorted data (linear interpolation).
     """
@@ -267,7 +267,7 @@ def stats_trmean_from_sorted_data[
     origin: Origin
 ](
     trim: Float64,
-    sorted_data: UnsafePointer[Float64, origin],
+    sorted_data: Pointer[Float64, origin],
     stride: Int,
     n: Int,
 ) -> Float64:
@@ -292,7 +292,7 @@ def stats_trmean_from_sorted_data[
 
 def stats_gastwirth_from_sorted_data[
     origin: Origin
-](sorted_data: UnsafePointer[Float64, origin], stride: Int, n: Int) -> Float64:
+](sorted_data: Pointer[Float64, origin], stride: Int, n: Int) -> Float64:
     """Gastwirth's location estimator: 0.3*Q(1/3) + 0.4*median + 0.3*Q(2/3)."""
     if n == 0:
         return 0.0

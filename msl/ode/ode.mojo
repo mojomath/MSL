@@ -35,14 +35,14 @@ ODE initial value problem solvers.
 Both solve dy/dt = f(t, y) for a system of `dim` equations.
 The integrand signature is:
 
-    def rhs(t: Float64, y: UnsafePointer[Float64, MutExt],
-            dydt: UnsafePointer[Float64, MutExt]) capturing:
+    def rhs(t: Float64, y: Pointer[Float64, MutExt],
+            dydt: Pointer[Float64, MutExt]) capturing:
         dydt[0] = ...
         dydt[1] = ...
 """
 
 from std.math import abs, pow, sqrt
-from std.memory import UnsafePointer, memset_zero
+from std.memory import Pointer, unsafe_memset_zero
 
 from msl.core.const import MSL_DBL_EPSILON, MSL_DBL_MAX
 from msl.core.errno import MSL_SUCCESS, MSL_EMAXITER, MSL_EINVAL
@@ -101,9 +101,9 @@ struct OdeResult(Copyable, Movable):
 # ===----------------------------------------------------------------------=== #
 
 
-def _alloc(n: Int) -> UnsafePointer[Float64, MutExt]:
+def _alloc(n: Int) -> Pointer[Float64, MutExt]:
     var p = alloc[Float64](n)
-    memset_zero(p, n)
+    unsafe_memset_zero(p, n)
     return p
 
 
@@ -117,14 +117,14 @@ def ode_rk4[
     //,
     rhs: def[origin_fn_y: MutOrigin, origin_fn_dydt: MutOrigin, //](
         Float64,
-        UnsafePointer[Float64, origin_fn_y],
-        UnsafePointer[Float64, origin_fn_dydt],
+        Pointer[Float64, origin_fn_y],
+        Pointer[Float64, origin_fn_dydt],
     ) capturing,
 ](
     t0: Float64,
     t1: Float64,
     h: Float64,
-    y: UnsafePointer[Float64, origin_y],
+    y: Pointer[Float64, origin_y],
     dim: Int,
     max_steps: Int = 100000,
 ) -> OdeResult:
@@ -262,14 +262,14 @@ def ode_rkf45[
     //,
     rhs: def[origin_fn_y: MutOrigin, origin_fn_dydt: MutOrigin, //](
         Float64,
-        UnsafePointer[Float64, origin_fn_y],
-        UnsafePointer[Float64, origin_fn_dydt],
+        Pointer[Float64, origin_fn_y],
+        Pointer[Float64, origin_fn_dydt],
     ) capturing,
 ](
     t0: Float64,
     t1: Float64,
     h0: Float64,
-    y: UnsafePointer[Float64, origin_y],
+    y: Pointer[Float64, origin_y],
     dim: Int,
     epsabs: Float64 = 1e-6,
     epsrel: Float64 = 1e-6,

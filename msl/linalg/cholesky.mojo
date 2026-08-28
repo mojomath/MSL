@@ -22,7 +22,7 @@
 Cholesky decomposition for symmetric positive-definite matrices (L1).
 
 Ported from GSL's unblocked (Level 2) Cholesky algorithm. Matrices are
-row-major, dense, and passed as flat UnsafePointer buffers with an
+row-major, dense, and passed as flat Pointer buffers with an
 explicit leading dimension (lda).
 
   A[i, j] is stored at data[i * lda + j]
@@ -39,7 +39,7 @@ from msl.core.errno import MSL_SUCCESS, MSL_EDOM
 def cholesky_decomp[
     a_origin: MutOrigin,
     //,
-](a: UnsafePointer[Float64, a_origin], lda: Int, n: Int) -> Int:
+](a: Pointer[Float64, a_origin], lda: Int, n: Int) -> Int:
     """Factor the symmetric positive-definite n x n matrix A in-place
     into A = L L^T.
 
@@ -74,7 +74,7 @@ def cholesky_svx[
     l_origin: Origin[mut=mut_l],
     x_origin: MutOrigin,
     //,
-](l: UnsafePointer[Float64, l_origin], lda: Int, n: Int, x: UnsafePointer[Float64, x_origin]):
+](l: Pointer[Float64, l_origin], lda: Int, n: Int, x: Pointer[Float64, x_origin]):
     """Solve L L^T x = b in-place, where x initially holds b."""
     # forward substitution: L c = b
     for i in range(n):
@@ -99,11 +99,11 @@ def cholesky_solve[
     x_origin: MutOrigin,
     //,
 ](
-    l: UnsafePointer[Float64, l_origin],
+    l: Pointer[Float64, l_origin],
     lda: Int,
     n: Int,
-    b: UnsafePointer[Float64, b_origin],
-    x: UnsafePointer[Float64, x_origin],
+    b: Pointer[Float64, b_origin],
+    x: Pointer[Float64, x_origin],
 ):
     """Solve A x = b given the Cholesky decomposition of A (see
     cholesky_decomp). x must be length n; b is not modified."""

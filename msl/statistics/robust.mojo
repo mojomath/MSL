@@ -27,7 +27,7 @@ Robust scale estimators (Float64): MAD, Sn, Qn.
 """
 
 from std.math import abs
-from std.memory import UnsafePointer
+from std.memory import Pointer
 
 from .order import stats_median
 
@@ -40,7 +40,7 @@ from .order import stats_median
 def _sort_inplace[
     o: MutOrigin,
     //,
-](a: UnsafePointer[Float64, o], n: Int):
+](a: Pointer[Float64, o], n: Int):
     """Insertion sort for work arrays."""
     for i in range(1, n):
         var key = a[i]
@@ -61,10 +61,10 @@ def stats_mad0[
     work_origin: MutOrigin,
     //,
 ](
-    data: UnsafePointer[Float64, origin],
+    data: Pointer[Float64, origin],
     stride: Int,
     n: Int,
-    work: UnsafePointer[Float64, work_origin],
+    work: Pointer[Float64, work_origin],
 ) -> Float64:
     """Median absolute deviation (unscaled): median(|x_i - median(x)|).
     work must be length n."""
@@ -81,10 +81,10 @@ def stats_mad[
     work_origin: MutOrigin,
     //,
 ](
-    data: UnsafePointer[Float64, origin],
+    data: Pointer[Float64, origin],
     stride: Int,
     n: Int,
-    work: UnsafePointer[Float64, work_origin],
+    work: Pointer[Float64, work_origin],
 ) -> Float64:
     """Median absolute deviation scaled for Gaussian consistency (MAD = 1.4826 * MAD0).
     work must be length n."""
@@ -101,10 +101,10 @@ def stats_Sn0_from_sorted_data[
     work_origin: MutOrigin,
     //,
 ](
-    sorted_data: UnsafePointer[Float64, origin],
+    sorted_data: Pointer[Float64, origin],
     stride: Int,
     n: Int,
-    work: UnsafePointer[Float64, work_origin],
+    work: Pointer[Float64, work_origin],
 ) -> Float64:
     """Sn scale estimator (unscaled) from pre-sorted data. work must be length n.
     """
@@ -229,10 +229,10 @@ def stats_Sn_from_sorted_data[
     work_origin: MutOrigin,
     //,
 ](
-    sorted_data: UnsafePointer[Float64, origin],
+    sorted_data: Pointer[Float64, origin],
     stride: Int,
     n: Int,
-    work: UnsafePointer[Float64, work_origin],
+    work: Pointer[Float64, work_origin],
 ) -> Float64:
     """Sn scale estimator (sigma-consistent) from pre-sorted data. work must be length n.
     """
@@ -272,11 +272,11 @@ def stats_Qn0_from_sorted_data[
     work_int_origin: MutOrigin,
     //,
 ](
-    sorted_data: UnsafePointer[Float64, origin],
+    sorted_data: Pointer[Float64, origin],
     stride: Int,
     n: Int,
-    work: UnsafePointer[Float64, work_origin],
-    work_int: UnsafePointer[Int, work_int_origin],
+    work: Pointer[Float64, work_origin],
+    work_int: Pointer[Int, work_int_origin],
 ) -> Float64:
     """Qn scale estimator (unscaled) from pre-sorted data.
     work must be length 3n, work_int must be length 5n."""
@@ -417,11 +417,11 @@ def stats_Qn_from_sorted_data[
     work_int_origin: MutOrigin,
     //,
 ](
-    sorted_data: UnsafePointer[Float64, origin],
+    sorted_data: Pointer[Float64, origin],
     stride: Int,
     n: Int,
-    work: UnsafePointer[Float64, work_origin],
-    work_int: UnsafePointer[Int, work_int_origin],
+    work: Pointer[Float64, work_origin],
+    work_int: Pointer[Int, work_int_origin],
 ) -> Float64:
     """Qn scale estimator (sigma-consistent) from pre-sorted data.
     work must be length 3n, work_int must be length 5n."""

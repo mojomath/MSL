@@ -32,7 +32,7 @@ A block is a simple array wrapper that manages memory allocation
 for contiguous data storage. Vectors can be created from blocks.
 """
 
-from std.memory import UnsafePointer, memset_zero, memcpy
+from std.memory import Pointer, unsafe_memset_zero, unsafe_memcpy
 
 from msl.core.const import MSL_DBL_EPSILON
 
@@ -47,19 +47,19 @@ struct Block(Copyable, Movable):
     """Contiguous double array block."""
 
     var size: Int
-    var data: UnsafePointer[Float64, MutExt]
+    var data: Pointer[Float64, MutExt]
 
     def __init__(out self, size: Int, *, initialize: Bool = False):
         self.size = size
         self.data = alloc[Float64](size)
         if initialize:
-            memset_zero(self.data, size)
+            unsafe_memset_zero(self.data, size)
 
     def __init__(out self, *, copy: Self):
         self.size = copy.size
         self.data = alloc[Float64](copy.size)
         if copy.size > 0:
-            memcpy(dest=self.data, src=copy.data, count=copy.size)
+            unsafe_memcpy(dest=self.data, src=copy.data, count=copy.size)
 
     def __init__(out self, *, deinit take: Self):
         self.size = take.size
@@ -73,11 +73,11 @@ struct Block(Copyable, Movable):
         """Return the size of the block."""
         return self.size
 
-    def mut_ptr(mut self) -> UnsafePointer[Float64, origin_of(self)]:
+    def mut_ptr(mut self) -> Pointer[Float64, origin_of(self)]:
         """Return pointer to the block data."""
         return self.data.unsafe_origin_cast[origin_of(self)]()
 
-    def immut_ptr(self) -> UnsafePointer[Float64, origin_of(self)]:
+    def immut_ptr(self) -> Pointer[Float64, origin_of(self)]:
         """Return pointer to the block data."""
         return self.data.as_immutable().unsafe_origin_cast[origin_of(self)]()
 
@@ -127,7 +127,7 @@ def block_size(block: Block) -> Int:
     return block.size
 
 
-def block_data(mut block: Block) -> UnsafePointer[Float64, origin_of(block)]:
+def block_data(mut block: Block) -> Pointer[Float64, origin_of(block)]:
     """Return pointer to the block data.
 
     Args:

@@ -24,7 +24,7 @@
 Householder QR decomposition for square matrices (L1).
 
 Ported from GSL's QR_decomp / householder routines. Matrices are
-row-major, dense, and passed as flat UnsafePointer buffers with an
+row-major, dense, and passed as flat Pointer buffers with an
 explicit leading dimension (lda).
 
   A[i, j] is stored at data[i * lda + j]
@@ -47,7 +47,7 @@ def qr_decomp[
     a_origin: MutOrigin,
     tau_origin: MutOrigin,
     //,
-](a: UnsafePointer[Float64, a_origin], lda: Int, n: Int, tau: UnsafePointer[Float64, tau_origin]):
+](a: Pointer[Float64, a_origin], lda: Int, n: Int, tau: Pointer[Float64, tau_origin]):
     """Factor the n x n matrix A in-place into A = Q R.
 
     tau must be length n.
@@ -93,11 +93,11 @@ def _qr_qtvec[
     v_origin: MutOrigin,
     //,
 ](
-    qr: UnsafePointer[Float64, qr_origin],
+    qr: Pointer[Float64, qr_origin],
     lda: Int,
     n: Int,
-    tau: UnsafePointer[Float64, tau_origin],
-    v: UnsafePointer[Float64, v_origin],
+    tau: Pointer[Float64, tau_origin],
+    v: Pointer[Float64, v_origin],
 ):
     """Compute v <- Q^T v in-place, given the packed QR factorization."""
     for i in range(n):
@@ -124,11 +124,11 @@ def qr_svx[
     x_origin: MutOrigin,
     //,
 ](
-    qr: UnsafePointer[Float64, qr_origin],
+    qr: Pointer[Float64, qr_origin],
     lda: Int,
     n: Int,
-    tau: UnsafePointer[Float64, tau_origin],
-    x: UnsafePointer[Float64, x_origin],
+    tau: Pointer[Float64, tau_origin],
+    x: Pointer[Float64, x_origin],
 ):
     """Solve R x = Q^T b in-place, where x initially holds b."""
     _qr_qtvec(qr, lda, n, tau, x)
@@ -150,12 +150,12 @@ def qr_solve[
     x_origin: MutOrigin,
     //,
 ](
-    qr: UnsafePointer[Float64, qr_origin],
+    qr: Pointer[Float64, qr_origin],
     lda: Int,
     n: Int,
-    tau: UnsafePointer[Float64, tau_origin],
-    b: UnsafePointer[Float64, b_origin],
-    x: UnsafePointer[Float64, x_origin],
+    tau: Pointer[Float64, tau_origin],
+    b: Pointer[Float64, b_origin],
+    x: Pointer[Float64, x_origin],
 ):
     """Solve A x = b given the QR decomposition of A (see qr_decomp).
 

@@ -29,7 +29,7 @@
 Workspace and result types for numerical integration.
 """
 
-from std.memory import UnsafePointer, memset_zero
+from std.memory import Pointer, unsafe_memset_zero
 
 from msl.core.const import MSL_DBL_MAX
 
@@ -98,12 +98,12 @@ struct IntegrationWorkspace(Movable):
     var nrmax: Int
     var i: Int
     var maximum_level: Int
-    var alist: UnsafePointer[Float64, MutExt]
-    var blist: UnsafePointer[Float64, MutExt]
-    var rlist: UnsafePointer[Float64, MutExt]
-    var elist: UnsafePointer[Float64, MutExt]
-    var order: UnsafePointer[Int, MutExt]
-    var level: UnsafePointer[Int, MutExt]
+    var alist: Pointer[Float64, MutExt]
+    var blist: Pointer[Float64, MutExt]
+    var rlist: Pointer[Float64, MutExt]
+    var elist: Pointer[Float64, MutExt]
+    var order: Pointer[Int, MutExt]
+    var level: Pointer[Int, MutExt]
 
     def __init__(out self, limit: Int):
         self.limit = limit
@@ -117,12 +117,12 @@ struct IntegrationWorkspace(Movable):
         self.elist = alloc[Float64](limit)
         self.order = alloc[Int](limit)
         self.level = alloc[Int](limit)
-        memset_zero(self.alist, limit)
-        memset_zero(self.blist, limit)
-        memset_zero(self.rlist, limit)
-        memset_zero(self.elist, limit)
-        memset_zero(self.order, limit)
-        memset_zero(self.level, limit)
+        unsafe_memset_zero(self.alist, limit)
+        unsafe_memset_zero(self.blist, limit)
+        unsafe_memset_zero(self.rlist, limit)
+        unsafe_memset_zero(self.elist, limit)
+        unsafe_memset_zero(self.order, limit)
+        unsafe_memset_zero(self.level, limit)
 
     def __init__(out self, *, deinit take: Self):
         self.limit = take.limit

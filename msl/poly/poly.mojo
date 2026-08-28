@@ -29,12 +29,12 @@ evaluators) is deferred until MSL has a Complex type and an eigenvalue
 solver (see roadmap phase L1).
 """
 
-from std.memory import UnsafePointer
+from std.memory import Pointer
 
 
 def poly_eval[
     mut: Bool, origin: Origin[mut=mut], //
-](c: UnsafePointer[Float64, origin], len: Int, x: Float64) -> Float64:
+](c: Pointer[Float64, origin], len: Int, x: Float64) -> Float64:
     """Evaluate c[0] + c[1] x + ... + c[len-1] x^(len-1) via Horner's method.
     """
     var ans = c[len - 1]
@@ -49,10 +49,10 @@ def poly_eval_derivs[
     res_origin: MutOrigin,
     //,
 ](
-    c: UnsafePointer[Float64, origin],
+    c: Pointer[Float64, origin],
     lenc: Int,
     x: Float64,
-    res: UnsafePointer[Float64, res_origin],
+    res: Pointer[Float64, res_origin],
     lenres: Int,
 ):
     """Evaluate the polynomial and its derivatives at x.
@@ -90,9 +90,9 @@ def poly_dd_init[
     y_origin: Origin[mut=mut_y],
     //,
 ](
-    dd: UnsafePointer[Float64, dd_origin],
-    x: UnsafePointer[Float64, x_origin],
-    y: UnsafePointer[Float64, y_origin],
+    dd: Pointer[Float64, dd_origin],
+    x: Pointer[Float64, x_origin],
+    y: Pointer[Float64, y_origin],
     size: Int,
 ):
     """Compute Newton's divided-difference coefficients for (x, y) data.
@@ -116,8 +116,8 @@ def poly_dd_eval[
     x_origin: Origin[mut=mut_x],
     //,
 ](
-    dd: UnsafePointer[Float64, dd_origin],
-    x: UnsafePointer[Float64, x_origin],
+    dd: Pointer[Float64, dd_origin],
+    x: Pointer[Float64, x_origin],
     size: Int,
     xval: Float64,
 ) -> Float64:
@@ -137,12 +137,12 @@ def poly_dd_taylor[
     w_origin: MutOrigin,
     //,
 ](
-    c: UnsafePointer[Float64, c_origin],
+    c: Pointer[Float64, c_origin],
     xp: Float64,
-    dd: UnsafePointer[Float64, dd_origin],
-    x: UnsafePointer[Float64, x_origin],
+    dd: Pointer[Float64, dd_origin],
+    x: Pointer[Float64, x_origin],
     size: Int,
-    w: UnsafePointer[Float64, w_origin],
+    w: Pointer[Float64, w_origin],
 ):
     """Convert a divided-difference polynomial to a Taylor expansion about xp.
 

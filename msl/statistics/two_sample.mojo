@@ -24,7 +24,7 @@ Two-sample inferential statistics (Float64), ported from GSL statistics module.
 """
 
 from std.math import sqrt
-from std.memory import UnsafePointer
+from std.memory import Pointer
 
 from .moments import stats_mean, stats_variance
 
@@ -32,10 +32,10 @@ from .moments import stats_mean, stats_variance
 def stats_pvariance[
     origin1: Origin, origin2: Origin
 ](
-    data1: UnsafePointer[Float64, origin1],
+    data1: Pointer[Float64, origin1],
     stride1: Int,
     n1: Int,
-    data2: UnsafePointer[Float64, origin2],
+    data2: Pointer[Float64, origin2],
     stride2: Int,
     n2: Int,
 ) -> Float64:
@@ -50,10 +50,10 @@ def stats_pvariance[
 def stats_ttest[
     origin1: Origin, origin2: Origin
 ](
-    data1: UnsafePointer[Float64, origin1],
+    data1: Pointer[Float64, origin1],
     stride1: Int,
     n1: Int,
-    data2: UnsafePointer[Float64, origin2],
+    data2: Pointer[Float64, origin2],
     stride2: Int,
     n2: Int,
 ) -> Float64:

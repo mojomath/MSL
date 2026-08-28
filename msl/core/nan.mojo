@@ -44,7 +44,7 @@ comptime MSL_POSINF: Float64 = Float64.MAX
 comptime MSL_NEGINF: Float64 = -Float64.MAX
 """Negative infinity."""
 
-comptime MSL_NAN: Float64 = nan[f64]()
+comptime MSL_NAN: Float64 = nan[DType.float64]()
 """Not-a-number."""
 
 comptime MSL_POSZERO: Float64 = 0.0

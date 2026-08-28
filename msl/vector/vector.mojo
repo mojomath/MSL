@@ -32,7 +32,7 @@ A vector is a 1D array with stride, the basic data structure for
 linear algebra operations.
 """
 
-from std.memory import UnsafePointer, memset_zero
+from std.memory import Pointer, unsafe_memset_zero
 from std.algorithm.functional import vectorize
 from std.sys.info import simd_width_of
 from std.math import sqrt
@@ -50,7 +50,7 @@ struct Vector(Copyable, Movable):
 
     var size: Int
     var stride: Int
-    var data: UnsafePointer[Float64, MutExt]
+    var data: Pointer[Float64, MutExt]
     var owner: Bool
 
     def __init__(out self, size: Int, *, initialize: Bool = False):
@@ -58,7 +58,7 @@ struct Vector(Copyable, Movable):
         self.stride = 1
         self.data = alloc[Float64](size)
         if initialize:
-            memset_zero(self.data, size)
+            unsafe_memset_zero(self.data, size)
         self.owner = True
 
     def __init__(out self, size: Int, stride: Int, *, initialize: Bool = False):
@@ -66,14 +66,14 @@ struct Vector(Copyable, Movable):
         self.stride = stride
         self.data = alloc[Float64](size * stride)
         if initialize:
-            memset_zero(self.data, size * stride)
+            unsafe_memset_zero(self.data, size * stride)
         self.owner = True
 
     def __init__[
         origin: Origin, //
     ](
         out self,
-        ptr: UnsafePointer[Float64, origin],
+        ptr: Pointer[Float64, origin],
         size: Int,
         stride: Int = 1,
     ):
@@ -89,7 +89,7 @@ struct Vector(Copyable, Movable):
         """
         self.size = size
         self.stride = stride
-        self.data = rebind[UnsafePointer[Float64, MutExt]](ptr)
+        self.data = rebind[Pointer[Float64, MutExt]](ptr)
         self.owner = False
 
     def __del__(deinit self):
@@ -104,13 +104,13 @@ struct Vector(Copyable, Movable):
         """Return the stride of the vector."""
         return self.stride
 
-    def mut_ptr(mut self) -> UnsafePointer[Float64, origin_of(self)]:
+    def mut_ptr(mut self) -> Pointer[Float64, origin_of(self)]:
         """Return pointer to the vector data."""
         return self.data.unsafe_origin_cast[origin_of(self)]()
 
-    def immut_ptr(ref self) -> UnsafePointer[Float64, origin_of(self)]:
+    def immut_ptr(ref self) -> Pointer[Float64, origin_of(self)]:
         """Return pointer to the vector data."""
-        return rebind[UnsafePointer[Float64, origin_of(self)]](
+        return rebind[Pointer[Float64, origin_of(self)]](
             self.data.unsafe_mut_cast[False]().unsafe_origin_cast[
                 origin_of(self)
             ]()
@@ -192,7 +192,7 @@ def vector_set_zero(vec: Vector):
     Args:
         vec: Vector to zero.
     """
-    memset_zero(vec.data, vec.size * vec.stride)
+    unsafe_memset_zero(vec.data, vec.size * vec.stride)
 
 
 def vector_set_all(mut vec: Vector, x: Float64):
@@ -202,7 +202,7 @@ def vector_set_all(mut vec: Vector, x: Float64):
         vec: Vector to set.
         x: Value to set.
     """
-    comptime simd_width: Int = simd_width_of[f64]()
+    comptime simd_width: Int = simd_width_of[DType.float64]()
 
     def closure[width: Int](i: Int) {mut vec, x}:
         vec.data[i * vec.stride] = x
@@ -239,7 +239,7 @@ def vector_scale(mut vec: Vector, alpha: Float64):
         vec: Vector to scale.
         alpha: Scalar multiplier.
     """
-    comptime simd_width: Int = simd_width_of[f64]()
+    comptime simd_width: Int = simd_width_of[DType.float64]()
 
     def closure[width: Int](i: Int) {mut vec, alpha}:
         vec.data[i * vec.stride] *= alpha
