@@ -17,15 +17,15 @@ backend = { name = "pixi-build-mojo", version = "0.*"}
 name = "msl"
 
 [package.host-dependencies]
-mojo = "==1.0.0b2"
+mojo = "==1.0.0"
 mojoblas = {git = "https://github.com/shivasankarka/mojoBLAS.git", branch = "main"}
 
 [package.build-dependencies]
-mojo = "==1.0.0b2"
+mojo = "==1.0.0"
 mojoblas = {git = "https://github.com/shivasankarka/mojoBLAS.git", branch = "main"}
 
 [package.run-dependencies]
-mojo = "==1.0.0b2"
+mojo = "==1.0.0"
 mojoblas = {git = "https://github.com/shivasankarka/mojoBLAS.git", branch = "main"}
 
 [tasks]
@@ -34,5 +34,5 @@ package = "mojo precompile msl"
 tests = "bash tests/tests.sh"
 
 [dependencies]
+mojo = ">=1.0.0,<2"
 mojoblas = {git = "https://github.com/shivasankarka/mojoBLAS.git", branch = "main"}
-mojo = ">=1.0.0b2,<2"
