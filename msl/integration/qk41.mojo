@@ -104,4 +104,7 @@ def qk41[
     """41-point Gauss-Kronrod quadrature."""
     var fv1 = Array[Float64, 21](uninitialized=True)
     var fv2 = Array[Float64, 21](uninitialized=True)
-    return _qk_generic[fn_](21, _xgk, _wg, _wgk, fv1, fv2, a, b)
+    ref _xgk_vals = materialize[_xgk]()
+    ref _wg_vals = materialize[_wg]()
+    ref _wgk_vals = materialize[_wgk]()
+    return _qk_generic[fn_](21, _xgk_vals, _wg_vals, _wgk_vals, fv1, fv2, a, b)

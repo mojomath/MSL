@@ -116,6 +116,10 @@ def qk15[
     var fv2_5: Float64 = 0.0
     var fv2_6: Float64 = 0.0
     var fv2_7: Float64 = 0.0
+    
+    ref _wgk_vals = materialize[_wgk]()
+    ref _wg_vals = materialize[_wg]()
+    ref _xgk_vals = materialize[_xgk]()
 
     var center = 0.5 * (a + b)
     var half_length = 0.5 * (b - a)
@@ -123,16 +127,16 @@ def qk15[
     var f_center = fn_(center)
 
     var result_gauss: Float64 = 0.0
-    var result_kronrod = f_center * _wgk[n - 1]
+    var result_kronrod = f_center * _wgk_vals[n - 1]
     var result_abs = abs(result_kronrod)
     var result_asc: Float64
 
     if n % 2 == 0:
-        result_gauss = f_center * _wg[n // 2 - 1]
+        result_gauss = f_center * _wg_vals[n // 2 - 1]
 
     for j in range((n - 1) // 2):
         var jtw = j * 2 + 1
-        var abscissa = half_length * _xgk[jtw]
+        var abscissa = half_length * _xgk_vals[jtw]
         var fval1 = fn_(center - abscissa)
         var fval2 = fn_(center + abscissa)
         var fsum = fval1 + fval2
@@ -162,13 +166,13 @@ def qk15[
             fv1_7 = fval1
             fv2_7 = fval2
 
-        result_gauss += _wg[j] * fsum
-        result_kronrod += _wgk[jtw] * fsum
-        result_abs += _wgk[jtw] * (abs(fval1) + abs(fval2))
+        result_gauss += _wg_vals[j] * fsum
+        result_kronrod += _wgk_vals[jtw] * fsum
+        result_abs += _wgk_vals[jtw] * (abs(fval1) + abs(fval2))
 
     for j in range(n // 2):
         var jtwm1 = j * 2
-        var abscissa = half_length * _xgk[jtwm1]
+        var abscissa = half_length * _xgk_vals[jtwm1]
         var fval1 = fn_(center - abscissa)
         var fval2 = fn_(center + abscissa)
 
@@ -194,20 +198,20 @@ def qk15[
             fv1_6 = fval1
             fv2_6 = fval2
 
-        result_kronrod += _wgk[jtwm1] * (fval1 + fval2)
-        result_abs += _wgk[jtwm1] * (abs(fval1) + abs(fval2))
+        result_kronrod += _wgk_vals[jtwm1] * (fval1 + fval2)
+        result_abs += _wgk_vals[jtwm1] * (abs(fval1) + abs(fval2))
 
     var mean = result_kronrod * 0.5
-    result_asc = _wgk[n - 1] * abs(f_center - mean)
+    result_asc = _wgk_vals[n - 1] * abs(f_center - mean)
 
-    result_asc += _wgk[0] * (abs(fv1_0 - mean) + abs(fv2_0 - mean))
-    result_asc += _wgk[1] * (abs(fv1_1 - mean) + abs(fv2_1 - mean))
-    result_asc += _wgk[2] * (abs(fv1_2 - mean) + abs(fv2_2 - mean))
-    result_asc += _wgk[3] * (abs(fv1_3 - mean) + abs(fv2_3 - mean))
-    result_asc += _wgk[4] * (abs(fv1_4 - mean) + abs(fv2_4 - mean))
-    result_asc += _wgk[5] * (abs(fv1_5 - mean) + abs(fv2_5 - mean))
-    result_asc += _wgk[6] * (abs(fv1_6 - mean) + abs(fv2_6 - mean))
-    result_asc += _wgk[7] * (abs(fv1_7 - mean) + abs(fv2_7 - mean))
+    result_asc += _wgk_vals[0] * (abs(fv1_0 - mean) + abs(fv2_0 - mean))
+    result_asc += _wgk_vals[1] * (abs(fv1_1 - mean) + abs(fv2_1 - mean))
+    result_asc += _wgk_vals[2] * (abs(fv1_2 - mean) + abs(fv2_2 - mean))
+    result_asc += _wgk_vals[3] * (abs(fv1_3 - mean) + abs(fv2_3 - mean))
+    result_asc += _wgk_vals[4] * (abs(fv1_4 - mean) + abs(fv2_4 - mean))
+    result_asc += _wgk_vals[5] * (abs(fv1_5 - mean) + abs(fv2_5 - mean))
+    result_asc += _wgk_vals[6] * (abs(fv1_6 - mean) + abs(fv2_6 - mean))
+    result_asc += _wgk_vals[7] * (abs(fv1_7 - mean) + abs(fv2_7 - mean))
 
     var err = (result_kronrod - result_gauss) * half_length
     result_kronrod *= half_length

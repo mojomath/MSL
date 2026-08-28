@@ -79,8 +79,8 @@ struct ExtrapolationTable(Movable):
     def __init__(out self, *, deinit move: Self):
         self.rlist2 = move.rlist2^
         self.res3la = move.res3la^
-        self.n = move.n^
-        self.nres = move.nres^
+        self.n = move.n
+        self.nres = move.nres
 
     def append(mut self, val: Float64):
         self.rlist2[self.n] = val
@@ -283,7 +283,7 @@ def qags[
         var r_i: Float64
         var e_i: Float64
         a_i, b_i, r_i, e_i = ws.retrieve()
-        var current_level = ws.level[ws.i] + 1
+        var current_level = ws.level[unsafe_offset=ws.i] + 1
 
         var mid = 0.5 * (a_i + b_i)
         var r1 = qk21[integrand](a_i, mid)

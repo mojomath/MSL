@@ -269,30 +269,42 @@ def qng_integrate[
     var fv3 = Array[Float64, 5](uninitialized=True)
     var fv4 = Array[Float64, 5](uninitialized=True)
 
+    ref x1_vals = materialize[x1]()
+    ref w10_vals = materialize[w10]()
+    ref w21a_vals = materialize[w21a]()
+    ref x2_vals = materialize[x2]()
+    ref w21b_vals = materialize[w21b]()
+    ref x3_vals = materialize[x3]()
+    ref w43a_vals = materialize[w43a]()
+    ref w43b_vals = materialize[w43b]()
+    ref x4_vals = materialize[x4]()
+    ref w87a_vals = materialize[w87a]()
+    ref w87b_vals = materialize[w87b]()
+
     # ===--- Level 1: 10-point Gauss / 21-point Kronrod ---===
     var res10: Float64 = 0.0
-    var res21: Float64 = w21b[5] * f_center
-    var resabs: Float64 = w21b[5] * abs(f_center)
+    var res21: Float64 = w21b_vals[5] * f_center
+    var resabs: Float64 = w21b_vals[5] * abs(f_center)
 
     for k in range(5):
-        var abscissa = half_length * x1[k]
+        var abscissa = half_length * x1_vals[k]
         var fval1 = fn_(center + abscissa)
         var fval2 = fn_(center - abscissa)
         var fval = fval1 + fval2
-        res10 += w10[k] * fval
-        res21 += w21a[k] * fval
-        resabs += w21a[k] * (abs(fval1) + abs(fval2))
+        res10 += w10_vals[k] * fval
+        res21 += w21a_vals[k] * fval
+        resabs += w21a_vals[k] * (abs(fval1) + abs(fval2))
         savfun[k] = fval
         fv1[k] = fval1
         fv2[k] = fval2
 
     for k in range(5):
-        var abscissa = half_length * x2[k]
+        var abscissa = half_length * x2_vals[k]
         var fval1 = fn_(center + abscissa)
         var fval2 = fn_(center - abscissa)
         var fval = fval1 + fval2
-        res21 += w21b[k] * fval
-        resabs += w21b[k] * (abs(fval1) + abs(fval2))
+        res21 += w21b_vals[k] * fval
+        resabs += w21b_vals[k] * (abs(fval1) + abs(fval2))
         savfun[k + 5] = fval
         fv3[k] = fval1
         fv4[k] = fval2
@@ -300,10 +312,10 @@ def qng_integrate[
     resabs *= abs_half_length
 
     var mean = 0.5 * res21
-    var resasc = w21b[5] * abs(f_center - mean)
+    var resasc = w21b_vals[5] * abs(f_center - mean)
     for k in range(5):
-        resasc += w21a[k] * (abs(fv1[k] - mean) + abs(fv2[k] - mean))
-        resasc += w21b[k] * (abs(fv3[k] - mean) + abs(fv4[k] - mean))
+        resasc += w21a_vals[k] * (abs(fv1[k] - mean) + abs(fv2[k] - mean))
+        resasc += w21b_vals[k] * (abs(fv3[k] - mean) + abs(fv4[k] - mean))
     resasc *= abs_half_length
 
     var err21 = _rescale_error((res21 - res10) * half_length, resabs, resasc)
@@ -314,15 +326,15 @@ def qng_integrate[
         return result^
 
     # ===--- Level 2: 43-point Kronrod extension ---===
-    var res43: Float64 = w43b[11] * f_center
+    var res43: Float64 = w43b_vals[11] * f_center
     for k in range(10):
-        res43 += savfun[k] * w43a[k]
+        res43 += savfun[k] * w43a_vals[k]
 
     var idx: Int = 10
     for k in range(11):
-        var abscissa = half_length * x3[k]
+        var abscissa = half_length * x3_vals[k]
         var fval = fn_(center + abscissa) + fn_(center - abscissa)
-        res43 += w43b[k] * fval
+        res43 += w43b_vals[k] * fval
         savfun[idx] = fval
         idx += 1
 
@@ -334,13 +346,13 @@ def qng_integrate[
         return result^
 
     # ===--- Level 3: 87-point Kronrod extension ---===
-    var res87: Float64 = w87b[22] * f_center
+    var res87: Float64 = w87b_vals[22] * f_center
     for k in range(21):
-        res87 += savfun[k] * w87a[k]
+        res87 += savfun[k] * w87a_vals[k]
 
     for k in range(22):
-        var abscissa = half_length * x4[k]
-        res87 += w87b[k] * (fn_(center + abscissa) + fn_(center - abscissa))
+        var abscissa = half_length * x4_vals[k]
+        res87 += w87b_vals[k] * (fn_(center + abscissa) + fn_(center - abscissa))
 
     var err87 = _rescale_error((res87 - res43) * half_length, resabs, resasc)
 
