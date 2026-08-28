@@ -33,6 +33,7 @@ All 1-D types expose: eval, deriv, deriv2, integral.
 """
 
 from std.memory import Pointer, unsafe_memset_zero
+from std.memory.alloc import unsafe_alloc
 from std.math import abs
 
 from msl.core.const import MSL_DBL_EPSILON
@@ -83,7 +84,7 @@ def _bsearch[
     return lo
 
 
-def _alloc_DType.float64(n: Int) -> Pointer[Float64, MutUntrackedOrigin]:
+def _alloc_f64(n: Int) -> Pointer[Float64, MutUntrackedOrigin]:
     var p = unsafe_alloc[Float64](n)
     unsafe_memset_zero(p, n)
     return p

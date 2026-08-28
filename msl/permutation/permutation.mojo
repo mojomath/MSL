@@ -33,6 +33,7 @@ elements in vectors and matrices.
 """
 
 from std.memory import Pointer
+from std.memory.alloc import unsafe_alloc
 from msl import MutExt
 
 
