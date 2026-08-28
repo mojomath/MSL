@@ -47,10 +47,11 @@ from msl.core.errno import MSL_SUCCESS, MSL_EMAXITER
 
 
 def _symschur2[
-    origin: MutOrigin, //,
-](
-    a: Pointer[Float64, origin], lda: Int, p: Int, q: Int
-) -> Tuple[Float64, Float64, Float64]:
+    origin: MutOrigin,
+    //,
+](a: Pointer[Float64, origin], lda: Int, p: Int, q: Int) -> Tuple[
+    Float64, Float64, Float64
+]:
     """Return (c, s, |Apq|) for the Jacobi rotation annihilating A[p,q]."""
     var apq = a[p * lda + q]
 
@@ -71,9 +72,16 @@ def _symschur2[
 
 
 def _apply_jacobi_left[
-    origin: MutOrigin, //,
+    origin: MutOrigin,
+    //,
 ](
-    a: Pointer[Float64, origin], lda: Int, n: Int, p: Int, q: Int, c: Float64, s: Float64
+    a: Pointer[Float64, origin],
+    lda: Int,
+    n: Int,
+    p: Int,
+    q: Int,
+    c: Float64,
+    s: Float64,
 ):
     for j in range(n):
         var apj = a[p * lda + j]
@@ -83,9 +91,16 @@ def _apply_jacobi_left[
 
 
 def _apply_jacobi_right[
-    origin: MutOrigin, //,
+    origin: MutOrigin,
+    //,
 ](
-    a: Pointer[Float64, origin], lda: Int, m: Int, p: Int, q: Int, c: Float64, s: Float64
+    a: Pointer[Float64, origin],
+    lda: Int,
+    m: Int,
+    p: Int,
+    q: Int,
+    c: Float64,
+    s: Float64,
 ):
     for i in range(m):
         var aip = a[i * lda + p]
@@ -95,7 +110,8 @@ def _apply_jacobi_right[
 
 
 def _offdiag_norm[
-    origin: MutOrigin, //,
+    origin: MutOrigin,
+    //,
 ](a: Pointer[Float64, origin], lda: Int, n: Int) -> Float64:
     var scale: Float64 = 0.0
     var ssq: Float64 = 1.0

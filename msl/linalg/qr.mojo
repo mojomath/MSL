@@ -55,7 +55,12 @@ def qr_decomp[
     a_origin: MutOrigin,
     tau_origin: MutOrigin,
     //,
-](a: Pointer[Float64, a_origin], lda: Int, n: Int, tau: Pointer[Float64, tau_origin]):
+](
+    a: Pointer[Float64, a_origin],
+    lda: Int,
+    n: Int,
+    tau: Pointer[Float64, tau_origin],
+):
     """Factor the n x n matrix A in-place into A = Q R.
 
     tau must be length n.

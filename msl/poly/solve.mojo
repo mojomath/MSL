@@ -49,7 +49,9 @@ struct QuadraticRoots(Copyable, Movable):
     var nroots: Int
     """Number of real roots found (0, 1, or 2)."""
 
-    def __init__(out self, x0: Float64 = 0.0, x1: Float64 = 0.0, nroots: Int = 0):
+    def __init__(
+        out self, x0: Float64 = 0.0, x1: Float64 = 0.0, nroots: Int = 0
+    ):
         self.x0 = x0
         self.x1 = x1
         self.nroots = nroots

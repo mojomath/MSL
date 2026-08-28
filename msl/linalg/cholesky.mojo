@@ -82,7 +82,12 @@ def cholesky_svx[
     l_origin: Origin[mut=mut_l],
     x_origin: MutOrigin,
     //,
-](l: Pointer[Float64, l_origin], lda: Int, n: Int, x: Pointer[Float64, x_origin]):
+](
+    l: Pointer[Float64, l_origin],
+    lda: Int,
+    n: Int,
+    x: Pointer[Float64, x_origin],
+):
     """Solve L L^T x = b in-place, where x initially holds b."""
     # forward substitution: L c = b
     for i in range(n):

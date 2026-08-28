@@ -71,12 +71,7 @@ struct Vector(Copyable, Movable):
 
     def __init__[
         origin: Origin, //
-    ](
-        out self,
-        ptr: Pointer[Float64, origin],
-        size: Int,
-        stride: Int = 1,
-    ):
+    ](out self, ptr: Pointer[Float64, origin], size: Int, stride: Int = 1,):
         """Create a non-owning view over an externally managed buffer.
 
         The caller is responsible for keeping the buffer alive for the
@@ -256,7 +251,9 @@ def vector_axpy(alpha: Float64, x: Vector, mut y: Vector):
         y: Destination vector (mutated).
     """
     for i in range(y.size):
-        y.data[unsafe_offset=i * y.stride] += alpha * x.data[unsafe_offset=i * x.stride]
+        y.data[unsafe_offset=i * y.stride] += (
+            alpha * x.data[unsafe_offset=i * x.stride]
+        )
 
 
 def vector_dot(a: Vector, b: Vector) -> Float64:
@@ -271,7 +268,10 @@ def vector_dot(a: Vector, b: Vector) -> Float64:
     """
     var result: Float64 = 0.0
     for i in range(a.size):
-        result += a.data[unsafe_offset=i * a.stride] * b.data[unsafe_offset=i * b.stride]
+        result += (
+            a.data[unsafe_offset=i * a.stride]
+            * b.data[unsafe_offset=i * b.stride]
+        )
     return result
 
 

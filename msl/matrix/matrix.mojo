@@ -65,13 +65,7 @@ struct Matrix(Copyable, Movable):
 
     def __init__[
         origin: Origin, //
-    ](
-        out self,
-        ptr: Pointer[Float64, origin],
-        n1: Int,
-        n2: Int,
-        tda: Int = 0,
-    ):
+    ](out self, ptr: Pointer[Float64, origin], n1: Int, n2: Int, tda: Int = 0,):
         """Create a non-owning view over an externally managed buffer.
 
         The caller is responsible for keeping the buffer alive for the
@@ -260,7 +254,9 @@ def matrix_add(mut a: Matrix, b: Matrix):
     """
     for i in range(a.s1):
         for j in range(a.s2):
-            a.data[unsafe_offset=i * a.tda + j] += b.data[unsafe_offset=i * b.tda + j]
+            a.data[unsafe_offset=i * a.tda + j] += b.data[
+                unsafe_offset=i * b.tda + j
+            ]
 
 
 def matrix_sub(mut a: Matrix, b: Matrix):
@@ -272,7 +268,9 @@ def matrix_sub(mut a: Matrix, b: Matrix):
     """
     for i in range(a.s1):
         for j in range(a.s2):
-            a.data[unsafe_offset=i * a.tda + j] -= b.data[unsafe_offset=i * b.tda + j]
+            a.data[unsafe_offset=i * a.tda + j] -= b.data[
+                unsafe_offset=i * b.tda + j
+            ]
 
 
 def matrix_scale(mut mat: Matrix, alpha: Float64):
@@ -302,7 +300,9 @@ def matrix_transpose(a: Matrix) -> Matrix:
     var result = Matrix(a.s2, a.s1)
     for i in range(a.s1):
         for j in range(a.s2):
-            result.data[unsafe_offset=j * result.tda + i] = a.data[unsafe_offset=i * a.tda + j]
+            result.data[unsafe_offset=j * result.tda + i] = a.data[
+                unsafe_offset=i * a.tda + j
+            ]
     return result^
 
 
@@ -321,5 +321,7 @@ def matrix_mul(a: Matrix, b: Matrix) -> Matrix:
         for k in range(a.s2):
             var aik = a.data[unsafe_offset=i * a.tda + k]
             for j in range(b.s2):
-                result.data[unsafe_offset=i * result.tda + j] += aik * b.data[unsafe_offset=k * b.tda + j]
+                result.data[unsafe_offset=i * result.tda + j] += (
+                    aik * b.data[unsafe_offset=k * b.tda + j]
+                )
     return result^

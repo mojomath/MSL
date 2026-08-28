@@ -43,8 +43,7 @@ from std.memory import Pointer
 def poly_eval[
     mut: Bool, origin: Origin[mut=mut], //
 ](c: Pointer[Float64, origin], len: Int, x: Float64) -> Float64:
-    """Evaluate c[0] + c[1] x + ... + c[len-1] x^(len-1) via Horner's method.
-    """
+    """Evaluate c[0] + c[1] x + ... + c[len-1] x^(len-1) via Horner's method."""
     var ans = c[len - 1]
     for i in range(len - 1, 0, -1):
         ans = c[i - 1] + x * ans
