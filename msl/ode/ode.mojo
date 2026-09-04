@@ -52,9 +52,7 @@ from std.memory import (
     Pointer,
     unsafe_memset_zero,
 )
-from std.memory.alloc import (
-    unsafe_alloc,
-)
+from std.memory.alloc import unsafe_alloc
 
 # ===----------------------------------------------------------------------=== #
 # MSL

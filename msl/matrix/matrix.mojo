@@ -39,9 +39,12 @@ from std.memory import (
     Pointer,
     unsafe_memset_zero,
 )
-from std.sys.info import simd_width_of
 from std.memory.alloc import unsafe_alloc
+from std.sys.info import simd_width_of
 
+# ===----------------------------------------------------------------------=== #
+# MSL
+# ===----------------------------------------------------------------------=== #
 from msl import MutExt
 
 

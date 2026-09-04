@@ -121,6 +121,42 @@ def test_bessel_j1() raises:
     print("test_bessel_j1: PASSED")
 
 
+# Regression tests for the y > 4.0 asymptotic amplitude/phase branch of
+# bessel_J1/bessel_Y1 (the `bth1_c` Chebyshev table): a corrupted 23-element
+# table mismatched with the `Array[Float64, 24]` annotation used to fail to
+# compile here, and even once patched to the right length held the wrong
+# coefficients entirely. The y <= 4.0 branch (exercised by test_bessel_j1/
+# test_bessel_y1 above) never touches this table, so it alone can't catch
+# a regression here. Reference values from scipy.special.j1/y1.
+def test_bessel_j1_large_x() raises:
+    var result = bessel_j1(5.0)
+    var expected = -0.327579137591465
+    assert tolerance(result.val, expected, 1e-10)
+    print("test_bessel_j1_large_x: PASSED")
+
+
+def test_bessel_j1_large_x_2() raises:
+    var result = bessel_j1(10.0)
+    var expected = 0.043472746168861
+    assert tolerance(result.val, expected, 1e-10)
+    print("test_bessel_j1_large_x_2: PASSED")
+
+
+def test_bessel_j1_very_large_x() raises:
+    var result = bessel_j1(100.0)
+    var expected = -0.077145352014112
+    assert tolerance(result.val, expected, 1e-10)
+    print("test_bessel_j1_very_large_x: PASSED")
+
+
+def test_bessel_j1_large_negative_x() raises:
+    # J1 is odd: J1(-x) = -J1(x). Exercises the `sign_x` branch.
+    var result = bessel_j1(-5.0)
+    var expected = 0.327579137591465
+    assert tolerance(result.val, expected, 1e-10)
+    print("test_bessel_j1_large_negative_x: PASSED")
+
+
 def test_bessel_y0() raises:
     var result = bessel_y0(1.0)
     var expected = -0.088256964830592
@@ -133,6 +169,27 @@ def test_bessel_y1() raises:
     var expected = -0.781212418297592
     assert tolerance(result.val, expected, 1e-10)
     print("test_bessel_y1: PASSED")
+
+
+def test_bessel_y1_large_x() raises:
+    var result = bessel_y1(5.0)
+    var expected = 0.147863143391227
+    assert tolerance(result.val, expected, 1e-10)
+    print("test_bessel_y1_large_x: PASSED")
+
+
+def test_bessel_y1_large_x_2() raises:
+    var result = bessel_y1(10.0)
+    var expected = 0.249015424206954
+    assert tolerance(result.val, expected, 1e-10)
+    print("test_bessel_y1_large_x_2: PASSED")
+
+
+def test_bessel_y1_very_large_x() raises:
+    var result = bessel_y1(100.0)
+    var expected = -0.020372312002759
+    assert tolerance(result.val, expected, 1e-10)
+    print("test_bessel_y1_very_large_x: PASSED")
 
 
 def test_bessel_i0_scaled() raises:

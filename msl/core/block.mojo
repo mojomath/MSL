@@ -1,4 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
+
+# ===----------------------------------------------------------------------=== #
 # MSL (Mojo Scientific Library)
 #
 # Derived from GNU Scientific Library (GSL)
@@ -40,7 +42,11 @@ from std.memory import (
 )
 from std.memory.alloc import unsafe_alloc
 
+# ===----------------------------------------------------------------------=== #
+# MSL
+# ===----------------------------------------------------------------------=== #
 from msl import MutExt
+
 
 # ===----------------------------------------------------------------------=== #
 # Block struct

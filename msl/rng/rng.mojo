@@ -36,10 +36,17 @@ Defines the `RNGAlgorithm` trait and the parametric `RNG[T]` wrapper.
 # ===----------------------------------------------------------------------=== #
 # Stdlib
 # ===----------------------------------------------------------------------=== #
-from std.memory import Pointer, unsafe_memcpy
+from std.memory import (
+    Pointer,
+    unsafe_memcpy,
+)
 from std.memory.alloc import unsafe_alloc
 
+# ===----------------------------------------------------------------------=== #
+# MSL
+# ===----------------------------------------------------------------------=== #
 from msl import MutExt
+
 
 # ===----------------------------------------------------------------------=== #
 # RNGAlgorithm trait
