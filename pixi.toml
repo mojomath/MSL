@@ -1,14 +1,14 @@
 [workspace]
 authors = ["shivasankar <shivasankar.ka@gmail.com>"]
 channels = ["https://conda.modular.com/max/", "conda-forge"]
-name = "gsl-bindings"
+name = "msl"
 platforms = ["osx-arm64"]
-version = "0.1.0"
+version = "0.2.0"
 preview = ["pixi-build"]
 
 [package]
 name = "msl"
-version = "0.1.0"
+version = "0.2.0"
 
 [package.build]
 backend = { name = "pixi-build-mojo", version = "0.*"}
