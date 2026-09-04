@@ -20,16 +20,6 @@ SciJo (high-level, user-friendly)
 
 ---
 
-## Motivation
-
-Porting GSL is a huge task, but it's much better than writing crazy bindings lol. I also get exposed to more functions that might be helpful in my research, and it helps me learn the math and how to do numerical scientific computing in general (people have come up with crazy tricks!).
-
-I ported a lot of GSL derivative, integration routines, special functions and solvers like `hermv`, ODE solvers like `rkf45`, etc. for my own research project in Mojo. I also ported many statistics routines for SciJo and StatMojo. So I thought it's better to bundle it all together like the GSL library.
-
-I don't plan to port every single function from GSL - perhaps if I get time in the future, I'll try to port more. I'm porting just enough for our libraries: SciJo, StatMojo, and HEPJo. Check out our org [MojoMath](https://github.com/mojomath) for more details.
-
----
-
 ## Overview
 
 | Module | Contents |
@@ -50,6 +40,14 @@ I don't plan to port every single function from GSL - perhaps if I get time in t
 | `msl.poly` | Polynomial evaluation, divided-difference interpolation, quadratic/cubic root solving |
 | `msl.statistics` | Descriptive statistics: moments, order statistics, robust scale, weighted, Spearman correlation |
 | `msl.core` | Constants, error codes (`MSL_*`), math utilities |
+
+### Motivation
+
+Porting GSL is a huge task, but it's much better than writing crazy bindings lol. I also get exposed to more functions that might be helpful in my research, and it helps me learn the math and how to do numerical scientific computing in general (people have come up with crazy tricks!).
+
+I ported a lot of GSL derivative, integration routines, special functions and solvers like `hermv`, ODE solvers like `rkf45`, etc. for my own research project in Mojo. I also ported many statistics routines for SciJo and StatMojo. So I thought it's better to bundle it all together like the GSL library.
+
+I don't plan to port every single function from GSL - perhaps if I get time in the future, I'll try to port more. I'm porting just enough for our libraries: SciJo, StatMojo, and HEPJo. Check out our org [MojoMath](https://github.com/mojomath) for more details.
 
 ---
 
