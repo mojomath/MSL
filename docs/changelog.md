@@ -48,8 +48,6 @@ The format is based on "Keep a Changelog" and follows Semantic Versioning.
 
 ### Fixed
 - **`bessel_j1`/`bessel_y1` large-`x` amplitude/phase (`msl/sf/bessel.mojo`)**: the `bth1_c` Chebyshev coefficient table used for `y > 4.0` was corrupted - declared as `Array[Float64, 24]` but initialized with only 23 elements (a compile error under Mojo 1.0's stricter array-literal checking), and even at the right length the values did not match GSL's `bth1_data` table at all. Replaced with the correct 24-value table from GSL's `bessel_amp_phase.c`, verified against a local GSL 2.8 checkout. This affected `bessel_J1`, `bessel_Y1`, and their aliases `bessel_j1`/`bessel_y1` for all `x` with `|x| > 4`; values for `|x| <= 4` were unaffected (different code path).
-- Two header/license text bugs caught by `check_mojo_standards.py`: a typo in `sf/result.mojo` ("distributed in the hope that will be useful", missing "it"), and a completely missing warranty/disclaimer block in `statistics/weighted.mojo` (had only the 4-line free-software clause).
-- `pixi run package` (`mojo precompile msl`) now completes with zero errors.
 
 ### Removed
 - No removals in this release.
